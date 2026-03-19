@@ -121,3 +121,106 @@ exit
 exit
 write`.trim();
 };
+
+
+/**
+ * Logic generator khusus UNB dengan Mapping VLAN
+ */
+export const generateUNB = (data) => {
+  const { interfaceOlt, onuId, sn, idPelanggan, pppoeUser, pppoePass, selectedVlanType } = data;
+  const cleanId = idPelanggan.toString().slice(0, 10);
+  const ifaceUnderscore = interfaceOlt.replace(/\//g, '_');
+
+  // Mapping Detail untuk setiap jenis UNB
+  const unbConfigs = {
+    "100": { vlan: "100", profile: "pppoe", type: "standard" },
+    "1600": { vlan: "1600", profile: "vlan1600", type: "standard" },
+    "1501": { vlan: "1501", profile: "bolo", type: "standard" },
+    "bridge_unb": { vlan1: "105", vlan2: "102", profile: "pppoe_vlan102", type: "bridge" },
+    "bridge_bolo": { vlan1: "1500", vlan2: "1501", profile: "bolo", type: "bridge_bolo" }
+  };
+
+  const conf = unbConfigs[selectedVlanType];
+
+  // LOGIK UNB BRIDGE STANDAR
+  if (conf.type === "bridge") {
+    return `conf t
+interface gpon-olt_${interfaceOlt}
+onu ${onuId} type ALL sn ${sn}
+exit
+interface gpon-onu_${ifaceUnderscore}:${onuId}
+name ${cleanId}
+description ${cleanId}_bridge
+sn-bind enable sn
+tcont 1 profile kusuma
+gemport 1 tcont 1
+gemport 2 tcont 1
+service-port 1 vport 1 user-vlan ${conf.vlan1} vlan ${conf.vlan1}
+service-port 2 vport 2 user-vlan ${conf.vlan2} vlan ${conf.vlan2}
+exit
+pon-onu-mng gpon-onu_${ifaceUnderscore}:${onuId}
+service ${conf.vlan1} gemport 1 vlan ${conf.vlan1}
+service pppoe gemport 2 vlan ${conf.vlan2}
+vlan port eth_0/1 mode tag vlan ${conf.vlan1}
+vlan port eth_0/2 mode tag vlan ${conf.vlan1}
+vlan port eth_0/3 mode tag vlan ${conf.vlan1}
+vlan port eth_0/4 mode tag vlan ${conf.vlan1}
+wan-ip mode pppoe username ${pppoeUser} password ${pppoePass} vlan-profile ${conf.profile} host 1
+security-mgmt 1 state enable mode forward protocol web
+exit
+exit
+write`.trim();
+  }
+
+  // LOGIK UNB BRIDGE BOLO
+  if (conf.type === "bridge_bolo") {
+    return `conf t
+interface gpon-olt_${interfaceOlt}
+onu ${onuId} type ALL sn ${sn}
+exit
+interface gpon-onu_${ifaceUnderscore}:${onuId}
+name ${cleanId}
+description ${cleanId}
+sn-bind enable sn
+tcont 1 profile kusuma
+gemport 1 tcont 1
+gemport 2 tcont 1
+service-port 1 vport 1 user-vlan ${conf.vlan1} vlan ${conf.vlan1}
+service-port 2 vport 2 user-vlan ${conf.vlan2} vlan ${conf.vlan2}
+exit
+pon-onu-mng gpon-onu_${ifaceUnderscore}:${onuId}
+service ${conf.vlan1} gemport 1 vlan ${conf.vlan1}
+service pppoe gemport 2 vlan ${conf.vlan2}
+vlan port eth_0/1 mode hybrid def-vlan ${conf.vlan1}
+vlan port eth_0/2 mode hybrid def-vlan ${conf.vlan1}
+vlan port eth_0/3 mode hybrid def-vlan ${conf.vlan1}
+wan-ip mode pppoe username ${pppoeUser} password ${pppoePass} vlan-profile ${conf.profile} host 1
+security-mgmt 1 state enable mode forward protocol web
+exit
+exit
+write`.trim();
+  }
+
+  // LOGIK UNB STANDARD (V100, V1600, V1501)
+  return `conf t
+interface gpon-olt_${interfaceOlt}
+onu ${onuId} type ALL sn ${sn}
+exit
+interface gpon-onu_${ifaceUnderscore}:${onuId}
+name ${cleanId}
+description ${cleanId}
+sn-bind enable sn
+tcont 1 name PPPOE profile kusuma
+gemport 1 name PPPOE tcont 1
+switchport mode hybrid vport 1
+service-port 1 vport 1 user-vlan ${conf.vlan} vlan ${conf.vlan}
+exit
+pon-onu-mng gpon-onu_${ifaceUnderscore}:${onuId}
+service ServiceName gemport 1 cos 0 vlan ${conf.vlan}
+wan-ip mode pppoe username ${pppoeUser} password ${pppoePass} vlan-profile ${conf.profile} host 1
+wan-ip 1 ping-response enable traceroute-response enable
+security-mgmt 212 state enable mode forward protocol web
+exit
+exit
+write`.trim();
+};

@@ -6,6 +6,7 @@ import {
   generateUHO,
   generateUBL,
   generateUGR,
+  generateUNB,
 } from "@/lib/generator";
 import { Copy, RefreshCw, CheckCircle2 } from "lucide-react";
 
@@ -20,6 +21,7 @@ export default function Home() {
     idPelanggan: "",
     pppoeUser: "",
     pppoePass: "150326", // Default password
+    selectedVlan: '100' // Default VLAN untuk UNB
   });
 
   const [output, setOutput] = useState("");
@@ -62,6 +64,9 @@ export default function Home() {
       case "ugr":
         result = generateUGR(formData);
         break;
+      case "unb":
+        result = generateUNB(formData);
+        break;
       default:
         result = "";
     }
@@ -89,7 +94,7 @@ export default function Home() {
         </header>
 
         <div className="flex bg-gray-200 p-1 rounded-lg mb-6 w-full overflow-x-auto no-scrollbar">
-          {["standard", "uho", "ubl", "ugr"].map((type) => (
+          {["standard", "uho", "ubl", "ugr", "unb"].map((type) => (
             <button
               key={type}
               onClick={() => handleTabChange(type)}
@@ -190,6 +195,29 @@ export default function Home() {
                 />
               </div>
             </div>
+
+            {/* Dropdown Khusus UNB */}
+            {configType === 'unb' && (
+              <div className="space-y-1">
+                <label className="text-xs font-bold uppercase tracking-wider text-blue-600">Opsi Konfigurasi UNB</label>
+                <select
+                  name="selectedVlanType"
+                  value={formData.selectedVlanType}
+                  onChange={handleChange}
+                  className="w-full p-2.5 border-2 border-blue-200 bg-blue-50 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition font-bold text-sm"
+                >
+                  <optgroup label="Standard (PPPoE)">
+                    <option value="100">UNB V100</option>
+                    <option value="1600">UNB V1600 (RURI_YSN)</option>
+                    <option value="1501">UNB V1501 (DJAROT)</option>
+                  </optgroup>
+                  <optgroup label="Bridge Mode">
+                    <option value="bridge_unb">UNB Bridge (105/102)</option>
+                    <option value="bridge_bolo">Bridge Bolo (1500/1501)</option>
+                  </optgroup>
+                </select>
+              </div>
+            )}
 
             <button
               type="submit"
