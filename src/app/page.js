@@ -30,7 +30,7 @@ export default function Home() {
   // Fungsi untuk handle perpindahan menu/tab
   const handleTabChange = (type) => {
     setConfigType(type);
-    setOutput(""); // Bersihkan output saat pindah menu agar tidak bingung
+    setOutput(""); // Bersihkan output saat pindah menu
   };
 
   const handleChange = (e) => {
@@ -208,12 +208,12 @@ export default function Home() {
                 >
                   <optgroup label="Standard (PPPoE)">
                     <option value="100">UNB V100</option>
-                    <option value="1600">UNB V1600 (RURI_YSN)</option>
-                    <option value="1501">UNB V1501 (DJAROT)</option>
+                    <option value="1600">UNB V1600 (AL KHOIRIYAH)</option>
+                    <option value="1501">UNB V1501 (BOLO)</option>
                   </optgroup>
                   <optgroup label="Bridge Mode">
-                    <option value="bridge_unb">UNB Bridge (105/102)</option>
-                    <option value="bridge_bolo">Bridge Bolo (1500/1501)</option>
+                    <option value="bridge_unb">UNB Bridge</option>
+                    <option value="bridge_bolo">Bridge Bolo</option>
                   </optgroup>
                 </select>
               </div>
