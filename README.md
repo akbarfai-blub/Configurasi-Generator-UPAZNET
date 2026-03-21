@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# UPAZNET GPON Config Generator
 
-## Getting Started
+**UPAZNET GPON Config Generator** adalah sebuah aplikasi web (Helpdesk Tool) yang dirancang untuk mempermudah dan mempercepat tugas tim teknisi dalam membuat script (CLI) konfigurasi aktivasi OLT (Optical Line Terminal) ZTE/GPON untuk pelanggan. 
 
-First, run the development server:
+Aplikasi ini men-generate script yang siap di-copy-paste langsung ke terminal OLT berdasarkan parameter-parameter pelanggan.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Fitur Utama
+- **Multi-Tipe Konfigurasi**: Mendukung berbagai jenis/area konfigurasi GPON khusus jaringan UPAZNET:
+  - **UNR C600** (Pelanggan Biasa)
+  - **UHO**
+  - **UBL**
+  - **UGR**
+  - **UNB** (Mendukung mode Standard PPPoE dan Bridge Mode dengan mapping khusus untuk V100, V1600, V1501, dll)
+- **Auto-Fill Data**: Memudahkan pengisian form (misal: otomatis menyalin ID Pelanggan sebagai `PPPoE User` dan memiliki default password standar).
+- **One-Click Copy**: Tombol praktis untuk langsung menyalin hasil script lengkap ke *clipboard*.
+- **UI Responsif & Cepat**: Antarmuka modern, minim delay, dan responsif.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Teknologi yang Digunakan
+- **[Next.js](https://nextjs.org/)** (v16+) - React Framework
+- **[React](https://react.dev/)**
+- **[Tailwind CSS](https://tailwindcss.com/)** (+ Autoprefixer & PostCSS) - Utility-first styling
+- **[Lucide React](https://lucide.dev/)** - Icon pack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Cara Menjalankan Project (Local Development)
 
-## Learn More
+Ikuti langkah-langkah berikut untuk menjalankan aplikasi ini di komputer lokal Anda:
 
-To learn more about Next.js, take a look at the following resources:
+1. **Clone repositori ini:**
+   ```bash
+   git clone <url-repo-anda>
+   cd config-generator-upaznet
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **Install semua dependensi:**
+   ```bash
+   npm install
+   # atau
+   yarn install
+   # atau
+   pnpm install
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. **Jalankan local development server:**
+   ```bash
+   npm run dev
+   # atau
+   yarn dev
+   # atau
+   pnpm dev
+   ```
 
-## Deploy on Vercel
+4. **Buka di Browser:**
+   Buka [http://localhost:3000](http://localhost:3000) untuk melihat dan menggunakan aplikasi Generator Config. File utama aplikasi berada di dalam folder `src/app/page.js` dan logic generator berada di `src/lib/generator.js`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Struktur Folder Utama
+- `/src/app/page.js`: Halaman antarmuka pengguna utama (Form & Output).
+- `/src/lib/generator.js`: Core logic untuk berbagai script command OLT.
+- `/public`: Aset publik.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+*Dibuat untuk Tim Helpdesk & NOC UPAZNET*
