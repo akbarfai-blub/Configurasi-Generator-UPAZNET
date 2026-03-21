@@ -32,7 +32,12 @@ pon-onu-mng gpon_onu-${interfaceOlt}:${onuId}
 service 1 gemport 1 vlan ${vlan}
 security-mgmt 1 state enable mode forward protocol web
 wan-ip 1 ipv4 mode pppoe username ${pppoeUser} password ${pppoePass} vlan-profile ${vlanProfile} host 1
-exit`.trim();
+wan 1 service tr069 internet
+tr069-mgmt 1 state unlock
+tr069-mgmt 1 acs http://acs.upaz.net.id:9999/ validate basic username acs@upaz.net.id password upaz8ersinar
+exit
+exit
+write`.trim();
 };
 
 /**
