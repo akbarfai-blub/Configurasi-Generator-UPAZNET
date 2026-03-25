@@ -138,9 +138,11 @@ export const generateUNB = (data) => {
 
   // Mapping Detail untuk setiap jenis UNB
   const unbConfigs = {
-    "100": { vlan: "100", profile: "pppoe", type: "standard" },
-    "1600": { vlan: "1600", profile: "vlan1600", type: "standard" },
-    "1501": { vlan: "1501", profile: "bolo", type: "standard" },
+    "100": { vlan: "100", profile: "pppoe", type: "standard", tcontProfile: "kusuma", onuType: "ALL" },
+    "1600": { vlan: "1600", profile: "vlan1600", type: "standard", tcontProfile: "kusuma", onuType: "ALL" },
+    "1501": { vlan: "1501", profile: "bolo", type: "standard", tcontProfile: "kusuma", onuType: "ALL" },
+    "602": { vlan: "602", profile: "vlan602", type: "standard", tcontProfile: "metro10", onuType: "ALL-ONT" },
+    "903": { vlan: "903", profile: "vlan903", type: "lexxa", tcontProfile: "default", onuType: "ALL-ONT" },
     "bridge_unb": { vlan1: "105", vlan2: "102", profile: "pppoe_vlan102", type: "bridge" },
     "bridge_bolo": { vlan1: "1500", vlan2: "1501", profile: "bolo", type: "bridge_bolo" }
   };
@@ -206,23 +208,27 @@ exit
 write`.trim();
   }
 
-  // LOGIK UNB STANDARD (V100, V1600, V1501)
+  // LOGIK UNB STANDARD (V100, V1600, V1501, 602, 903)
+  const onuType = conf.onuType || "ALL";
+  const tcontProfile = conf.tcontProfile || "kusuma";
+  const isLexxa = conf.type === "lexxa";
+
   return `conf t
 interface gpon-olt_${interfaceOlt}
-onu ${onuId} type ALL sn ${sn}
+onu ${onuId} type ${onuType} sn ${sn}
 exit
 interface gpon-onu_${ifaceUnderscore}:${onuId}
 name ${cleanId}
 description ${cleanId}
 sn-bind enable sn
-tcont 1 name PPPOE profile kusuma
+tcont 1 name PPPOE profile ${tcontProfile}
 gemport 1 name PPPOE tcont 1
-switchport mode hybrid vport 1
+${isLexxa ? "encrypt 1 enable downstream\n" : ""}switchport mode hybrid vport 1
 service-port 1 vport 1 user-vlan ${conf.vlan} vlan ${conf.vlan}
 exit
 pon-onu-mng gpon-onu_${ifaceUnderscore}:${onuId}
 service ServiceName gemport 1 cos 0 vlan ${conf.vlan}
-wan-ip mode pppoe username ${pppoeUser} password ${pppoePass} vlan-profile ${conf.profile} host 1
+wan-ip 1 mode pppoe username ${pppoeUser} password ${pppoePass} vlan-profile ${conf.profile} host 1
 wan-ip 1 ping-response enable traceroute-response enable
 security-mgmt 212 state enable mode forward protocol web
 exit
