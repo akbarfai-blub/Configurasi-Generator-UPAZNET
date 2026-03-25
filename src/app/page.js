@@ -39,6 +39,42 @@ export default function Home() {
     setFormData((prev) => {
       const newData = { ...prev, [name]: value };
 
+      // Auto-Masking / Auto-Separator untuk interfaceOlt
+      if (name === "interfaceOlt") {
+        let val = value;
+        const prevVal = prev.interfaceOlt || "";
+
+        // Mencegah infinite loop backspace saat menghapus '/'
+        // Jika length berkurang 1 dan karakter yang terhapus tepat di posisi '/', potong digit asli
+        if (prevVal.length - val.length === 1 && prevVal[val.length] === '/') {
+          val = val.slice(0, -1);
+        }
+
+        // Bersihkan seluruh karakter non-angka secara real-time
+        let digits = val.replace(/\D/g, "");
+
+        let formatted = "";
+        if (digits.length > 0) {
+          if (digits.length === 1) formatted = digits;
+          else if (digits.length === 2) formatted = `${digits[0]}/${digits[1]}`;
+          else if (digits.length === 3) formatted = `${digits[0]}/${digits[1]}/${digits[2]}`;
+          else if (digits.length === 4) {
+            // Handle ambiguitas 4 digit:
+            // Jika digit ke-2 adalah 1 (kemungkinan Slot 10-17), format jadi Rack/Slot(2digit)/Port(1digit)
+            // Selain itu, format jadi Rack/Slot(1digit)/Port(2digit)
+            if (digits[1] === "1" && parseInt(digits[2]) <= 7) {
+              formatted = `${digits[0]}/${digits[1]}${digits[2]}/${digits[3]}`;
+            } else {
+              formatted = `${digits[0]}/${digits[1]}/${digits[2]}${digits[3]}`;
+            }
+          } else if (digits.length >= 5) {
+            // max length 5 digit. contoh 11216 -> 1/12/16
+            formatted = `${digits[0]}/${digits[1]}${digits[2]}/${digits[3]}${digits[4]}`;
+          }
+        }
+        newData[name] = formatted;
+      }
+
       // Auto-fill PPPoE User saat ID Pelanggan diketik
       if (name === "idPelanggan") {
         newData.pppoeUser = value;
@@ -114,6 +150,32 @@ export default function Home() {
                 onSubmit={handleGenerate}
                 className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-5"
               >
+                {/* Dropdown Khusus UNB */}
+                {configType === 'unb' && (
+                  <div className="space-y-1 mb-4 pb-4 border-b">
+                    <label className="text-xs font-bold uppercase tracking-wider text-blue-600">Opsi Konfigurasi UNB</label>
+                    <select
+                      name="selectedVlanType"
+                      value={formData.selectedVlanType}
+                      onChange={handleChange}
+                      className="w-full p-2.5 border-2 border-blue-200 bg-blue-50 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition font-bold text-sm"
+                    >
+                      <optgroup label="Standard (PPPoE)">
+                        <option value="100">UNB V100</option>
+                        <option value="1600">UNB V1600 (AL KHOIRIYAH)</option>
+                        <option value="1501">UNB V1501 (BOLO)</option>
+                        <option value="602">UNB V602 (ALNET)</option>
+                        <option value="903">UNB V903 (LEXXA)</option>
+                        <option value="511">UNB V511 (CADAR)</option>
+                      </optgroup>
+                      <optgroup label="Bridge Mode">
+                        <option value="bridge_unb">UNB Bridge</option>
+                        <option value="bridge_bolo">Bridge Bolo</option>
+                      </optgroup>
+                    </select>
+                  </div>
+                )}
+
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
@@ -125,6 +187,7 @@ export default function Home() {
                       value={formData.interfaceOlt}
                       onChange={handleChange}
                       placeholder="1/4/2"
+                      inputMode="numeric"
                       className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition"
                     />
                   </div>
@@ -198,31 +261,6 @@ export default function Home() {
                     />
                   </div>
                 </div>
-
-                {/* Dropdown Khusus UNB */}
-                {configType === 'unb' && (
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold uppercase tracking-wider text-blue-600">Opsi Konfigurasi UNB</label>
-                    <select
-                      name="selectedVlanType"
-                      value={formData.selectedVlanType}
-                      onChange={handleChange}
-                      className="w-full p-2.5 border-2 border-blue-200 bg-blue-50 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition font-bold text-sm"
-                    >
-                      <optgroup label="Standard (PPPoE)">
-                        <option value="100">UNB V100</option>
-                        <option value="1600">UNB V1600 (AL KHOIRIYAH)</option>
-                        <option value="1501">UNB V1501 (BOLO)</option>
-                        <option value="602">UNB V602 (ALNET)</option>
-                        <option value="903">UNB V903 (LEXXA)</option>
-                      </optgroup>
-                      <optgroup label="Bridge Mode">
-                        <option value="bridge_unb">UNB Bridge</option>
-                        <option value="bridge_bolo">Bridge Bolo</option>
-                      </optgroup>
-                    </select>
-                  </div>
-                )}
 
                 <button
                   type="submit"

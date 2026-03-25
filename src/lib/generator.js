@@ -143,6 +143,7 @@ export const generateUNB = (data) => {
     "1501": { vlan: "1501", profile: "bolo", type: "standard", tcontProfile: "kusuma", onuType: "ALL" },
     "602": { vlan: "602", profile: "vlan602", type: "standard", tcontProfile: "metro10", onuType: "ALL-ONT" },
     "903": { vlan: "903", profile: "vlan903", type: "lexxa", tcontProfile: "default", onuType: "ALL-ONT" },
+    "511": { vlan: "511", profile: "vlan511", type: "standard", tcontProfile: "kusuma", onuType: "ALL" },
     "bridge_unb": { vlan1: "105", vlan2: "102", profile: "pppoe_vlan102", type: "bridge" },
     "bridge_bolo": { vlan1: "1500", vlan2: "1501", profile: "bolo", type: "bridge_bolo" }
   };
