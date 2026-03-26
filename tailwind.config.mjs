@@ -5,7 +5,13 @@ export default {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'upaz-green': '#00A651',
+        'upaz-blue': '#003C71',
+        'upaz-bg': '#FBFCFD',
+      }
+    },
   },
   plugins: [],
 };

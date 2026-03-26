@@ -121,10 +121,10 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8 font-sans text-slate-800">
+    <div className="min-h-screen bg-upaz-bg p-4 md:p-8 font-sans text-slate-800">
       <div className="max-w-[1400px] mx-auto">
         <header className="mb-8">
-          <h1 className="text-2xl font-bold text-slate-900">
+          <h1 className="text-2xl font-bold text-upaz-blue">
             CONFIGURASI GPON UPAZNET
           </h1>
           <p className="text-slate-500 text-sm">
@@ -135,11 +135,11 @@ export default function Home() {
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="flex-grow space-y-6">
             <div className="flex bg-gray-200 p-1 rounded-lg w-full overflow-x-auto no-scrollbar">
-              {["standard", "uho", "ubl", "ugr", "unb"].map((type) => (
+              {["standard", "unb", "uho", "ubl", "ugr"].map((type) => (
                 <button
                   key={type}
                   onClick={() => handleTabChange(type)}
-                  className={`flex-1 py-2 px-4 text-xs font-bold rounded-md transition uppercase tracking-wider ${configType === type ? "bg-white shadow text-blue-600" : "text-gray-500 hover:text-gray-700"}`}
+                  className={`flex-1 py-2 px-4 text-xs font-bold rounded-md transition uppercase tracking-wider ${configType === type ? "bg-white shadow text-upaz-blue" : "text-gray-500 hover:text-gray-700"}`}
                 >
                   {type === "standard" ? "UNR C600" : type}
                 </button>
@@ -154,15 +154,15 @@ export default function Home() {
               >
                 {/* Opsi Konfigurasi Dinamis (UNR C600 / UNB) */}
                 {(configType === 'standard' || configType === 'unb') && (
-                  <div className="space-y-1 mb-4 pb-4 border-b">
+                  <div className="space-y-1 mb-4 pb-4 border-b border-slate-200">
                     <label className="text-xs font-bold uppercase tracking-wider text-blue-600">
-                      {configType === 'standard' ? 'Tipe Konfigurasi C600' : 'Opsi Konfigurasi UNB'}
+                      Tipe Konfigurasi
                     </label>
                     <select
                       name={configType === 'standard' ? "selectedC600Type" : "selectedVlanType"}
                       value={configType === 'standard' ? formData.selectedC600Type : formData.selectedVlanType}
                       onChange={handleChange}
-                      className="w-full p-2.5 border-2 border-blue-200 bg-blue-50 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition font-bold text-sm"
+                      className="w-full p-2.5 border-2 border-blue-200 bg-blue-50 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition font-bold text-sm text-slate-800"
                     >
                       {configType === 'standard' ? (
                         <>
@@ -201,7 +201,7 @@ export default function Home() {
                       onChange={handleChange}
                       placeholder="1/4/2"
                       inputMode="numeric"
-                      className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition"
+                      className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-upaz-blue/50 focus:border-upaz-blue outline-none transition"
                     />
                   </div>
                   <div className="space-y-1">
@@ -214,7 +214,7 @@ export default function Home() {
                       value={formData.onuId}
                       onChange={handleChange}
                       placeholder="88"
-                      className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition"
+                      className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-upaz-blue/50 focus:border-upaz-blue outline-none transition"
                     />
                   </div>
                 </div>
@@ -229,7 +229,7 @@ export default function Home() {
                     value={formData.sn}
                     onChange={handleChange}
                     placeholder="ZTEGD2327302"
-                    className="w-full p-2.5 border rounded-lg font-mono focus:ring-2 focus:ring-blue-500 outline-none transition"
+                    className="w-full p-2.5 border rounded-lg font-mono focus:ring-2 focus:ring-upaz-blue/50 focus:border-upaz-blue outline-none transition"
                   />
                 </div>
 
@@ -244,7 +244,7 @@ export default function Home() {
                     onChange={handleChange}
                     maxLength={10}
                     placeholder="1010112678"
-                    className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition"
+                    className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-upaz-blue/50 focus:border-upaz-blue outline-none transition"
                   />
                 </div>
 
@@ -258,7 +258,7 @@ export default function Home() {
                       name="pppoeUser"
                       value={formData.pppoeUser}
                       onChange={handleChange}
-                      className="w-full p-2.5 border bg-gray-50 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition"
+                      className="w-full p-2.5 border bg-gray-50 rounded-lg focus:ring-2 focus:ring-upaz-blue/50 focus:border-upaz-blue outline-none transition"
                     />
                   </div>
                   <div className="space-y-1">
@@ -270,14 +270,14 @@ export default function Home() {
                       name="pppoePass"
                       value={formData.pppoePass}
                       onChange={handleChange}
-                      className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition"
+                      className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-upaz-blue/50 focus:border-upaz-blue outline-none transition"
                     />
                   </div>
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full bg-slate-900 text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-slate-800 transition active:scale-[0.98]"
+                  className="w-full bg-upaz-green text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-upaz-green/90 transition active:scale-[0.98] shadow-md hover:shadow-lg"
                 >
                   <RefreshCw size={18} /> Generate Script
                 </button>
@@ -290,22 +290,22 @@ export default function Home() {
                     Generated Script
                   </label>
                   {output && (
-                    <button
-                      onClick={copyToClipboard}
-                      className={`flex items-center gap-2 text-xs font-bold px-3 py-1.5 rounded-md transition ${copied ? "bg-green-100 text-green-700" : "bg-blue-50 text-blue-600 hover:bg-blue-100"}`}
-                    >
-                      {copied ? <CheckCircle2 size={14} /> : <Copy size={14} />}
-                      {copied ? "Copied!" : "Copy Script"}
-                    </button>
-                  )}
-                </div>
-                <textarea
-                  readOnly
-                  value={output}
-                  placeholder="Script akan muncul di sini..."
-                  className="w-full flex-grow p-5 font-mono text-[13px] leading-relaxed border border-slate-200 rounded-xl bg-slate-900 text-slate-300 shadow-inner focus:outline-none min-h-[400px]"
-                />
-              </div>
+                <button
+                  onClick={copyToClipboard}
+                  className={`flex items-center gap-2 text-xs font-bold px-3 py-1.5 rounded-md transition ${copied ? "bg-upaz-green/10 text-upaz-green" : "bg-upaz-blue/10 text-upaz-blue hover:bg-upaz-blue/20"}`}
+                >
+                  {copied ? <CheckCircle2 size={14} /> : <Copy size={14} />}
+                  {copied ? "Copied!" : "Copy Script"}
+                </button>
+              )}
+            </div>
+            <textarea
+              readOnly
+              value={output}
+              placeholder="Script akan muncul di sini..."
+              className="w-full flex-grow p-5 font-mono text-[13px] leading-relaxed border border-upaz-blue/20 rounded-xl bg-upaz-blue text-white shadow-inner focus:outline-none min-h-[400px]"
+            />
+          </div>
             </div>
           </div>
 

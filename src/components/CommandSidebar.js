@@ -39,24 +39,24 @@ export default function CommandSidebar({ data }) {
     };
 
     return (
-        <div className="w-full lg:w-80 bg-slate-900 text-slate-300 p-5 rounded-xl border border-slate-700 shadow-xl h-fit sticky top-8">
-            <div className="flex items-center justify-between mb-6 border-b border-slate-700 pb-3">
+        <div className="w-full lg:w-80 bg-upaz-blue text-white p-5 rounded-xl shadow-xl h-fit sticky top-8">
+            <div className="flex items-center justify-between mb-6 border-b border-white/10 pb-3">
                 <div className="flex items-center gap-2 text-white">
-                    <Terminal size={18} className="text-blue-400" />
+                    <Terminal size={18} className="text-upaz-green" />
                     <span className="font-bold text-xs uppercase tracking-tight">Command Hub</span>
                 </div>
 
-                {/* Switcher Tipe OLT di Sidebar */}
-                <div className="flex bg-slate-800 rounded-lg p-1 scale-90">
+                {/* Switcher Tipe OLT di Sidebar (Warna Corporate) */}
+                <div className="flex bg-white/10 rounded-lg p-1 scale-90">
                     <button
                         onClick={() => setOltType('c600')}
-                        className={`px-3 py-1 text-[10px] font-bold rounded ${oltType === 'c600' ? 'bg-blue-600 text-white' : 'text-slate-500'}`}
+                        className={`px-3 py-1 text-[10px] font-bold rounded transition-colors ${oltType === 'c600' ? 'bg-upaz-green text-white' : 'text-white/60 hover:text-white'}`}
                     >
                         C600
                     </button>
                     <button
                         onClick={() => setOltType('c300')}
-                        className={`px-3 py-1 text-[10px] font-bold rounded ${oltType === 'c300' ? 'bg-blue-600 text-white' : 'text-slate-500'}`}
+                        className={`px-3 py-1 text-[10px] font-bold rounded transition-colors ${oltType === 'c300' ? 'bg-upaz-green text-white' : 'text-white/60 hover:text-white'}`}
                     >
                         C300/C320
                     </button>
@@ -71,15 +71,15 @@ export default function CommandSidebar({ data }) {
                         className="w-full text-left group transition-all relative"
                     >
                         <div className="flex justify-between items-center mb-1">
-                            <span className="text-[9px] uppercase tracking-widest text-slate-500 font-bold group-hover:text-blue-400 transition-colors">
+                            <span className="text-[9px] uppercase tracking-widest text-white/60 font-bold group-hover:text-upaz-green transition-colors">
                                 {item.label}
                             </span>
                             {copiedIdx === idx && (
-                                <span className="text-[9px] text-green-500 font-bold animate-pulse">COPIED!</span>
+                                <span className="text-[9px] text-upaz-green font-bold animate-pulse">COPIED!</span>
                             )}
                         </div>
-                        <div className={`p-2 rounded bg-slate-800/50 border ${copiedIdx === idx ? 'border-green-500/50' : 'border-slate-800 group-hover:border-slate-600'} transition-all`}>
-                            <code className="text-[10px] font-mono block break-all leading-tight text-blue-300/80">
+                        <div className={`p-2 rounded bg-white/5 border ${copiedIdx === idx ? 'border-upaz-green/50' : 'border-transparent group-hover:border-white/20'} transition-all`}>
+                            <code className="text-[10px] font-mono block break-all leading-tight text-white/90">
                                 {item.cmd.split('\n')[0]}
                             </code>
                         </div>
