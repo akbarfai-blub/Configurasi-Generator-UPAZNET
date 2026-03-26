@@ -40,40 +40,41 @@ export default function Home() {
     setFormData((prev) => {
       const newData = { ...prev, [name]: value };
 
-      // Auto-Masking / Auto-Separator untuk interfaceOlt
+      // Auto-Separator & Auto-Masking OLT (Lebih Natural & Fleksibel)
       if (name === "interfaceOlt") {
-        let val = value;
-        const prevVal = prev.interfaceOlt || "";
+        // Toleransi angka dan garis miring (slash) agar user bebas melakukan intervensi (contoh ketik 1/1/10 manual)
+        let cleaned = value.replace(/[^\d/]/g, "").replace(/\/+/g, "/");
+        let parts = cleaned.split("/");
 
-        // Mencegah infinite loop backspace saat menghapus '/'
-        // Jika length berkurang 1 dan karakter yang terhapus tepat di posisi '/', potong digit asli
-        if (prevVal.length - val.length === 1 && prevVal[val.length] === '/') {
-          val = val.slice(0, -1);
+        // Maksimal 3 bagian (Rack / Shelf / Port)
+        if (parts.length > 3) {
+          parts = parts.slice(0, 3);
         }
 
-        // Bersihkan seluruh karakter non-angka secara real-time
-        let digits = val.replace(/\D/g, "");
+        // 1. Rack selalu 1 digit
+        if (parts[0] && parts[0].length > 1) {
+          let overflow = parts[0].substring(1);
+          parts[0] = parts[0].substring(0, 1);
+          parts[1] = overflow + (parts[1] || "");
+        }
 
-        let formatted = "";
-        if (digits.length > 0) {
-          if (digits.length === 1) formatted = digits;
-          else if (digits.length === 2) formatted = `${digits[0]}/${digits[1]}`;
-          else if (digits.length === 3) formatted = `${digits[0]}/${digits[1]}/${digits[2]}`;
-          else if (digits.length === 4) {
-            // Handle ambiguitas 4 digit:
-            // Jika digit ke-2 adalah 1 (kemungkinan Slot 10-17), format jadi Rack/Slot(2digit)/Port(1digit)
-            // Selain itu, format jadi Rack/Slot(1digit)/Port(2digit)
-            if (digits[1] === "1" && parseInt(digits[2]) <= 7) {
-              formatted = `${digits[0]}/${digits[1]}${digits[2]}/${digits[3]}`;
-            } else {
-              formatted = `${digits[0]}/${digits[1]}/${digits[2]}${digits[3]}`;
-            }
-          } else if (digits.length >= 5) {
-            // max length 5 digit. contoh 11216 -> 1/12/16
-            formatted = `${digits[0]}/${digits[1]}${digits[2]}/${digits[3]}${digits[4]}`;
+        // 2. Slot/Shelf logic (Maksimum 2 digit jika slot diawali 1 atau 2. Jika 3 dst, slot cuma 1 digit)
+        if (parts[1]) {
+          let maxSlotLength = (parts[1][0] === "1" || parts[1][0] === "2") ? 2 : 1; 
+
+          if (parts[1].length > maxSlotLength) {
+            let overflow = parts[1].substring(maxSlotLength);
+            parts[1] = parts[1].substring(0, maxSlotLength);
+            parts[2] = overflow + (parts[2] || "");
           }
         }
-        newData[name] = formatted;
+
+        // 3. Port logic: maksimal 2 digit
+        if (parts[2] && parts[2].length > 2) {
+          parts[2] = parts[2].substring(0, 2);
+        }
+
+        newData[name] = parts.join("/");
       }
 
       // Auto-fill PPPoE User saat ID Pelanggan diketik
