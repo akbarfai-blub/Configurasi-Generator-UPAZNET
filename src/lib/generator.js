@@ -9,11 +9,44 @@ export const generateC600 = (data) => {
     idPelanggan,
     pppoeUser,
     pppoePass = "150326",
+    selectedC600Type = "standard",
   } = data;
 
   const cleanId = idPelanggan.toString().slice(0, 10);
   const vlan = "134";
+  const vlanBridge = "129"; // VLAN Bridge untuk C600
   const vlanProfile = `v${vlan}`;
+
+  if (selectedC600Type === "bridge") {
+    return `config terminal
+interface gpon_olt-${interfaceOlt}
+onu ${onuId} type ALL sn ${sn}
+!
+interface gpon_onu-${interfaceOlt}:${onuId}
+name ${cleanId}
+description ${cleanId}
+tcont 1 profile kusuma
+gemport 1 tcont 1
+gemport 2 tcont 1
+!
+interface vport-${interfaceOlt}.${onuId}:1
+service-port 1 user-vlan ${vlan} vlan ${vlan}
+!
+interface vport-${interfaceOlt}.${onuId}:2
+service-port 2 user-vlan ${vlanBridge} vlan ${vlanBridge}
+!
+pon-onu-mng gpon_onu-${interfaceOlt}:${onuId}
+service 1 gemport 1 vlan ${vlan}
+service 2 gemport 2 vlan ${vlanBridge}
+security-mgmt 1 state enable mode forward protocol web
+wan-ip 1 ipv4 mode pppoe username ${pppoeUser} password ${pppoePass} vlan-profile v${vlan} host 1
+wan 1 service tr069 internet
+tr069-mgmt 1 state unlock
+tr069-mgmt 1 acs http://acs.upaz.net.id:9999/ validate basic username acs@upaz.net.id password upaz8ersinar
+!
+!
+write`.trim();
+  }
 
   return `conf t
 interface gpon_olt-${interfaceOlt}

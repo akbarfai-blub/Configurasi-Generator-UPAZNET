@@ -22,7 +22,8 @@ export default function Home() {
     idPelanggan: "",
     pppoeUser: "",
     pppoePass: "150326", // Default password
-    selectedVlan: '100' // Default VLAN untuk UNB
+    selectedVlanType: "100", // Default VLAN untuk UNB
+    selectedC600Type: "standard" // Default konfigurasi C600
   });
 
   const [output, setOutput] = useState("");
@@ -150,28 +151,39 @@ export default function Home() {
                 onSubmit={handleGenerate}
                 className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-5"
               >
-                {/* Dropdown Khusus UNB */}
-                {configType === 'unb' && (
+                {/* Opsi Konfigurasi Dinamis (UNR C600 / UNB) */}
+                {(configType === 'standard' || configType === 'unb') && (
                   <div className="space-y-1 mb-4 pb-4 border-b">
-                    <label className="text-xs font-bold uppercase tracking-wider text-blue-600">Opsi Konfigurasi UNB</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                      {configType === 'standard' ? 'Tipe Konfigurasi C600' : 'Opsi Konfigurasi UNB'}
+                    </label>
                     <select
-                      name="selectedVlanType"
-                      value={formData.selectedVlanType}
+                      name={configType === 'standard' ? "selectedC600Type" : "selectedVlanType"}
+                      value={configType === 'standard' ? formData.selectedC600Type : formData.selectedVlanType}
                       onChange={handleChange}
                       className="w-full p-2.5 border-2 border-blue-200 bg-blue-50 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition font-bold text-sm"
                     >
-                      <optgroup label="Standard (PPPoE)">
-                        <option value="100">UNB V100</option>
-                        <option value="1600">UNB V1600 (AL KHOIRIYAH)</option>
-                        <option value="1501">UNB V1501 (BOLO)</option>
-                        <option value="602">UNB V602 (ALNET)</option>
-                        <option value="903">UNB V903 (LEXXA)</option>
-                        <option value="511">UNB V511 (CADAR)</option>
-                      </optgroup>
-                      <optgroup label="Bridge Mode">
-                        <option value="bridge_unb">UNB Bridge</option>
-                        <option value="bridge_bolo">Bridge Bolo</option>
-                      </optgroup>
+                      {configType === 'standard' ? (
+                        <>
+                          <option value="standard">Standard (PPPoE)</option>
+                          <option value="bridge">Bridge Mode</option>
+                        </>
+                      ) : (
+                        <>
+                          <optgroup label="Standard (PPPoE)">
+                            <option value="100">UNB V100</option>
+                            <option value="1600">UNB V1600 (AL KHOIRIYAH)</option>
+                            <option value="1501">UNB V1501 (BOLO)</option>
+                            <option value="602">UNB V602 (ALNET)</option>
+                            <option value="903">UNB V903 (LEXXA)</option>
+                            <option value="511">UNB V511 (CADAR)</option>
+                          </optgroup>
+                          <optgroup label="Bridge Mode">
+                            <option value="bridge_unb">UNB Bridge</option>
+                            <option value="bridge_bolo">Bridge Bolo</option>
+                          </optgroup>
+                        </>
+                      )}
                     </select>
                   </div>
                 )}
