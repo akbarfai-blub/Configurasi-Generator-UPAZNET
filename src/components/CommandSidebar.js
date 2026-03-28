@@ -16,6 +16,8 @@ export default function CommandSidebar({ data }) {
         { label: "Cek Redaman Pelanggan", cmd: `sho pon power attenuation gpon_onu-${iface}:${onu}` },
         { label: "Reboot Modem", cmd: `conf t\npon-onu-mng gpon_onu-${iface}:${onu}\nreboot` },
         { label: "Hapus ONU", cmd: `conf t\ninterface gpon_olt-${iface}\nno onu ${onu}` },
+        { label: "Aktivasi Port OLT", cmd: `conf t\ninterface gpon_olt-${iface}\nno shutdown` },
+        { label: "Cek Status 1 Port", cmd: `sho gpon onu state gpon_olt-${iface}` },
         { label: "Cek SN Belum Config", cmd: "sho pon onu un" },
         { label: "Detail Info Pelanggan", cmd: `sho gpon onu detail-info gpon_onu-${iface}:${onu}` },
     ] : [
@@ -25,11 +27,15 @@ export default function CommandSidebar({ data }) {
         { label: "Reboot Modem", cmd: `conf t\npon-onu-mng gpon-onu_${iface}:${onu}\nreboot` },
         { label: "Restore Factory", cmd: `conf t\npon-onu-mng gpon-onu_${iface}:${onu}\nrestore factory` },
         { label: "Ganti SN Modem", cmd: `conf t\ninterface gpon-onu_${iface}:${onu}\nregistration-method sn ${sn}` },
+        { label: "Hapus ONU (OLT)", cmd: `conf t\ninterface gpon-olt_${iface}\nno onu ${onu}` },
+        { label: "Aktivasi Port OLT", cmd: `conf t\ninterface gpon-olt_${iface}\nno shutdown` },
+        { label: "Cek Status 1 Port", cmd: `show gpon onu state gpon-olt_${iface}` },
         { label: "Cek Running Config", cmd: `show run interface gpon-onu_${iface}:${onu}` },
         { label: "Cek WAN Pelanggan", cmd: `show onu running config gpon-onu_${iface}:${onu}` },
         { label: "Cek SN Belum Config", cmd: "show gpon onu uncfg" },
-        { label: "Cek IP ONU", cmd: `show gpon remote-onu ip-host gpon-onu_${iface}:${onu}` },
+        { label: "Detail Info Pelanggan", cmd: `show gpon onu detail-info gpon-onu_${iface}:${onu}` },
         { label: "Cek Interface by SN", cmd: `show gpon onu by sn ${sn}` },
+        { label: "Cek IP ONU", cmd: `show gpon remote-onu ip-host gpon-onu_${iface}:${onu}` },
     ];
 
     const handleCopy = (cmd, idx) => {
@@ -46,7 +52,7 @@ export default function CommandSidebar({ data }) {
                     <span className="font-bold text-xs uppercase tracking-tight">Command Hub</span>
                 </div>
 
-                {/* Switcher Tipe OLT di Sidebar (Warna Corporate) */}
+                {/* Switcher Tipe OLT di Sidebar */}
                 <div className="flex bg-white/10 rounded-lg p-1 scale-90">
                     <button
                         onClick={() => setOltType('c600')}
@@ -79,8 +85,8 @@ export default function CommandSidebar({ data }) {
                             )}
                         </div>
                         <div className={`p-2 rounded bg-white/5 border ${copiedIdx === idx ? 'border-upaz-green/50' : 'border-transparent group-hover:border-white/20'} transition-all`}>
-                            <code className="text-[10px] font-mono block break-all leading-tight text-white/90">
-                                {item.cmd.split('\n')[0]}
+                            <code className="text-[10px] font-mono block break-all leading-tight text-white/90 whitespace-pre-wrap">
+                                {item.cmd}
                             </code>
                         </div>
                     </button>
