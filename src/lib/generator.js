@@ -269,3 +269,15 @@ exit
 exit
 write`.trim();
 };
+
+/**
+ * Logic generator khusus untuk MikroTik PPPoE Secret
+ */
+export const generateMikrotikSecret = (data) => {
+  const { idPelanggan, namaPelanggan, pppoeUser, pppoePass, paketLayanan } = data;
+  
+  // Format Comment: "ID-NAMA"
+  const commentText = namaPelanggan ? `${idPelanggan}-${namaPelanggan.toUpperCase()}` : idPelanggan;
+
+  return `/ppp secret add name=${pppoeUser} password=${pppoePass} service=pppoe profile="${paketLayanan}" comment="${commentText}"`;
+};

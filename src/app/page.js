@@ -7,6 +7,7 @@ import {
   generateUBL,
   generateUGR,
   generateUNB,
+  generateMikrotikSecret,
 } from "@/lib/generator";
 import { Copy, RefreshCw, CheckCircle2 } from "lucide-react";
 import CommandSidebar from "@/components/CommandSidebar";
@@ -20,19 +21,24 @@ export default function Home() {
     onuId: "",
     sn: "",
     idPelanggan: "",
+    namaPelanggan: "",
     pppoeUser: "",
     pppoePass: "150326", // Default password
+    paketLayanan: "KUSUMA 1", // Default Paket Layanan
     selectedVlanType: "100", // Default VLAN untuk UNB
     selectedC600Type: "standard" // Default konfigurasi C600
   });
 
   const [output, setOutput] = useState("");
   const [copied, setCopied] = useState(false);
+  const [mikrotikOutput, setMikrotikOutput] = useState("");
+  const [copiedMikrotik, setCopiedMikrotik] = useState(false);
 
   // Fungsi untuk handle perpindahan menu/tab
   const handleTabChange = (type) => {
     setConfigType(type);
     setOutput(""); // Bersihkan output saat pindah menu
+    setMikrotikOutput("");
   };
 
   const handleChange = (e) => {
@@ -60,7 +66,7 @@ export default function Home() {
 
         // 2. Slot/Shelf logic (Maksimum 2 digit jika slot diawali 1 atau 2. Jika 3 dst, slot cuma 1 digit)
         if (parts[1]) {
-          let maxSlotLength = (parts[1][0] === "1" || parts[1][0] === "2") ? 2 : 1; 
+          let maxSlotLength = (parts[1][0] === "1" || parts[1][0] === "2") ? 2 : 1;
 
           if (parts[1].length > maxSlotLength) {
             let overflow = parts[1].substring(maxSlotLength);
@@ -88,36 +94,44 @@ export default function Home() {
 
   const handleGenerate = (e) => {
     e.preventDefault();
-    let result = "";
+    let resultOlt = "";
+    let resultMikrotik = "";
 
     switch (configType) {
       case "standard":
-        result = generateC600(formData);
+        resultOlt = generateC600(formData);
+        resultMikrotik = generateMikrotikSecret(formData);
         break;
       case "uho":
-        result = generateUHO(formData);
+        resultOlt = generateUHO(formData);
         break;
       case "ubl":
-        result = generateUBL(formData);
+        resultOlt = generateUBL(formData);
         break;
       case "ugr":
-        result = generateUGR(formData);
+        resultOlt = generateUGR(formData);
         break;
       case "unb":
-        result = generateUNB(formData);
+        resultOlt = generateUNB(formData);
         break;
       default:
-        result = "";
+        resultOlt = "";
     }
 
-    setOutput(result);
+    setOutput(resultOlt);
+    setMikrotikOutput(resultMikrotik);
   };
 
-  const copyToClipboard = () => {
-    if (!output) return;
-    navigator.clipboard.writeText(output);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const copyToClipboard = (text, type = "olt") => {
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    if (type === "mikrotik") {
+      setCopiedMikrotik(true);
+      setTimeout(() => setCopiedMikrotik(false), 2000);
+    } else {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   return (
@@ -134,35 +148,35 @@ export default function Home() {
 
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="flex-grow space-y-6">
-            <div className="flex bg-gray-200 p-1 rounded-lg w-full overflow-x-auto no-scrollbar">
+            <div className="flex bg-slate-100 p-1 rounded-xl w-full overflow-x-auto no-scrollbar gap-1">
               {["standard", "unb", "uho", "ubl", "ugr"].map((type) => (
                 <button
                   key={type}
                   onClick={() => handleTabChange(type)}
-                  className={`flex-1 py-2 px-4 text-xs font-bold rounded-md transition uppercase tracking-wider ${configType === type ? "bg-white shadow text-upaz-blue" : "text-gray-500 hover:text-gray-700"}`}
+                  className={`flex-1 py-2 px-4 text-xs uppercase tracking-wider transition-all ${configType === type ? "bg-upaz-blue text-white shadow-md font-bold rounded-lg" : "text-slate-500 hover:text-upaz-blue hover:bg-white font-medium rounded-lg"}`}
                 >
                   {type === "standard" ? "UNR C600" : type}
                 </button>
               ))}
             </div>
 
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 items-start">
               {/* Form Section */}
               <form
                 onSubmit={handleGenerate}
-                className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-5"
+                className="bg-white p-6 rounded-2xl shadow-lg border border-slate-200 space-y-5 h-fit sticky top-8"
               >
                 {/* Opsi Konfigurasi Dinamis (UNR C600 / UNB) */}
                 {(configType === 'standard' || configType === 'unb') && (
                   <div className="space-y-1 mb-4 pb-4 border-b border-slate-200">
-                    <label className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-600">
                       Tipe Konfigurasi
                     </label>
                     <select
                       name={configType === 'standard' ? "selectedC600Type" : "selectedVlanType"}
                       value={configType === 'standard' ? formData.selectedC600Type : formData.selectedVlanType}
                       onChange={handleChange}
-                      className="w-full p-2.5 border-2 border-blue-200 bg-blue-50 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition font-bold text-sm text-slate-800"
+                      className="w-full p-2.5 border border-slate-300 bg-slate-50 rounded-lg focus:ring-2 focus:ring-upaz-green focus:border-upaz-green outline-none transition font-bold text-sm text-slate-800"
                     >
                       {configType === 'standard' ? (
                         <>
@@ -201,7 +215,7 @@ export default function Home() {
                       onChange={handleChange}
                       placeholder="1/4/2"
                       inputMode="numeric"
-                      className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-upaz-blue/50 focus:border-upaz-blue outline-none transition"
+                      className="w-full p-2.5 border border-slate-300 bg-slate-50 rounded-lg focus:ring-2 focus:ring-upaz-green focus:border-upaz-green outline-none transition"
                     />
                   </div>
                   <div className="space-y-1">
@@ -214,7 +228,7 @@ export default function Home() {
                       value={formData.onuId}
                       onChange={handleChange}
                       placeholder="88"
-                      className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-upaz-blue/50 focus:border-upaz-blue outline-none transition"
+                      className="w-full p-2.5 border border-slate-300 bg-slate-50 rounded-lg focus:ring-2 focus:ring-upaz-green focus:border-upaz-green outline-none transition"
                     />
                   </div>
                 </div>
@@ -229,26 +243,66 @@ export default function Home() {
                     value={formData.sn}
                     onChange={handleChange}
                     placeholder="ZTEGD2327302"
-                    className="w-full p-2.5 border rounded-lg font-mono focus:ring-2 focus:ring-upaz-blue/50 focus:border-upaz-blue outline-none transition"
+                    className="w-full p-2.5 border border-slate-300 bg-slate-50 rounded-lg font-mono focus:ring-2 focus:ring-upaz-green focus:border-upaz-green outline-none transition"
                   />
                 </div>
 
                 <div className="space-y-1 border-t pt-4">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-                    ID Pelanggan
-                  </label>
-                  <input
-                    required
-                    name="idPelanggan"
-                    value={formData.idPelanggan}
-                    onChange={handleChange}
-                    maxLength={10}
-                    placeholder="1010112678"
-                    className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-upaz-blue/50 focus:border-upaz-blue outline-none transition"
-                  />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                        ID Pelanggan
+                      </label>
+                      <input
+                        required
+                        name="idPelanggan"
+                        value={formData.idPelanggan}
+                        onChange={handleChange}
+                        maxLength={10}
+                        placeholder="1010112678"
+                        className="w-full p-2.5 border border-slate-300 bg-slate-50 rounded-lg focus:ring-2 focus:ring-upaz-green focus:border-upaz-green outline-none transition"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                        Nama Pelanggan
+                      </label>
+                      <input
+                        name="namaPelanggan"
+                        value={formData.namaPelanggan}
+                        onChange={handleChange}
+                        placeholder="BUDI SANTOSO"
+                        className="w-full p-2.5 border border-slate-300 bg-slate-50 rounded-lg focus:ring-2 focus:ring-upaz-green focus:border-upaz-green outline-none transition uppercase"
+                      />
+                    </div>
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                      Paket Layanan
+                    </label>
+                    <select
+                      name="paketLayanan"
+                      value={formData.paketLayanan}
+                      onChange={handleChange}
+                      className="w-full p-2.5 border border-slate-300 bg-slate-50 rounded-lg focus:ring-2 focus:ring-upaz-green focus:border-upaz-green outline-none transition font-semibold text-sm text-slate-800"
+                    >
+                      <optgroup label="Paket Kusuma">
+                        <option value="KUSUMA 1">KUSUMA 1</option>
+                        <option value="KUSUMA 2">KUSUMA 2</option>
+                        <option value="KUSUMA 3">KUSUMA 3</option>
+                        <option value="KUSUMA 4">KUSUMA 4</option>
+                      </optgroup>
+                      <optgroup label="Paket Puspa">
+                        <option value="PUSPA 1">PUSPA 1</option>
+                        <option value="PUSPA 2">PUSPA 2</option>
+                        <option value="PUSPA 3">PUSPA 3</option>
+                        <option value="PUSPA 4">PUSPA 4</option>
+                      </optgroup>
+                    </select>
+                  </div>
                   <div className="space-y-1">
                     <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
                       PPPoE User
@@ -258,7 +312,7 @@ export default function Home() {
                       name="pppoeUser"
                       value={formData.pppoeUser}
                       onChange={handleChange}
-                      className="w-full p-2.5 border bg-gray-50 rounded-lg focus:ring-2 focus:ring-upaz-blue/50 focus:border-upaz-blue outline-none transition"
+                      className="w-full p-2.5 border border-slate-300 bg-slate-50 rounded-lg focus:ring-2 focus:ring-upaz-green focus:border-upaz-green outline-none transition"
                     />
                   </div>
                   <div className="space-y-1">
@@ -270,42 +324,45 @@ export default function Home() {
                       name="pppoePass"
                       value={formData.pppoePass}
                       onChange={handleChange}
-                      className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-upaz-blue/50 focus:border-upaz-blue outline-none transition"
+                      className="w-full p-2.5 border border-slate-300 bg-slate-50 rounded-lg focus:ring-2 focus:ring-upaz-green focus:border-upaz-green outline-none transition"
                     />
                   </div>
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full bg-upaz-green text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-upaz-green/90 transition active:scale-[0.98] shadow-md hover:shadow-lg"
+                  className="w-full bg-upaz-green text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#008c44] transition-colors shadow-md hover:shadow-lg"
                 >
                   <RefreshCw size={18} /> Generate Script
                 </button>
               </form>
 
-              {/* Output Section */}
-              <div className="flex flex-col h-full">
-                <div className="flex justify-between items-center mb-2">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-                    Generated Script
-                  </label>
-                  {output && (
-                <button
-                  onClick={copyToClipboard}
-                  className={`flex items-center gap-2 text-xs font-bold px-3 py-1.5 rounded-md transition ${copied ? "bg-upaz-green/10 text-upaz-green" : "bg-upaz-blue/10 text-upaz-blue hover:bg-upaz-blue/20"}`}
-                >
-                  {copied ? <CheckCircle2 size={14} /> : <Copy size={14} />}
-                  {copied ? "Copied!" : "Copy Script"}
-                </button>
-              )}
-            </div>
-            <textarea
-              readOnly
-              value={output}
-              placeholder="Script akan muncul di sini..."
-              className="w-full flex-grow p-5 font-mono text-[13px] leading-relaxed border border-upaz-blue/20 rounded-xl bg-upaz-blue text-white shadow-inner focus:outline-none min-h-[400px]"
-            />
-          </div>
+              {/* Output Section (2 Boxes) */}
+              <div className="flex-grow flex flex-col gap-4">
+                {/* Box 1: OLT Script */}
+                <div className="w-full bg-upaz-blue p-5 rounded-xl shadow-xl border border-blue-900/50 flex flex-col flex-grow" style={{ minHeight: '320px' }}>
+                  <div className="flex justify-between items-center mb-4 border-b border-blue-800 pb-2">
+                    <span className="font-bold text-xs flex items-center gap-2 uppercase tracking-tight text-white"><CheckCircle2 size={14} className="text-upaz-green" /> Script OLT (ZTE)</span>
+                    <button onClick={() => copyToClipboard(output, "olt")} className={`text-xs font-bold transition flex items-center gap-1 ${copied ? "text-white" : "text-upaz-green hover:text-white"}`}>
+                      {copied ? "COPIED!" : "COPY"}
+                    </button>
+                  </div>
+                  <pre className="font-mono text-[13px] whitespace-pre-wrap leading-relaxed text-blue-100 overflow-y-auto flex-grow">{output || 'Script OLT akan muncul di sini...'}</pre>
+                </div>
+
+                {/* Box 2: MikroTik Script */}
+                {configType === "standard" && (
+                  <div className="w-full bg-upaz-blue p-5 rounded-xl shadow-xl border border-blue-900/50 flex flex-col flex-grow" style={{ minHeight: '130px' }}>
+                    <div className="flex justify-between items-center mb-4 border-b border-blue-800 pb-2">
+                      <span className="font-bold text-xs flex items-center gap-2 uppercase tracking-tight text-white"><CheckCircle2 size={14} className="text-upaz-green" /> Script MikroTik (PPPoE Secret)</span>
+                      <button onClick={() => copyToClipboard(mikrotikOutput, "mikrotik")} className={`text-xs font-bold transition flex items-center gap-1 ${copiedMikrotik ? "text-white" : "text-upaz-green hover:text-white"}`}>
+                        {copiedMikrotik ? "COPIED!" : "COPY"}
+                      </button>
+                    </div>
+                    <pre className="font-mono text-[13px] whitespace-pre-wrap leading-relaxed text-blue-100 overflow-y-auto">{mikrotikOutput || 'Script MikroTik akan muncul di sini...'}</pre>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
