@@ -12,29 +12,30 @@ export default function CommandSidebar({ data }) {
 
     // Mapping Perintah berdasarkan Tipe OLT
     const commands = oltType === 'c600' ? [
+        { label: "Detail Info Pelanggan", cmd: `sho gpon onu detail-info gpon_onu-${iface}:${onu}` },
         { label: "Cek Redaman 1 Port", cmd: `sho pon power onu-rx gpon_olt-${iface}` },
+        { label: "Cek Status 1 Port", cmd: `sho gpon onu state gpon_olt-${iface}` },
         { label: "Cek Redaman Pelanggan", cmd: `sho pon power attenuation gpon_onu-${iface}:${onu}` },
+        { label: "Cek Interface by SN", cmd: `sho gpon onu by sn ${sn}` },
+        { label: "Cek SN Belum Config", cmd: "sho pon onu un" },
         { label: "Reboot Modem", cmd: `conf t\npon-onu-mng gpon_onu-${iface}:${onu}\nreboot` },
         { label: "Hapus ONU", cmd: `conf t\ninterface gpon_olt-${iface}\nno onu ${onu}` },
         { label: "Aktivasi Port OLT", cmd: `conf t\ninterface gpon_olt-${iface}\nno shutdown` },
-        { label: "Cek Status 1 Port", cmd: `sho gpon onu state gpon_olt-${iface}` },
-        { label: "Cek SN Belum Config", cmd: "sho pon onu un" },
-        { label: "Detail Info Pelanggan", cmd: `sho gpon onu detail-info gpon_onu-${iface}:${onu}` },
     ] : [
         // MODE C300 / C320
+        { label: "Detail Info Pelanggan", cmd: `show gpon onu detail-info gpon-onu_${iface}:${onu}` },
         { label: "Cek Redaman 1 Port", cmd: `show pon power onu-rx gpon-olt_${iface}` },
+        { label: "Cek Status 1 Port", cmd: `show gpon onu state gpon-olt_${iface}` },
         { label: "Cek Redaman Pelanggan", cmd: `show pon power attenuation gpon-onu_${iface}:${onu}` },
+        { label: "Cek SN Belum Config", cmd: "show gpon onu uncfg" },
+        { label: "Cek Interface by SN", cmd: `show gpon onu by sn ${sn}` },
         { label: "Reboot Modem", cmd: `conf t\npon-onu-mng gpon-onu_${iface}:${onu}\nreboot` },
         { label: "Restore Factory", cmd: `conf t\npon-onu-mng gpon-onu_${iface}:${onu}\nrestore factory` },
         { label: "Ganti SN Modem", cmd: `conf t\ninterface gpon-onu_${iface}:${onu}\nregistration-method sn ${sn}` },
         { label: "Hapus ONU (OLT)", cmd: `conf t\ninterface gpon-olt_${iface}\nno onu ${onu}` },
         { label: "Aktivasi Port OLT", cmd: `conf t\ninterface gpon-olt_${iface}\nno shutdown` },
-        { label: "Cek Status 1 Port", cmd: `show gpon onu state gpon-olt_${iface}` },
         { label: "Cek Running Config", cmd: `show run interface gpon-onu_${iface}:${onu}` },
         { label: "Cek WAN Pelanggan", cmd: `show onu running config gpon-onu_${iface}:${onu}` },
-        { label: "Cek SN Belum Config", cmd: "show gpon onu uncfg" },
-        { label: "Detail Info Pelanggan", cmd: `show gpon onu detail-info gpon-onu_${iface}:${onu}` },
-        { label: "Cek Interface by SN", cmd: `show gpon onu by sn ${sn}` },
         { label: "Cek IP ONU", cmd: `show gpon remote-onu ip-host gpon-onu_${iface}:${onu}` },
     ];
 
