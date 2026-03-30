@@ -100,7 +100,6 @@ export default function Home() {
     switch (configType) {
       case "standard":
         resultOlt = generateC600(formData);
-        resultMikrotik = generateMikrotikSecret(formData);
         break;
       case "uho":
         resultOlt = generateUHO(formData);
@@ -117,6 +116,9 @@ export default function Home() {
       default:
         resultOlt = "";
     }
+
+    // Selalu generate Mikrotik Script terlepas dari tipe config OLT
+    resultMikrotik = generateMikrotikSecret(formData);
 
     setOutput(resultOlt);
     setMikrotikOutput(resultMikrotik);
@@ -169,7 +171,7 @@ export default function Home() {
                 {/* Opsi Konfigurasi Dinamis (UNR C600 / UNB) */}
                 {(configType === 'standard' || configType === 'unb') && (
                   <div className="space-y-1 mb-4 pb-4 border-b border-slate-200">
-                    <label className="text-xs font-bold uppercase tracking-wider text-slate-600">
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-800">
                       Tipe Konfigurasi
                     </label>
                     <select
@@ -247,7 +249,13 @@ export default function Home() {
                   />
                 </div>
 
-                <div className="space-y-1 border-t pt-4">
+                <div className="space-y-4 border-t pt-5 mt-2">
+                  <div className="flex items-center gap-2 mb-2">
+                    {/* <CheckCircle2 size={16} className="text-upaz-green" /> */}
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-800">
+                      Konfigurasi PPPoE Secret & Pelanggan
+                    </label>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
@@ -278,6 +286,7 @@ export default function Home() {
                   </div>
                 </div>
 
+                {/* Paket Layanan */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-1">
                     <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
@@ -351,17 +360,15 @@ export default function Home() {
                 </div>
 
                 {/* Box 2: MikroTik Script */}
-                {configType === "standard" && (
-                  <div className="w-full bg-upaz-blue p-5 rounded-xl shadow-xl border border-blue-900/50 flex flex-col flex-grow" style={{ minHeight: '130px' }}>
-                    <div className="flex justify-between items-center mb-4 border-b border-blue-800 pb-2">
-                      <span className="font-bold text-xs flex items-center gap-2 uppercase tracking-tight text-white"><CheckCircle2 size={14} className="text-upaz-green" /> Script MikroTik (PPPoE Secret)</span>
-                      <button onClick={() => copyToClipboard(mikrotikOutput, "mikrotik")} className={`text-xs font-bold transition flex items-center gap-1 ${copiedMikrotik ? "text-white" : "text-upaz-green hover:text-white"}`}>
-                        {copiedMikrotik ? "COPIED!" : "COPY"}
-                      </button>
-                    </div>
-                    <pre className="font-mono text-[13px] whitespace-pre-wrap leading-relaxed text-blue-100 overflow-y-auto">{mikrotikOutput || 'Script MikroTik akan muncul di sini...'}</pre>
+                <div className="w-full bg-upaz-blue p-5 rounded-xl shadow-xl border border-blue-900/50 flex flex-col flex-grow" style={{ minHeight: '130px' }}>
+                  <div className="flex justify-between items-center mb-4 border-b border-blue-800 pb-2">
+                    <span className="font-bold text-xs flex items-center gap-2 uppercase tracking-tight text-white"><CheckCircle2 size={14} className="text-upaz-green" /> Script MikroTik (PPPoE Secret)</span>
+                    <button onClick={() => copyToClipboard(mikrotikOutput, "mikrotik")} className={`text-xs font-bold transition flex items-center gap-1 ${copiedMikrotik ? "text-white" : "text-upaz-green hover:text-white"}`}>
+                      {copiedMikrotik ? "COPIED!" : "COPY"}
+                    </button>
                   </div>
-                )}
+                  <pre className="font-mono text-[13px] whitespace-pre-wrap leading-relaxed text-blue-100 overflow-y-auto">{mikrotikOutput || 'Script MikroTik akan muncul di sini...'}</pre>
+                </div>
               </div>
             </div>
           </div>

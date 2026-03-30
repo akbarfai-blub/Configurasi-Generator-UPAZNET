@@ -18,6 +18,8 @@ export const generateC600 = (data) => {
   const vlanProfile = `v${vlan}`;
 
   if (selectedC600Type === "bridge") {
+    // Memanggil kredensial server ACS dari file .env.local 
+    // Menerapkan security best practice agar username & password tidak ter-hardcode di kode
     return `config terminal
 interface gpon_olt-${interfaceOlt}
 onu ${onuId} type ALL sn ${sn}
@@ -42,12 +44,14 @@ security-mgmt 1 state enable mode forward protocol web
 wan-ip 1 ipv4 mode pppoe username ${pppoeUser} password ${pppoePass} vlan-profile v${vlan} host 1
 wan 1 service tr069 internet
 tr069-mgmt 1 state unlock
-tr069-mgmt 1 acs http://acs.upaz.net.id:9999/ validate basic username acs@upaz.net.id password upaz8ersinar
+tr069-mgmt 1 acs http://acs.upaz.net.id:9999/ validate basic username ${process.env.NEXT_PUBLIC_ACS_USER} password ${process.env.NEXT_PUBLIC_ACS_PASS}
 !
 !
 write`.trim();
   }
 
+  // Memanggil kredensial server ACS dari file .env.local 
+  // Menerapkan security best practice agar username & password tidak ter-hardcode di kode
   return `conf t
 interface gpon_olt-${interfaceOlt}
 onu ${onuId} type ALL sn ${sn}
@@ -67,7 +71,7 @@ security-mgmt 1 state enable mode forward protocol web
 wan-ip 1 ipv4 mode pppoe username ${pppoeUser} password ${pppoePass} vlan-profile ${vlanProfile} host 1
 wan 1 service tr069 internet
 tr069-mgmt 1 state unlock
-tr069-mgmt 1 acs http://acs.upaz.net.id:9999/ validate basic username acs@upaz.net.id password upaz8ersinar
+tr069-mgmt 1 acs http://acs.upaz.net.id:9999/ validate basic username ${process.env.NEXT_PUBLIC_ACS_USER} password ${process.env.NEXT_PUBLIC_ACS_PASS}
 exit
 exit
 write`.trim();
