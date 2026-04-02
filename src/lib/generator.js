@@ -88,17 +88,17 @@ export const generateUHO = (data) => {
   const vlanProfile = `v${vlan}`;
 
   return `config terminal
-interface gpon-olt_${interfaceOlt}
+interface gpon_olt-${interfaceOlt}
 onu ${onuId} type ALL sn ${sn}
 exit
-interface gpon-onu_${interfaceOlt}:${onuId}
+interface gpon_onu-${interfaceOlt}:${onuId}
 name ${cleanId}
 description ${cleanId}
 tcont 1 profile kusuma
 gemport 1 tcont 1
 service-port 1 vport 1 user-vlan ${vlan} vlan ${vlan}
 exit
-pon-onu-mng gpon-onu_${interfaceOlt}:${onuId}
+pon-onu-mng gpon_onu-${interfaceOlt}:${onuId}
 service 1 gemport 1 vlan ${vlan}
 security-mgmt 1 state enable mode forward protocol web
 wan-ip 1 mode pppoe username ${pppoeUser} password ${pppoePass} vlan-profile ${vlanProfile} host 1
@@ -117,17 +117,17 @@ export const generateUBL = (data) => {
   const vlan = "1002"; // VLAN khusus UBL
 
   return `config terminal
-interface gpon-olt_${interfaceOlt}
+interface gpon_olt-${interfaceOlt}
 onu ${onuId} type ALL sn ${sn}
 exit
-interface gpon-onu_${interfaceOlt}:${onuId}
+interface gpon_onu-${interfaceOlt}:${onuId}
 name ${cleanId}
 description ${cleanId}
 tcont 1 profile kusuma
 gemport 1 tcont 1
 service-port 1 vport 1 user-vlan ${vlan} vlan ${vlan}
 exit
-pon-onu-mng gpon-onu_${interfaceOlt}:${onuId}
+pon-onu-mng gpon_onu-${interfaceOlt}:${onuId}
 service 1 gemport 1 vlan ${vlan}
 security-mgmt 1 state enable mode forward protocol web
 wan-ip 1 mode pppoe username ${pppoeUser} password ${pppoePass} vlan-profile 1 host 1
@@ -145,17 +145,17 @@ export const generateUGR = (data) => {
   const cleanId = idPelanggan.toString().slice(0, 10);
   const vlan = "1000"; // VLAN khusus UGR
 
-  return `interface gpon-olt_${interfaceOlt}
+  return `interface gpon_olt-${interfaceOlt}
 onu ${onuId} type ALL sn ${sn}
 exit
-interface gpon-onu_${interfaceOlt}:${onuId}
+interface gpon_onu-${interfaceOlt}:${onuId}
 name ${cleanId}
 description ${cleanId}
 tcont 1 profile kusuma
 gemport 1 tcont 1
 service-port 1 vport 1 user-vlan ${vlan} vlan ${vlan}
 exit
-pon-onu-mng gpon-onu_${interfaceOlt}:${onuId}
+pon-onu-mng gpon_onu-${interfaceOlt}:${onuId}
 service 1 gemport 1 vlan ${vlan}
 security-mgmt 1 state enable mode forward protocol web
 wan-ip 1 mode pppoe username ${pppoeUser} password ${pppoePass} vlan-profile v${vlan} host 1
@@ -171,7 +171,6 @@ write`.trim();
 export const generateUNB = (data) => {
   const { interfaceOlt, onuId, sn, idPelanggan, pppoeUser, pppoePass, selectedVlanType } = data;
   const cleanId = idPelanggan.toString().slice(0, 10);
-  const ifaceUnderscore = interfaceOlt.replace(/\//g, '_');
 
   // Mapping Detail untuk setiap jenis UNB
   const unbConfigs = {
@@ -190,10 +189,10 @@ export const generateUNB = (data) => {
   // LOGIK UNB BRIDGE STANDAR
   if (conf.type === "bridge") {
     return `conf t
-interface gpon-olt_${interfaceOlt}
+interface gpon_olt-${interfaceOlt}
 onu ${onuId} type ALL sn ${sn}
 exit
-interface gpon-onu_${ifaceUnderscore}:${onuId}
+interface gpon_onu-${interfaceOlt}:${onuId}
 name ${cleanId}
 description ${cleanId}_bridge
 sn-bind enable sn
@@ -203,7 +202,7 @@ gemport 2 tcont 1
 service-port 1 vport 1 user-vlan ${conf.vlan1} vlan ${conf.vlan1}
 service-port 2 vport 2 user-vlan ${conf.vlan2} vlan ${conf.vlan2}
 exit
-pon-onu-mng gpon-onu_${ifaceUnderscore}:${onuId}
+pon-onu-mng gpon_onu-${interfaceOlt}:${onuId}
 service ${conf.vlan1} gemport 1 vlan ${conf.vlan1}
 service pppoe gemport 2 vlan ${conf.vlan2}
 vlan port eth_0/1 mode tag vlan ${conf.vlan1}
@@ -220,10 +219,10 @@ write`.trim();
   // LOGIK UNB BRIDGE BOLO
   if (conf.type === "bridge_bolo") {
     return `conf t
-interface gpon-olt_${interfaceOlt}
+interface gpon_olt-${interfaceOlt}
 onu ${onuId} type ALL sn ${sn}
 exit
-interface gpon-onu_${ifaceUnderscore}:${onuId}
+interface gpon_onu-${interfaceOlt}:${onuId}
 name ${cleanId}
 description ${cleanId}
 sn-bind enable sn
@@ -233,7 +232,7 @@ gemport 2 tcont 1
 service-port 1 vport 1 user-vlan ${conf.vlan1} vlan ${conf.vlan1}
 service-port 2 vport 2 user-vlan ${conf.vlan2} vlan ${conf.vlan2}
 exit
-pon-onu-mng gpon-onu_${ifaceUnderscore}:${onuId}
+pon-onu-mng gpon_onu-${interfaceOlt}:${onuId}
 service ${conf.vlan1} gemport 1 vlan ${conf.vlan1}
 service pppoe gemport 2 vlan ${conf.vlan2}
 vlan port eth_0/1 mode hybrid def-vlan ${conf.vlan1}
@@ -252,10 +251,10 @@ write`.trim();
   const isLexxa = conf.type === "lexxa";
 
   return `conf t
-interface gpon-olt_${interfaceOlt}
+interface gpon_olt-${interfaceOlt}
 onu ${onuId} type ${onuType} sn ${sn}
 exit
-interface gpon-onu_${ifaceUnderscore}:${onuId}
+interface gpon_onu-${interfaceOlt}:${onuId}
 name ${cleanId}
 description ${cleanId}
 sn-bind enable sn
@@ -264,7 +263,7 @@ gemport 1 name PPPOE tcont 1
 ${isLexxa ? "encrypt 1 enable downstream\n" : ""}switchport mode hybrid vport 1
 service-port 1 vport 1 user-vlan ${conf.vlan} vlan ${conf.vlan}
 exit
-pon-onu-mng gpon-onu_${ifaceUnderscore}:${onuId}
+pon-onu-mng gpon_onu-${interfaceOlt}:${onuId}
 service ServiceName gemport 1 cos 0 vlan ${conf.vlan}
 wan-ip 1 mode pppoe username ${pppoeUser} password ${pppoePass} vlan-profile ${conf.profile} host 1
 wan-ip 1 ping-response enable traceroute-response enable
