@@ -23,7 +23,7 @@ export default function Home() {
     idPelanggan: "",
     namaPelanggan: "",
     pppoeUser: "",
-    pppoePass: "", // Default password
+    pppoePass: "150326", // Default password
     paketLayanan: "KUSUMA 1", // Default Paket Layanan
     selectedVlanType: "100", // Default VLAN untuk UNB
     selectedC600Type: "standard" // Default konfigurasi C600

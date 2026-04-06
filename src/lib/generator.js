@@ -8,7 +8,7 @@ export const generateC600 = (data) => {
     sn,
     idPelanggan,
     pppoeUser,
-    pppoePass,
+    pppoePass = "150326",
     selectedC600Type = "standard",
   } = data;
 
@@ -278,7 +278,7 @@ write`.trim();
  */
 export const generateMikrotikSecret = (data) => {
   const { idPelanggan, namaPelanggan, pppoeUser, pppoePass, paketLayanan } = data;
-
+  
   // Format Comment: "ID-NAMA"
   const commentText = namaPelanggan ? `${idPelanggan}-${namaPelanggan.toUpperCase()}` : idPelanggan;
 
