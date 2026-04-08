@@ -9,7 +9,7 @@ import {
   generateUNB,
   generateMikrotikSecret,
 } from "@/lib/generator";
-import { Copy, RefreshCw, CheckCircle2 } from "lucide-react";
+import { RefreshCw, CheckCircle2 } from "lucide-react";
 import CommandSidebar from "@/components/CommandSidebar";
 
 export default function Home() {
@@ -349,7 +349,7 @@ export default function Home() {
               {/* Output Section (2 Boxes) */}
               <div className="flex-grow flex flex-col gap-4">
                 {/* Box 1: OLT Script */}
-                <div className="w-full bg-upaz-blue p-5 rounded-xl shadow-xl border border-blue-900/50 flex flex-col flex-grow" style={{ minHeight: '320px' }}>
+                <div className="w-full bg-upaz-blue p-5 rounded-xl shadow-xl border border-blue-900/50 flex flex-col flex-grow min-h-[320px]">
                   <div className="flex justify-between items-center mb-4 border-b border-blue-800 pb-2">
                     <span className="font-bold text-xs flex items-center gap-2 uppercase tracking-tight text-white"><CheckCircle2 size={14} className="text-upaz-green" /> Script OLT (ZTE)</span>
                     <button onClick={() => copyToClipboard(output, "olt")} className={`text-xs font-bold transition flex items-center gap-1 ${copied ? "text-white" : "text-upaz-green hover:text-white"}`}>
@@ -360,7 +360,7 @@ export default function Home() {
                 </div>
 
                 {/* Box 2: MikroTik Script */}
-                <div className="w-full bg-upaz-blue p-5 rounded-xl shadow-xl border border-blue-900/50 flex flex-col flex-grow" style={{ minHeight: '130px' }}>
+                <div className="w-full bg-upaz-blue p-5 rounded-xl shadow-xl border border-blue-900/50 flex flex-col flex-grow min-h-[130px]">
                   <div className="flex justify-between items-center mb-4 border-b border-blue-800 pb-2">
                     <span className="font-bold text-xs flex items-center gap-2 uppercase tracking-tight text-white"><CheckCircle2 size={14} className="text-upaz-green" /> Script MikroTik (PPPoE Secret)</span>
                     <button onClick={() => copyToClipboard(mikrotikOutput, "mikrotik")} className={`text-xs font-bold transition flex items-center gap-1 ${copiedMikrotik ? "text-white" : "text-upaz-green hover:text-white"}`}>

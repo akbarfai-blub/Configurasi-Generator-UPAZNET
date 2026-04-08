@@ -1,5 +1,5 @@
 'use client';
-import { Terminal, Copy, Check, Settings2 } from 'lucide-react';
+import { Terminal } from 'lucide-react';
 import { useState } from 'react';
 
 export default function CommandSidebar({ data }) {
