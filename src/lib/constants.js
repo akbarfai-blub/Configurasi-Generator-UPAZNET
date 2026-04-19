@@ -8,5 +8,6 @@ export const INITIAL_FORM_DATA = {
   pppoePass: "150326",
   paketLayanan: "KUSUMA 1",
   selectedVlanType: "100",
-  selectedC600Type: "standard"
+  selectedC600Type: "standard",
+  selectedUcdType: "ucd_standard"
 };

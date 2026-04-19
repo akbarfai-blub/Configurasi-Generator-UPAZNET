@@ -7,6 +7,7 @@ import {
   generateUBL,
   generateUGR,
   generateUNB,
+  generateUCD,
   generateMikrotikSecret,
 } from "@/lib/generator";
 
@@ -32,6 +33,9 @@ export function useScriptGenerator() {
         break;
       case "unb":
         resultOlt = generateUNB(formData);
+        break;
+      case "ucd":
+        resultOlt = generateUCD(formData);
         break;
       default:
         resultOlt = "";

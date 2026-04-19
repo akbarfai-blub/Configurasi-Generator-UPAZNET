@@ -21,7 +21,8 @@ export default function Home() {
   const [formData, setFormData] = useState(INITIAL_FORM_DATA);
 
   const { copied, copiedMikrotik, copyOlt, copyMikrotik } = useClipboard();
-  const { handleOltInterfaceChange, handleIdPelangganChange } = useOltInterfaceMask(setFormData);
+  const { handleOltInterfaceChange, handleIdPelangganChange } =
+    useOltInterfaceMask(setFormData);
   const { oltScript, mikrotikScript, generate } = useScriptGenerator();
 
   const handleTabChange = (type) => {
@@ -52,12 +53,12 @@ export default function Home() {
 
   const handleCopyOlt = useCallback(
     () => copyOlt(oltScript),
-    [oltScript, copyOlt]
+    [oltScript, copyOlt],
   );
 
   const handleCopyMikrotik = useCallback(
     () => copyMikrotik(mikrotikScript),
-    [mikrotikScript, copyMikrotik]
+    [mikrotikScript, copyMikrotik],
   );
 
   return (
@@ -74,7 +75,10 @@ export default function Home() {
 
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="flex-grow space-y-6">
-            <ConfigTypeTabs currentType={configType} onChange={handleTabChange} />
+            <ConfigTypeTabs
+              currentType={configType}
+              onChange={handleTabChange}
+            />
 
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 items-start">
               {/* Form Section */}
@@ -82,8 +86,8 @@ export default function Home() {
                 onSubmit={handleGenerate}
                 className="bg-white p-6 rounded-2xl shadow-lg border border-slate-200 space-y-5 h-fit sticky top-8"
               >
-                {/* Opsi Konfigurasi Dinamis (UNR C600 / UNB) */}
-                {(configType === 'standard' || configType === 'unb') && (
+                {/* Opsi Konfigurasi Dinamis (UNR C600 / UNB / UCD) */}
+                {(configType === "standard" || configType === "unb" || configType === "ucd") && (
                   <ConfigTypeSelect
                     configType={configType}
                     formData={formData}
@@ -137,7 +141,6 @@ export default function Home() {
               </div>
             </div>
           </div>
-
           <aside className="lg:block w-full lg:w-80 xl:w-96 shrink-0">
             <CommandSidebar data={formData} />
           </aside>

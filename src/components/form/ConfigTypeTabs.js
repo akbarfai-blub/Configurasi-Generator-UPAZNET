@@ -1,6 +1,6 @@
 "use client";
 
-const CONFIG_TYPES = ["standard", "unb", "uho", "ubl", "ugr"];
+const CONFIG_TYPES = ["standard", "unb", "uho", "ubl", "ugr", "ucd"];
 
 const TAB_LABELS = {
   standard: "UNR C600",
@@ -8,6 +8,7 @@ const TAB_LABELS = {
   uho: "uho",
   ubl: "ubl",
   ugr: "ugr",
+  ucd: "ucd",
 };
 
 export default function ConfigTypeTabs({ currentType, onChange }) {
