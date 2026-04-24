@@ -9,5 +9,6 @@ export const INITIAL_FORM_DATA = {
   paketLayanan: "KUSUMA 1",
   selectedVlanType: "100",
   selectedC600Type: "standard",
-  selectedUcdType: "ucd_standard"
+  selectedUcdType: "ucd_standard",
+  selectedUgrType: "ugr_standard"
 };

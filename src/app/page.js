@@ -86,8 +86,8 @@ export default function Home() {
                 onSubmit={handleGenerate}
                 className="bg-white p-6 rounded-2xl shadow-lg border border-slate-200 space-y-5 h-fit sticky top-8"
               >
-                {/* Opsi Konfigurasi Dinamis (UNR C600 / UNB / UCD) */}
-                {(configType === "standard" || configType === "unb" || configType === "ucd") && (
+                {/* Opsi Konfigurasi Dinamis (UNR C600 / UNB / UGR / UCD) */}
+                {(configType === "standard" || configType === "unb" || configType === "ugr" || configType === "ucd") && (
                   <ConfigTypeSelect
                     configType={configType}
                     formData={formData}

@@ -5,13 +5,17 @@ export default function ConfigTypeSelect({ configType, formData, onChange }) {
     ? "selectedC600Type" 
     : configType === "ucd" 
       ? "selectedUcdType" 
-      : "selectedVlanType";
+      : configType === "ugr"
+        ? "selectedUgrType"
+        : "selectedVlanType";
   
   const selectValue = configType === "standard" 
     ? formData.selectedC600Type 
     : configType === "ucd"
-      ? formData.selectedUcdType 
-      : formData.selectedVlanType;
+      ? formData.selectedUcdType
+      : configType === "ugr"
+        ? formData.selectedUgrType
+        : formData.selectedVlanType;
 
   return (
     <div className="space-y-1 mb-4 pb-4 border-b border-slate-200">
@@ -33,6 +37,11 @@ export default function ConfigTypeSelect({ configType, formData, onChange }) {
           <>
             <option value="ucd_standard">Standard (PPPoE)</option>
             <option value="ucd_bridge">Bridge Mode</option>
+          </>
+        ) : configType === "ugr" ? (
+          <>
+            <option value="ugr_standard">Standard (PPPoE)</option>
+            <option value="ugr_bridge">Bridge Mode</option>
           </>
         ) : (
           <>
