@@ -1,17 +1,17 @@
-'use client';
-import { Terminal } from 'lucide-react';
-import { useState } from 'react';
+"use client";
+import { Terminal, ChevronDown, ChevronUp } from "lucide-react";
+import { useState } from "react";
 
-export default function CommandSidebar({ data }) {
+export default function CommandSidebar({ data, isAccordion = false }) {
     const [copiedIdx, setCopiedIdx] = useState(null);
-    const [oltType, setOltType] = useState('c600'); // 'c600' atau 'c300'
+    const [oltType, setOltType] = useState("c600");
+    const [isOpen, setIsOpen] = useState(false);
 
-    const iface = data.interfaceOlt || '1/1/1';
-    const onu = data.onuId || '1';
-    const sn = data.sn || 'SN_HERE';
+    const iface = data.interfaceOlt || "1/1/1";
+    const onu = data.onuId || "1";
+    const sn = data.sn || "SN_HERE";
 
-    // Mapping Perintah berdasarkan Tipe OLT
-    const commands = oltType === 'c600' ? [
+    const commands = oltType === "c600" ? [
         { label: "Cek Redaman 1 Port", cmd: `sho pon power onu-rx gpon_olt-${iface}` },
         { label: "Cek Redaman Pelanggan", cmd: `sho pon power attenuation gpon_onu-${iface}:${onu}` },
         { label: "Reboot Modem", cmd: `conf t\npon-onu-mng gpon_onu-${iface}:${onu}\nreboot` },
@@ -21,7 +21,6 @@ export default function CommandSidebar({ data }) {
         { label: "Cek SN Belum Config", cmd: "sho pon onu un" },
         { label: "Detail Info Pelanggan", cmd: `sho gpon onu detail-info gpon_onu-${iface}:${onu}` },
     ] : [
-        // MODE C300 / C320
         { label: "Cek Redaman 1 Port", cmd: `show pon power onu-rx gpon-olt_${iface}` },
         { label: "Cek Redaman Pelanggan", cmd: `show pon power attenuation gpon-onu_${iface}:${onu}` },
         { label: "Reboot Modem", cmd: `conf t\npon-onu-mng gpon-onu_${iface}:${onu}\nreboot` },
@@ -44,54 +43,90 @@ export default function CommandSidebar({ data }) {
         setTimeout(() => setCopiedIdx(null), 1500);
     };
 
+    const toggleOpen = () => setIsOpen(!isOpen);
+
     return (
-        <div className="w-full lg:w-80 bg-upaz-blue text-white p-5 rounded-xl shadow-xl h-fit sticky top-8">
-            <div className="flex items-center justify-between mb-6 border-b border-white/10 pb-3">
+        <div className="w-full bg-upaz-blue text-white rounded-xl shadow-xl h-fit">
+            <div className="flex items-center justify-between mb-4 border-b border-white/10 pb-3 p-5">
                 <div className="flex items-center gap-2 text-white">
                     <Terminal size={18} className="text-upaz-green" />
-                    <span className="font-bold text-xs uppercase tracking-tight">Command Hub</span>
+                    <span className="font-bold text-xs uppercase tracking-tight">
+                        {isAccordion ? ">_ Command Hub" : "Command Hub"}
+                    </span>
                 </div>
 
-                {/* Switcher Tipe OLT di Sidebar */}
-                <div className="flex bg-white/10 rounded-lg p-1 scale-90">
-                    <button
-                        onClick={() => setOltType('c600')}
-                        className={`px-3 py-1 text-[10px] font-bold rounded transition-colors ${oltType === 'c600' ? 'bg-upaz-green text-white' : 'text-white/60 hover:text-white'}`}
-                    >
-                        C600
-                    </button>
-                    <button
-                        onClick={() => setOltType('c300')}
-                        className={`px-3 py-1 text-[10px] font-bold rounded transition-colors ${oltType === 'c300' ? 'bg-upaz-green text-white' : 'text-white/60 hover:text-white'}`}
-                    >
-                        C300/C320
-                    </button>
-                </div>
-            </div>
-
-            <div className="space-y-3 overflow-y-auto max-h-[600px] pr-2 no-scrollbar">
-                {commands.map((item, idx) => (
-                    <button
-                        key={idx}
-                        onClick={() => handleCopy(item.cmd, idx)}
-                        className="w-full text-left group transition-all relative"
-                    >
-                        <div className="flex justify-between items-center mb-1">
-                            <span className="text-[9px] uppercase tracking-widest text-white/60 font-bold group-hover:text-upaz-green transition-colors">
-                                {item.label}
-                            </span>
-                            {copiedIdx === idx && (
-                                <span className="text-[9px] text-upaz-green font-bold animate-pulse">COPIED!</span>
+                <div className="flex items-center gap-2">
+                    {isAccordion && (
+                        <button
+                            onClick={toggleOpen}
+                            className="flex items-center gap-1 px-3 py-1.5 bg-upaz-blue/80 border border-upaz-green/50 rounded-lg text-xs font-bold text-upaz-green hover:bg-upaz-green hover:text-white transition-colors xl:hidden"
+                        >
+                            {isOpen ? (
+                                <>TUTUP <ChevronUp size={12} /></>
+                            ) : (
+                                <>BUKA <ChevronDown size={12} /></>
                             )}
-                        </div>
-                        <div className={`p-2 rounded bg-white/5 border ${copiedIdx === idx ? 'border-upaz-green/50' : 'border-transparent group-hover:border-white/20'} transition-all`}>
-                            <code className="text-[10px] font-mono block break-all leading-tight text-white/90 whitespace-pre-wrap">
-                                {item.cmd}
-                            </code>
-                        </div>
-                    </button>
-                ))}
+                        </button>
+                    )}
+
+                    <div className="flex bg-white/10 rounded-lg p-1 scale-90">
+                        <button
+                            onClick={() => setOltType("c600")}
+                            className={`px-3 py-1 text-[10px] font-bold rounded transition-colors ${
+                                oltType === "c600"
+                                    ? "bg-upaz-green text-white"
+                                    : "text-white/60 hover:text-white"
+                            }`}
+                        >
+                            C600
+                        </button>
+                        <button
+                            onClick={() => setOltType("c300")}
+                            className={`px-3 py-1 text-[10px] font-bold rounded transition-colors ${
+                                oltType === "c300"
+                                    ? "bg-upaz-green text-white"
+                                    : "text-white/60 hover:text-white"
+                            }`}
+                        >
+                            C300/C320
+                        </button>
+                    </div>
+                </div>
             </div>
+
+            {(isAccordion ? isOpen : true) && (
+                <div className="px-5 pb-5 space-y-3 max-h-[600px] overflow-y-auto no-scrollbar">
+                    {commands.map((item, idx) => (
+                        <button
+                            key={idx}
+                            onClick={() => handleCopy(item.cmd, idx)}
+                            className="w-full text-left group transition-all relative"
+                        >
+                            <div className="flex justify-between items-center mb-1">
+                                <span className="text-[9px] uppercase tracking-widest text-white/60 font-bold group-hover:text-upaz-green transition-colors">
+                                    {item.label}
+                                </span>
+                                {copiedIdx === idx && (
+                                    <span className="text-[9px] text-upaz-green font-bold animate-pulse">
+                                        COPIED!
+                                    </span>
+                                )}
+                            </div>
+                            <div
+                                className={`p-2 rounded bg-white/5 border ${
+                                    copiedIdx === idx
+                                        ? "border-upaz-green/50"
+                                        : "border-transparent group-hover:border-white/20"
+                                } transition-all`}
+                            >
+                                <code className="text-[10px] font-mono block break-all leading-tight text-white/90 whitespace-pre-wrap">
+                                    {item.cmd}
+                                </code>
+                            </div>
+                        </button>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

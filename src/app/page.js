@@ -15,8 +15,7 @@ import CustomerFormSection from "@/components/form/CustomerFormSection";
 import ServiceFormSection from "@/components/form/ServiceFormSection";
 
 export default function Home() {
-  // state untuk memilih tipe config (Menu)
-  const [configType, setConfigType] = useState("standard"); // default ke UNR C600 Biasa
+  const [configType, setConfigType] = useState("standard");
 
   const [formData, setFormData] = useState(INITIAL_FORM_DATA);
 
@@ -73,20 +72,21 @@ export default function Home() {
           </p>
         </header>
 
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col xl:flex-row gap-8">
+          {/* Main Content - Form first, then Output in HTML */}
           <div className="flex-grow space-y-6">
             <ConfigTypeTabs
               currentType={configType}
               onChange={handleTabChange}
             />
 
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 items-start">
-              {/* Form Section */}
+            {/* Mobile: 1 column stacked | Desktop: 2 columns */}
+            <div className="flex flex-col xl:grid xl:grid-cols-2 gap-8 items-start">
+              {/* Form Section - appears first in both mobile & desktop */}
               <form
                 onSubmit={handleGenerate}
-                className="bg-white p-6 rounded-2xl shadow-lg border border-slate-200 space-y-5 h-fit sticky top-8"
+                className="bg-white p-6 rounded-2xl shadow-lg border border-slate-200 space-y-5 h-fit xl:sticky xl:top-8"
               >
-                {/* Opsi Konfigurasi Dinamis (UNR C600 / UNB / UGR / UCD) */}
                 {(configType === "standard" || configType === "unb" || configType === "ugr" || configType === "ucd") && (
                   <ConfigTypeSelect
                     configType={configType}
@@ -120,9 +120,8 @@ export default function Home() {
                 </button>
               </form>
 
-              {/* Output Section (2 Boxes) */}
-              <div className="flex-grow flex flex-col gap-4">
-                {/* Box 1: OLT Script */}
+              {/* Output Section - appears second in both mobile & desktop */}
+              <div className="w-full flex flex-col gap-4">
                 <ScriptOutput
                   label="Script OLT (ZTE)"
                   output={oltScript}
@@ -131,7 +130,6 @@ export default function Home() {
                   minHeight="320px"
                 />
 
-                {/* Box 2: MikroTik Script */}
                 <ScriptOutput
                   label="Script MikroTik (PPPoE Secret)"
                   output={mikrotikScript}
@@ -140,8 +138,15 @@ export default function Home() {
                 />
               </div>
             </div>
+
+            {/* Command Hub - Mobile accordion */}
+            <div className="xl:hidden">
+              <CommandSidebar data={formData} isAccordion />
+            </div>
           </div>
-          <aside className="lg:block w-full lg:w-80 xl:w-96 shrink-0">
+
+          {/* Command Hub - Desktop sidebar */}
+          <aside className="hidden xl:block w-full xl:w-80 shrink-0">
             <CommandSidebar data={formData} />
           </aside>
         </div>

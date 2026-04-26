@@ -4,8 +4,8 @@ import { CheckCircle2 } from "lucide-react";
 
 export default function ScriptOutput({ label, output, onCopy, copied, minHeight = "130px" }) {
   return (
-    <div 
-      className="w-full bg-upaz-blue p-5 rounded-xl shadow-xl border border-blue-900/50 flex flex-col flex-grow"
+    <div
+      className="w-full bg-upaz-blue p-5 rounded-xl shadow-xl border border-blue-900/50 flex flex-col overflow-hidden"
       style={{ minHeight }}
     >
       <div className="flex justify-between items-center mb-4 border-b border-blue-800 pb-2">
@@ -22,7 +22,7 @@ export default function ScriptOutput({ label, output, onCopy, copied, minHeight 
           {copied ? "COPIED!" : "COPY"}
         </button>
       </div>
-      <pre className="font-mono text-[13px] whitespace-pre-wrap leading-relaxed text-blue-100 overflow-y-auto">
+      <pre className="font-mono text-[13px] whitespace-pre leading-relaxed text-blue-100 overflow-x-auto flex-1">
         {output || `Script ${label} akan muncul di sini...`}
       </pre>
     </div>
