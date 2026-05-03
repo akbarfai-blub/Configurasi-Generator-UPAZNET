@@ -50,6 +50,27 @@ tr069-mgmt 1 acs http://acs.upaz.net.id:9999/ validate basic username ${process.
 write`.trim();
   }
 
+  if (selectedC600Type === "unr_v1001") {
+    return `conf t
+interface gpon-olt_${interfaceOlt}
+onu ${onuId} type ALL sn ${sn}
+exit
+interface gpon-onu_${interfaceOlt}:${onuId}
+name ${cleanId}
+description ${descText}
+tcont 1 profile kusuma
+gemport 1 tcont 1
+service-port 1 vport 1 user-vlan 1001 vlan 1001
+exit
+pon-onu-mng gpon-onu_${interfaceOlt}:${onuId}
+service 1 gemport 1 vlan 1001
+security-mgmt 1 state enable mode forward protocol web
+wan-ip 1 mode pppoe username ${cleanId} password ${pppoePass} vlan-profile v1001 host 1
+exit
+exit
+write`.trim();
+  }
+
   return `conf t
 interface gpon_olt-${interfaceOlt}
 onu ${onuId} type ALL sn ${sn}
