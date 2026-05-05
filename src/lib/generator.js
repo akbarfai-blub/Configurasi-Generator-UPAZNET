@@ -17,7 +17,9 @@ export const generateC600 = (data) => {
   const vlan = "134";
   const vlanBridge = "129";
   const vlanProfile = `v${vlan}`;
-  const descText = namaPelanggan ? `${cleanId} - ${namaPelanggan.toUpperCase()}` : cleanId;
+  const descText = namaPelanggan
+    ? `${cleanId} - ${namaPelanggan.toUpperCase()}`
+    : cleanId;
 
   if (selectedC600Type === "bridge") {
     return `config terminal
@@ -100,12 +102,22 @@ write`.trim();
  * Logic generator khusus UHO
  */
 export const generateUHO = (data) => {
-  const { interfaceOlt, onuId, sn, idPelanggan, pppoeUser, pppoePass, namaPelanggan } = data;
+  const {
+    interfaceOlt,
+    onuId,
+    sn,
+    idPelanggan,
+    pppoeUser,
+    pppoePass,
+    namaPelanggan,
+  } = data;
 
   const cleanId = idPelanggan.toString().slice(0, 10);
   const vlan = "110";
   const vlanProfile = `v${vlan}`;
-  const descText = namaPelanggan ? `${cleanId} - ${namaPelanggan.toUpperCase()}` : cleanId;
+  const descText = namaPelanggan
+    ? `${cleanId} - ${namaPelanggan.toUpperCase()}`
+    : cleanId;
 
   return `config terminal
 interface gpon-olt_${interfaceOlt}
@@ -131,11 +143,21 @@ write`.trim();
  * Logic generator khusus UBL
  */
 export const generateUBL = (data) => {
-  const { interfaceOlt, onuId, sn, idPelanggan, pppoeUser, pppoePass, namaPelanggan } = data;
+  const {
+    interfaceOlt,
+    onuId,
+    sn,
+    idPelanggan,
+    pppoeUser,
+    pppoePass,
+    namaPelanggan,
+  } = data;
 
   const cleanId = idPelanggan.toString().slice(0, 10);
   const vlan = "1002";
-  const descText = namaPelanggan ? `${cleanId} - ${namaPelanggan.toUpperCase()}` : cleanId;
+  const descText = namaPelanggan
+    ? `${cleanId} - ${namaPelanggan.toUpperCase()}`
+    : cleanId;
 
   return `config terminal
 interface gpon-olt_${interfaceOlt}
@@ -161,10 +183,21 @@ write`.trim();
  * Logic generator khusus UGR
  */
 export const generateUGR = (data) => {
-  const { interfaceOlt, onuId, sn, idPelanggan, pppoeUser, pppoePass, namaPelanggan, selectedUgrType } = data;
+  const {
+    interfaceOlt,
+    onuId,
+    sn,
+    idPelanggan,
+    pppoeUser,
+    pppoePass,
+    namaPelanggan,
+    selectedUgrType,
+  } = data;
 
   const cleanId = idPelanggan.toString().slice(0, 10);
-  const descText = namaPelanggan ? `${cleanId} - ${namaPelanggan.toUpperCase()}` : cleanId;
+  const descText = namaPelanggan
+    ? `${cleanId} - ${namaPelanggan.toUpperCase()}`
+    : cleanId;
 
   if (selectedUgrType === "ugr_bridge") {
     return `conf t
@@ -217,9 +250,20 @@ write`.trim();
  * Logic generator khusus UCD (PPPoE Standard)
  */
 export const generateUCD = (data) => {
-  const { interfaceOlt, onuId, sn, idPelanggan, pppoeUser, pppoePass, namaPelanggan, selectedUcdType } = data;
+  const {
+    interfaceOlt,
+    onuId,
+    sn,
+    idPelanggan,
+    pppoeUser,
+    pppoePass,
+    namaPelanggan,
+    selectedUcdType,
+  } = data;
   const cleanId = idPelanggan.toString().slice(0, 10);
-  const descText = namaPelanggan ? `${cleanId} - ${namaPelanggan.toUpperCase()}` : cleanId;
+  const descText = namaPelanggan
+    ? `${cleanId} - ${namaPelanggan.toUpperCase()}`
+    : cleanId;
 
   if (selectedUcdType === "ucd_bridge") {
     return `conf t
@@ -264,7 +308,7 @@ interface gpon-onu_${interfaceOlt}:${onuId}
 exit
 pon-onu-mng gpon-onu_${interfaceOlt}:${onuId}
   service ServiceName gemport 1 cos 0 vlan 511
-  wan-ip mode pppoe username ${pppoeUser} password ${pppoePass} vlan-profile vlan511 host 1
+  wan-ip mode pppoe username ${pppoeUser} password ${pppoePass} vlan-profile 511 host 1
   wan-ip 1 ping-response enable traceroute-response enable
   security-mgmt 212 state enable mode forward protocol web
 exit
@@ -272,24 +316,86 @@ exit
 write`.trim();
 };
 
-
 /**
  * Logic generator khusus UNB dengan Mapping VLAN
  */
 export const generateUNB = (data) => {
-  const { interfaceOlt, onuId, sn, idPelanggan, pppoeUser, pppoePass, namaPelanggan, selectedVlanType } = data;
+  const {
+    interfaceOlt,
+    onuId,
+    sn,
+    idPelanggan,
+    pppoeUser,
+    pppoePass,
+    namaPelanggan,
+    selectedVlanType,
+  } = data;
   const cleanId = idPelanggan.toString().slice(0, 10);
-  const descText = namaPelanggan ? `${cleanId} - ${namaPelanggan.toUpperCase()}` : cleanId;
+  const descText = namaPelanggan
+    ? `${cleanId} - ${namaPelanggan.toUpperCase()}`
+    : cleanId;
 
   const unbConfigs = {
-    "100": { vlan: "100", profile: "pppoe", type: "standard", tcontProfile: "kusuma", onuType: "ALL", useC300Syntax: true },
-    "1600": { vlan: "1600", profile: "vlan1600", type: "standard", tcontProfile: "kusuma", onuType: "ALL", useC300Syntax: true },
-    "1501": { vlan: "1501", profile: "bolo", type: "standard", tcontProfile: "kusuma", onuType: "ALL", useC300Syntax: true },
-    "602": { vlan: "602", profile: "vlan602", type: "standard", tcontProfile: "metro10", onuType: "ALL-ONT", useC300Syntax: true },
-    "903": { vlan: "903", profile: "vlan903", type: "lexxa", tcontProfile: "default", onuType: "ALL-ONT", useC300Syntax: true },
-    "511": { vlan: "511", profile: "vlan511", type: "standard", tcontProfile: "kusuma", onuType: "ALL", useC300Syntax: true },
-    "bridge_unb": { vlan1: "105", vlan2: "102", profile: "pppoe_vlan102", type: "bridge" },
-    "bridge_bolo": { vlan1: "1500", vlan2: "1501", profile: "bolo", type: "bridge_bolo" }
+    100: {
+      vlan: "100",
+      profile: "pppoe",
+      type: "standard",
+      tcontProfile: "kusuma",
+      onuType: "ALL",
+      useC300Syntax: true,
+    },
+    1600: {
+      vlan: "1600",
+      profile: "vlan1600",
+      type: "standard",
+      tcontProfile: "kusuma",
+      onuType: "ALL",
+      useC300Syntax: true,
+    },
+    1501: {
+      vlan: "1501",
+      profile: "bolo",
+      type: "standard",
+      tcontProfile: "kusuma",
+      onuType: "ALL",
+      useC300Syntax: true,
+    },
+    602: {
+      vlan: "602",
+      profile: "vlan602",
+      type: "standard",
+      tcontProfile: "metro10",
+      onuType: "ALL-ONT",
+      useC300Syntax: true,
+    },
+    903: {
+      vlan: "903",
+      profile: "vlan903",
+      type: "lexxa",
+      tcontProfile: "default",
+      onuType: "ALL-ONT",
+      useC300Syntax: true,
+    },
+    511: {
+      vlan: "511",
+      profile: "vlan511",
+      type: "standard",
+      tcontProfile: "kusuma",
+      onuType: "ALL",
+      useC300Syntax: true,
+    },
+    bridge_unb: {
+      vlan1: "105",
+      vlan2: "102",
+      profile: "pppoe_vlan102",
+      type: "bridge",
+    },
+    bridge_bolo: {
+      vlan1: "1500",
+      vlan2: "1501",
+      profile: "bolo",
+      type: "bridge_bolo",
+    },
   };
 
   const conf = unbConfigs[selectedVlanType];
@@ -384,9 +490,12 @@ write`.trim();
  * Logic generator khusus untuk MikroTik PPPoE Secret
  */
 export const generateMikrotikSecret = (data) => {
-  const { idPelanggan, namaPelanggan, pppoeUser, pppoePass, paketLayanan } = data;
+  const { idPelanggan, namaPelanggan, pppoeUser, pppoePass, paketLayanan } =
+    data;
 
-  const commentText = namaPelanggan ? `${idPelanggan}-${namaPelanggan.toUpperCase()}` : idPelanggan;
+  const commentText = namaPelanggan
+    ? `${idPelanggan}-${namaPelanggan.toUpperCase()}`
+    : idPelanggan;
 
   return `/ppp secret add name=${pppoeUser} password=${pppoePass} service=pppoe profile="${paketLayanan}" comment="${commentText}"`;
 };
