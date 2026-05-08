@@ -33,6 +33,7 @@ export default function ConfigTypeSelect({ configType, formData, onChange }) {
             <option value="standard">Standard (PPPoE)</option>
             <option value="bridge">Bridge Mode</option>
             <option value="unr_v1001">V1001</option>
+            <option value="unr_ddr">DDR Prisma V2104</option>
           </>
         ) : configType === "ucd" ? (
           <>
