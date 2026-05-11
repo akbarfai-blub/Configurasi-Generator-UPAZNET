@@ -20,6 +20,7 @@ export default function CommandSidebar({ data, isAccordion = false }) {
         { label: "Cek Status 1 Port", cmd: `sho gpon onu state gpon_olt-${iface}` },
         { label: "Cek SN Belum Config", cmd: "sho pon onu un" },
         { label: "Detail Info Pelanggan", cmd: `sho gpon onu detail-info gpon_onu-${iface}:${onu}` },
+        { label: "Cek Detail WAN", cmd: `show gpon remote-onu wan-ip gpon_onu-${iface}:${onu}` },
     ] : [
         { label: "Cek Redaman 1 Port", cmd: `show pon power onu-rx gpon-olt_${iface}` },
         { label: "Cek Redaman Pelanggan", cmd: `show pon power attenuation gpon-onu_${iface}:${onu}` },
@@ -35,6 +36,7 @@ export default function CommandSidebar({ data, isAccordion = false }) {
         { label: "Detail Info Pelanggan", cmd: `show gpon onu detail-info gpon-onu_${iface}:${onu}` },
         { label: "Cek Interface by SN", cmd: `show gpon onu by sn ${sn}` },
         { label: "Cek IP ONU", cmd: `show gpon remote-onu ip-host gpon-onu_${iface}:${onu}` },
+        { label: "Cek Detail WAN", cmd: `show gpon remote-onu wan-ip gpon-onu_${iface}:${onu}` },
     ];
 
     const handleCopy = (cmd, idx) => {
