@@ -137,6 +137,7 @@ export const generateUHO = (data) => {
     pppoeUser,
     pppoePass,
     namaPelanggan,
+    selectedUhoType,
   } = data;
 
   const cleanId = idPelanggan.toString().slice(0, 10);
@@ -145,6 +146,28 @@ export const generateUHO = (data) => {
   const descText = namaPelanggan
     ? `${cleanId} - ${namaPelanggan.toUpperCase()}`
     : cleanId;
+
+  if (selectedUhoType === "uho_ddr") {
+    return `conf t
+interface gpon-olt_${interfaceOlt}
+onu ${onuId} type ALL sn ${sn}
+exit
+interface gpon-onu_${interfaceOlt}:${onuId}
+name ${cleanId}
+description ${descText}
+tcont 1 profile kusuma
+gemport 1 tcont 1
+gemport 1 traffic-limit downstream DDR
+service-port 1 vport 1 user-vlan 2104 vlan 2104
+exit
+pon-onu-mng gpon-onu_${interfaceOlt}:${onuId}
+service 1 gemport 1 vlan 2104
+security-mgmt 1 state enable mode forward protocol web
+wan-ip 1 mode pppoe username ${cleanId} password ${pppoePass} vlan-profile v2104 host 1
+exit
+exit
+write`.trim();
+  }
 
   return `config terminal
 interface gpon-olt_${interfaceOlt}

@@ -87,7 +87,7 @@ export default function Home() {
                 onSubmit={handleGenerate}
                 className="bg-white p-6 rounded-2xl shadow-lg border border-slate-200 space-y-5 h-fit xl:sticky xl:top-8"
               >
-                {(configType === "standard" || configType === "unb" || configType === "ugr" || configType === "ucd") && (
+                {(configType === "standard" || configType === "unb" || configType === "ugr" || configType === "ucd" || configType === "uho") && (
                   <ConfigTypeSelect
                     configType={configType}
                     formData={formData}

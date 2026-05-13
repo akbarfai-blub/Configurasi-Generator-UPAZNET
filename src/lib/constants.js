@@ -10,5 +10,6 @@ export const INITIAL_FORM_DATA = {
   selectedVlanType: "100",
   selectedC600Type: "standard",
   selectedUcdType: "ucd_standard",
-  selectedUgrType: "ugr_standard"
+  selectedUgrType: "ugr_standard",
+  selectedUhoType: "uho_standard"
 };

@@ -1,21 +1,25 @@
 "use client";
 
 export default function ConfigTypeSelect({ configType, formData, onChange }) {
-  const selectName = configType === "standard" 
-    ? "selectedC600Type" 
-    : configType === "ucd" 
-      ? "selectedUcdType" 
+  const selectName = configType === "standard"
+    ? "selectedC600Type"
+    : configType === "ucd"
+      ? "selectedUcdType"
       : configType === "ugr"
         ? "selectedUgrType"
-        : "selectedVlanType";
-  
-  const selectValue = configType === "standard" 
-    ? formData.selectedC600Type 
+        : configType === "uho"
+          ? "selectedUhoType"
+          : "selectedVlanType";
+
+  const selectValue = configType === "standard"
+    ? formData.selectedC600Type
     : configType === "ucd"
       ? formData.selectedUcdType
       : configType === "ugr"
         ? formData.selectedUgrType
-        : formData.selectedVlanType;
+        : configType === "uho"
+          ? formData.selectedUhoType
+          : formData.selectedVlanType;
 
   return (
     <div className="space-y-1 mb-4 pb-4 border-b border-slate-200">
@@ -44,6 +48,11 @@ export default function ConfigTypeSelect({ configType, formData, onChange }) {
           <>
             <option value="ugr_standard">Standard (PPPoE)</option>
             <option value="ugr_bridge">Bridge Mode</option>
+          </>
+        ) : configType === "uho" ? (
+          <>
+            <option value="uho_standard">Standard (PPPoE)</option>
+            <option value="uho_ddr">DDR Prisma</option>
           </>
         ) : (
           <>
