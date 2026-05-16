@@ -74,13 +74,16 @@ write`.trim();
   }
 
   if (selectedC600Type === "unr_ddr") {
+    const namaBersih = namaPelanggan?.trim() || "";
+    const dialText = namaBersih ? `${cleanId}_${namaBersih}` : cleanId;
+
     return `conf t
 interface gpon_olt-${interfaceOlt}
 onu ${onuId} type ALL sn ${sn}
 exit
 interface gpon_onu-${interfaceOlt}:${onuId}
-name ${cleanId}
-description ${descText}
+name ${dialText}
+description ${dialText}
 tcont 1 profile kusuma
 gemport 1 tcont 1
 exit
@@ -148,13 +151,16 @@ export const generateUHO = (data) => {
     : cleanId;
 
   if (selectedUhoType === "uho_ddr") {
+    const namaBersih = namaPelanggan?.trim() || "";
+    const dialText = namaBersih ? `${cleanId}_${namaBersih}` : cleanId;
+
     return `conf t
 interface gpon-olt_${interfaceOlt}
 onu ${onuId} type ALL sn ${sn}
 exit
 interface gpon-onu_${interfaceOlt}:${onuId}
-name ${cleanId}
-description ${descText}
+name ${dialText}
+description ${dialText}
 tcont 1 profile kusuma
 gemport 1 tcont 1
 gemport 1 traffic-limit downstream DDR
