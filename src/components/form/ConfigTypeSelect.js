@@ -37,7 +37,7 @@ export default function ConfigTypeSelect({ configType, formData, onChange }) {
             <option value="standard">Standard (PPPoE)</option>
             <option value="bridge">Bridge Mode</option>
             <option value="unr_v1001">V1001 (Darmojawan)</option>
-            <option value="unr_ddr">DDR Prisma V2104</option>
+            <option value="unr_ddr">V2104 (DDR Prisma)</option>
           </>
         ) : configType === "ucd" ? (
           <>
@@ -48,11 +48,13 @@ export default function ConfigTypeSelect({ configType, formData, onChange }) {
           <>
             <option value="ugr_standard">Standard (PPPoE)</option>
             <option value="ugr_bridge">Bridge Mode</option>
+            <option value="ugr_babadan_pppoe">Babadan PPPoE</option>
+            <option value="ugr_babadan_bridge">Babadan Bridge</option>
           </>
         ) : configType === "uho" ? (
           <>
             <option value="uho_standard">Standard (PPPoE)</option>
-            <option value="uho_ddr">DDR Prisma</option>
+            <option value="uho_ddr">V2104 (DDR Prisma)</option>
           </>
         ) : (
           <>

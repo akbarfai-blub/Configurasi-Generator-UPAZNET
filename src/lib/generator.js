@@ -280,6 +280,52 @@ exit
 write`.trim();
   }
 
+  if (selectedUgrType === "ugr_babadan_bridge") {
+    return `conf t
+interface gpon-olt_${interfaceOlt}
+onu ${onuId} type ALL sn ${sn}
+exit
+interface gpon-onu_${interfaceOlt}:${onuId}
+name ${cleanId}
+description ${descText}
+tcont 1 profile kusuma
+gemport 1 tcont 1
+gemport 2 tcont 1
+service-port 1 vport 1 user-vlan 207 vlan 207
+service-port 2 vport 2 user-vlan 206 vlan 206
+exit
+pon-onu-mng gpon-onu_${interfaceOlt}:${onuId}
+service 1 gemport 1 vlan 207
+service 2 gemport 2 vlan 206
+vlan port eth_0/1 mode tag vlan 206
+security-mgmt 1 state enable mode forward protocol web
+wan-ip 1 mode pppoe username ${pppoeUser} password ${pppoePass} vlan-profile v207 host 1
+exit
+exit
+write`.trim();
+  }
+
+  if (selectedUgrType === "ugr_babadan_pppoe") {
+    return `conf t
+interface gpon-olt_${interfaceOlt}
+onu ${onuId} type ALL sn ${sn}
+exit
+interface gpon-onu_${interfaceOlt}:${onuId}
+name ${cleanId}
+description ${descText}
+tcont 1 profile kusuma
+gemport 1 tcont 1
+service-port 1 vport 1 user-vlan 207 vlan 207
+exit
+pon-onu-mng gpon-onu_${interfaceOlt}:${onuId}
+service 1 gemport 1 vlan 207
+security-mgmt 1 state enable mode forward protocol web
+wan-ip 1 mode pppoe username ${pppoeUser} password ${pppoePass} vlan-profile v207 host 1
+exit
+exit
+write`.trim();
+  }
+
   const vlan = "1000";
 
   return `conf t
