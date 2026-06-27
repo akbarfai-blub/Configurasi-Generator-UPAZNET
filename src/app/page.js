@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, ClipboardPaste } from "lucide-react";
 import CommandSidebar from "@/components/CommandSidebar";
 import { useClipboard } from "@/hooks/useClipboard";
 import { useOltInterfaceMask } from "@/hooks/useOltInterfaceMask";
@@ -13,11 +13,13 @@ import ConfigTypeSelect from "@/components/form/ConfigTypeSelect";
 import OltFormSection from "@/components/form/OltFormSection";
 import CustomerFormSection from "@/components/form/CustomerFormSection";
 import ServiceFormSection from "@/components/form/ServiceFormSection";
+import QuickFillModal from "@/components/form/QuickFillModal";
 
 export default function Home() {
   const [configType, setConfigType] = useState("standard");
 
   const [formData, setFormData] = useState(INITIAL_FORM_DATA);
+  const [showQuickFill, setShowQuickFill] = useState(false);
 
   const { copied, copiedMikrotik, copyOlt, copyMikrotik } = useClipboard();
   const { handleOltInterfaceChange, handleIdPelangganChange } =
@@ -60,6 +62,11 @@ export default function Home() {
     [mikrotikScript, copyMikrotik],
   );
 
+  const handleQuickFill = (parsedData) => {
+    setFormData((prev) => ({ ...prev, ...parsedData }));
+    setShowQuickFill(false);
+  };
+
   return (
     <div className="min-h-screen bg-upaz-bg p-4 md:p-8 font-sans text-slate-800">
       <div className="max-w-[1400px] mx-auto">
@@ -87,6 +94,15 @@ export default function Home() {
                 onSubmit={handleGenerate}
                 className="bg-white p-6 rounded-2xl shadow-lg border border-slate-200 space-y-5 h-fit xl:sticky xl:top-8"
               >
+                <button
+                  type="button"
+                  onClick={() => setShowQuickFill(true)}
+                  className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl border-2 border-dashed border-upaz-green/50 text-upaz-green text-sm font-bold hover:bg-upaz-green/10 transition-colors mb-4"
+                >
+                  <ClipboardPaste size={16} />
+                  Quick Fill dari Detail Koneksi
+                </button>
+
                 {(configType === "standard" || configType === "unb" || configType === "ugr" || configType === "ucd" || configType === "uho") && (
                   <ConfigTypeSelect
                     configType={configType}
@@ -151,6 +167,13 @@ export default function Home() {
           </aside>
         </div>
       </div>
+
+      {showQuickFill && (
+        <QuickFillModal
+          onFill={handleQuickFill}
+          onClose={() => setShowQuickFill(false)}
+        />
+      )}
     </div>
   );
 }

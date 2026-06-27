@@ -21,6 +21,7 @@ export default function CommandSidebar({ data, isAccordion = false }) {
         { label: "Cek SN Belum Config", cmd: "sho pon onu un" },
         { label: "Detail Info Pelanggan", cmd: `sho gpon onu detail-info gpon_onu-${iface}:${onu}` },
         { label: "Cek Detail WAN", cmd: `show gpon remote-onu wan-ip gpon_onu-${iface}:${onu}` },
+        { label: "Cek Config WAN", cmd: `show running-config interface gpon_onu-${iface}:${onu}` },
     ] : [
         { label: "Cek Redaman 1 Port", cmd: `show pon power onu-rx gpon-olt_${iface}` },
         { label: "Cek Redaman Pelanggan", cmd: `show pon power attenuation gpon-onu_${iface}:${onu}` },
