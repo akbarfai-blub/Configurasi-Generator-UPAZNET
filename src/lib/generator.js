@@ -530,6 +530,35 @@ export const generateUNB = (data) => {
   const oltPrefix = conf && conf.useC300Syntax ? "gpon-olt_" : "gpon_olt-";
   const onuPrefix = conf && conf.useC300Syntax ? "gpon-onu_" : "gpon_onu-";
 
+  // Dedicated template for UNB V100
+  if (String(selectedVlanType) === "100") {
+    const v100CleanId = idPelanggan?.toString().trim() || "";
+    const v100DescText = namaPelanggan
+      ? `${v100CleanId} - ${namaPelanggan.trim().toUpperCase()}`
+      : v100CleanId;
+
+    return `conf t
+interface gpon-olt_${interfaceOlt}
+  onu ${onuId} type ALL sn ${sn}
+exit
+interface gpon-onu_${interfaceOlt}:${onuId}
+  name ${v100CleanId}
+  description ${v100DescText}
+  sn-bind enable sn
+  tcont 1 name PPPOE profile kusuma
+  gemport 1 name PPPOE tcont 1
+  service-port 1 vport 1 user-vlan 100 vlan 100
+exit
+pon-onu-mng gpon-onu_${interfaceOlt}:${onuId}
+  service ServiceName gemport 1 vlan 100
+  wan-ip 1 mode pppoe username ${v100CleanId} password ${pppoePass} vlan-profile pppoe host 1
+  wan-ip 1 ping-response enable traceroute-response enable
+  security-mgmt 212 state enable mode forward protocol web
+exit
+exit
+write`.trim();
+  }
+
   if (conf.type === "bridge") {
     return `conf t
 interface ${oltPrefix}${interfaceOlt}
