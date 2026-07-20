@@ -542,18 +542,18 @@ interface gpon-olt_${interfaceOlt}
   onu ${onuId} type ALL sn ${sn}
 exit
 interface gpon-onu_${interfaceOlt}:${onuId}
-  name ${v100CleanId}
-  description ${v100DescText}
-  sn-bind enable sn
-  tcont 1 name PPPOE profile kusuma
-  gemport 1 name PPPOE tcont 1
-  service-port 1 vport 1 user-vlan 100 vlan 100
+name ${v100CleanId}
+description ${v100DescText}
+sn-bind enable sn
+tcont 1 name PPPOE profile kusuma
+gemport 1 name PPPOE tcont 1
+service-port 1 vport 1 user-vlan 100 vlan 100
 exit
 pon-onu-mng gpon-onu_${interfaceOlt}:${onuId}
-  service ServiceName gemport 1 vlan 100
-  wan-ip 1 mode pppoe username ${v100CleanId} password ${pppoePass} vlan-profile pppoe host 1
-  wan-ip 1 ping-response enable traceroute-response enable
-  security-mgmt 212 state enable mode forward protocol web
+service ServiceName gemport 1 vlan 100
+wan-ip 1 mode pppoe username ${v100CleanId} password ${pppoePass} vlan-profile pppoe host 1
+wan-ip 1 ping-response enable traceroute-response enable
+security-mgmt 212 state enable mode forward protocol web
 exit
 exit
 write`.trim();
