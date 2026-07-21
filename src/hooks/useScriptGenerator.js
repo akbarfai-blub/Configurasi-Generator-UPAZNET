@@ -30,6 +30,8 @@ export function useScriptGenerator() {
         resultOlt = generateUBL(formData);
         break;
       case "ugr":
+      case "ugr_kwd_pppoe":
+      case "ugr_kwd_bridge":
         resultOlt = generateUGR(formData);
         break;
       case "unb":

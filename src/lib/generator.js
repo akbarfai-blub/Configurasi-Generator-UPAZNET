@@ -352,6 +352,67 @@ exit
 write`.trim();
   }
 
+  // KWD PPPoE — VLAN 1006
+  if (selectedUgrType === "ugr_kwd_pppoe") {
+    const kwdCleanId = idPelanggan?.toString().trim() || "";
+    const kwdDescText = namaPelanggan
+      ? `${kwdCleanId} - ${namaPelanggan.trim().toUpperCase()}`
+      : kwdCleanId;
+
+    return `conf t
+interface gpon-olt_${interfaceOlt}
+  onu ${onuId} type ALL sn ${sn}
+exit
+interface gpon-onu_${interfaceOlt}:${onuId}
+  name ${kwdCleanId}
+  description ${kwdDescText}
+  tcont 1 profile kusuma
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 1006 vlan 1006
+exit
+pon-onu-mng gpon-onu_${interfaceOlt}:${onuId}
+  service 1 gemport 1 vlan 1006
+  security-mgmt 1 state enable mode forward protocol web
+  wan-ip 1 mode pppoe username ${kwdCleanId} password ${pppoePass} vlan-profile v1006 host 1
+exit
+exit
+write`.trim();
+  }
+
+  // KWD Bridge — VLAN 1006 + 1007
+  if (selectedUgrType === "ugr_kwd_bridge") {
+    const kwdCleanId = idPelanggan?.toString().trim() || "";
+    const kwdDescText = namaPelanggan
+      ? `${kwdCleanId} - ${namaPelanggan.trim().toUpperCase()}`
+      : kwdCleanId;
+
+    return `conf t
+interface gpon-olt_${interfaceOlt}
+  onu ${onuId} type ALL sn ${sn}
+exit
+interface gpon-onu_${interfaceOlt}:${onuId}
+  name ${kwdCleanId}
+  description ${kwdDescText}
+  tcont 1 profile kusuma
+  gemport 1 tcont 1
+  gemport 2 tcont 1
+  service-port 1 vport 1 user-vlan 1006 vlan 1006
+  service-port 2 vport 2 user-vlan 1007 vlan 1007
+exit
+pon-onu-mng gpon-onu_${interfaceOlt}:${onuId}
+  service 1 gemport 1 vlan 1006
+  service 2 gemport 2 vlan 1007
+  vlan port eth_0/1 mode tag vlan 1007
+  vlan port eth_0/2 mode tag vlan 1007
+  vlan port eth_0/3 mode tag vlan 1007
+  vlan port eth_0/4 mode tag vlan 1007
+  security-mgmt 1 state enable mode forward protocol web
+  wan-ip 1 mode pppoe username ${kwdCleanId} password ${pppoePass} vlan-profile v1006 host 1
+exit
+exit
+write`.trim();
+  }
+
   const vlan = "1000";
 
   return `conf t
@@ -539,7 +600,7 @@ export const generateUNB = (data) => {
 
     return `conf t
 interface gpon-olt_${interfaceOlt}
-  onu ${onuId} type ALL sn ${sn}
+onu ${onuId} type ALL sn ${sn}
 exit
 interface gpon-onu_${interfaceOlt}:${onuId}
 name ${v100CleanId}

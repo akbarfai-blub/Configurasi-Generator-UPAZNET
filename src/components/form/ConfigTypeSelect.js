@@ -47,10 +47,18 @@ export default function ConfigTypeSelect({ configType, formData, onChange }) {
           </>
         ) : configType === "ugr" ? (
           <>
-            <option value="ugr_standard">Standard (PPPoE)</option>
-            <option value="ugr_bridge">Bridge Mode</option>
-            <option value="ugr_babadan_pppoe">Babadan PPPoE</option>
-            <option value="ugr_babadan_bridge">Babadan Bridge</option>
+            <optgroup label="Standard">
+              <option value="ugr_standard">Standard (PPPoE)</option>
+              <option value="ugr_bridge">Bridge Mode</option>
+            </optgroup>
+            <optgroup label="Babadan">
+              <option value="ugr_babadan_pppoe">Babadan PPPoE</option>
+              <option value="ugr_babadan_bridge">Babadan Bridge</option>
+            </optgroup>
+            <optgroup label="KWD">
+              <option value="ugr_kwd_pppoe">KWD PPPoE</option>
+              <option value="ugr_kwd_bridge">KWD Bridge</option>
+            </optgroup>
           </>
         ) : configType === "uho" ? (
           <>
