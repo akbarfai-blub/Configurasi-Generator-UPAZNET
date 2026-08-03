@@ -578,12 +578,14 @@ export const generateUNB = (data) => {
       vlan2: "102",
       profile: "pppoe_vlan102",
       type: "bridge",
+      useC300Syntax: true,
     },
     bridge_bolo: {
       vlan1: "1500",
       vlan2: "1501",
       profile: "bolo",
       type: "bridge_bolo",
+      useC300Syntax: true,
     },
   };
 
