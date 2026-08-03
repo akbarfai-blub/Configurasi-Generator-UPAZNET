@@ -126,6 +126,7 @@ export default function Home() {
                 <ServiceFormSection
                   formData={formData}
                   onChange={handleChange}
+                  configType={configType}
                 />
 
                 <button

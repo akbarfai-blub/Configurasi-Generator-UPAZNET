@@ -1,6 +1,6 @@
 "use client";
 
-export default function ServiceFormSection({ formData, onChange }) {
+export default function ServiceFormSection({ formData, onChange, configType }) {
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -30,6 +30,23 @@ export default function ServiceFormSection({ formData, onChange }) {
             </optgroup>
           </select>
         </div>
+        {configType === "unb" && formData.selectedVlanType === "602" && (
+          <div className="space-y-1">
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-800">
+              Metro Profile
+            </label>
+            <select
+              name="metroProfile"
+              value={formData.metroProfile}
+              onChange={onChange}
+              className="w-full p-2.5 border border-slate-300 bg-slate-50 rounded-lg focus:ring-2 focus:ring-upaz-green focus:border-upaz-green outline-none transition font-bold text-sm text-slate-800"
+            >
+              <option value="metro10">Metro 10</option>
+              <option value="metro30">Metro 30</option>
+              <option value="metro100">Metro 100</option>
+            </select>
+          </div>
+        )}
         <div className="space-y-1">
           <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
             PPPoE User

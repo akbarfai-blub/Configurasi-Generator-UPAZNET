@@ -518,6 +518,7 @@ export const generateUNB = (data) => {
     pppoePass,
     namaPelanggan,
     selectedVlanType,
+    metroProfile = "metro10",
   } = data;
   const cleanId = idPelanggan.toString().slice(0, 10);
   const descText = namaPelanggan
@@ -578,14 +579,12 @@ export const generateUNB = (data) => {
       vlan2: "102",
       profile: "pppoe_vlan102",
       type: "bridge",
-      useC300Syntax: true,
     },
     bridge_bolo: {
       vlan1: "1500",
       vlan2: "1501",
       profile: "bolo",
       type: "bridge_bolo",
-      useC300Syntax: true,
     },
   };
 
@@ -624,10 +623,10 @@ write`.trim();
 
   if (conf.type === "bridge") {
     return `conf t
-interface ${oltPrefix}${interfaceOlt}
+interface gpon-olt_${interfaceOlt}
 onu ${onuId} type ALL sn ${sn}
 exit
-interface ${onuPrefix}${interfaceOlt}:${onuId}
+interface gpon-onu_${interfaceOlt}:${onuId}
 name ${cleanId}
 description ${descText}
 sn-bind enable sn
@@ -637,7 +636,7 @@ gemport 2 tcont 1
 service-port 1 vport 1 user-vlan ${conf.vlan1} vlan ${conf.vlan1}
 service-port 2 vport 2 user-vlan ${conf.vlan2} vlan ${conf.vlan2}
 exit
-pon-onu-mng ${onuPrefix}${interfaceOlt}:${onuId}
+pon-onu-mng gpon-onu_${interfaceOlt}:${onuId}
 service ${conf.vlan1} gemport 1 vlan ${conf.vlan1}
 service pppoe gemport 2 vlan ${conf.vlan2}
 vlan port eth_0/1 mode tag vlan ${conf.vlan1}
@@ -653,10 +652,10 @@ write`.trim();
 
   if (conf.type === "bridge_bolo") {
     return `conf t
-interface ${oltPrefix}${interfaceOlt}
+interface gpon-olt_${interfaceOlt}
 onu ${onuId} type ALL sn ${sn}
 exit
-interface ${onuPrefix}${interfaceOlt}:${onuId}
+interface gpon-onu_${interfaceOlt}:${onuId}
 name ${cleanId}
 description ${descText}
 sn-bind enable sn
@@ -666,7 +665,7 @@ gemport 2 tcont 1
 service-port 1 vport 1 user-vlan ${conf.vlan1} vlan ${conf.vlan1}
 service-port 2 vport 2 user-vlan ${conf.vlan2} vlan ${conf.vlan2}
 exit
-pon-onu-mng ${onuPrefix}${interfaceOlt}:${onuId}
+pon-onu-mng gpon-onu_${interfaceOlt}:${onuId}
 service ${conf.vlan1} gemport 1 vlan ${conf.vlan1}
 service pppoe gemport 2 vlan ${conf.vlan2}
 vlan port eth_0/1 mode hybrid def-vlan ${conf.vlan1}
@@ -680,7 +679,10 @@ write`.trim();
   }
 
   const onuType = conf.onuType || "ALL";
-  const tcontProfile = conf.tcontProfile || "kusuma";
+  const tcontProfile =
+    String(selectedVlanType) === "602"
+      ? metroProfile || "metro10"
+      : conf.tcontProfile || "kusuma";
   const isLexxa = conf.type === "lexxa";
 
   return `conf t
