@@ -1,0 +1,175 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-04T00:00:00Z",
+  "title": "Design System: Upaznet Config & Command Generator",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Terminal Navy",
+        "canonical": "#003C71",
+        "tonalRamp": ["#00121f", "#002136", "#002c4e", "#003766", "#003c71", "#1b5a8a", "#4a82a8", "#8fb7cf"]
+      },
+      "accent": {
+        "role": "secondary",
+        "displayName": "Signal Green",
+        "canonical": "#00A651",
+        "tonalRamp": ["#00331a", "#005c2e", "#008644", "#00a651", "#2fb96c", "#6fd094", "#aee5c3", "#e2f7ec"]
+      },
+      "neutral-bg": {
+        "role": "neutral",
+        "displayName": "Ops Desk",
+        "canonical": "#FBFCFD",
+        "tonalRamp": ["#20242b", "#3a4048", "#565d66", "#747c86", "#949ca6", "#b5bcc4", "#d7dbe0", "#fbfcfd"]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Surface White",
+        "canonical": "#FFFFFF",
+        "tonalRamp": ["#1c1f23", "#3a3e44", "#5a5f66", "#7c828a", "#a0a6ae", "#c5c9cf", "#e3e6ea", "#ffffff"]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#1E293B",
+        "tonalRamp": ["#060a12", "#101826", "#1e293b", "#2e3d54", "#44536c", "#62718a", "#8895aa", "#b3bcc9"]
+      },
+      "panel-text": {
+        "role": "neutral",
+        "displayName": "Panel Text",
+        "canonical": "#DBEAFE",
+        "tonalRamp": ["#1b3656", "#2a4f7a", "#3f6ba0", "#5887c0", "#7ba4d6", "#a4c3e8", "#c4d8f4", "#dbeafe"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "The single page title, uppercase Terminal Navy." },
+      "headline": { "displayName": "Headline", "purpose": "Modal titles and panel section labels." },
+      "body": { "displayName": "Body", "purpose": "Form content, helper text, placeholders." },
+      "label": { "displayName": "Label", "purpose": "Every field and section label; uppercase micro-label signature." },
+      "mono": { "displayName": "Mono", "purpose": "Generated scripts and hub commands; always on Terminal Navy." }
+    },
+    "shadows": [
+      { "name": "panel-xl", "value": "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)", "purpose": "Terminal Navy command panels floating off the desk." },
+      { "name": "card-lg", "value": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)", "purpose": "The form card lift." },
+      { "name": "modal-2xl", "value": "0 25px 50px -12px rgb(0 0 0 / 0.25)", "purpose": "Highest surface; quick-fill modal." },
+      { "name": "btn-md", "value": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)", "purpose": "Interactive buttons at rest." },
+      { "name": "btn-hover", "value": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)", "purpose": "Buttons on hover; slight rise." }
+    ],
+    "motion": [
+      { "name": "transition-colors", "value": "150ms ease-in-out", "purpose": "Hover and state color shifts on buttons, tabs, command rows." },
+      { "name": "copy-pulse", "value": "1s steps(2, start) infinite", "purpose": "The pulsing COPIED! confirmation." }
+    ],
+    "breakpoints": [
+      { "name": "md", "value": "768px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Action Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The Generate / submit action; full-width on the desk, Signal Green with icon.",
+      "html": "<button class=\"ds-btn-primary\"><svg class=\"ds-ico\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8\"/><path d=\"M21 3v5h-5\"/><path d=\"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16\"/><path d=\"M8 16H3v5\"/></svg>Generate Script</button>",
+      "css": ".ds-btn-primary { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px 16px; border: none; border-radius: 12px; background: #00A651; color: #fff; font-family: Geist, Arial, sans-serif; font-size: 14px; font-weight: 700; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); transition: background 150ms ease-in-out, box-shadow 150ms ease-in-out; cursor: pointer; } .ds-ico { width: 18px; height: 18px; } .ds-btn-primary:hover { background: #008C44; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); } .ds-btn-primary:focus-visible { outline: 2px solid #00A651; outline-offset: 2px; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Dismiss / cancel action (Batal); quiet and secondary on the light desk.",
+      "html": "<button class=\"ds-btn-outline\">Batal</button>",
+      "css": ".ds-btn-outline { padding: 8px 16px; border: 1px solid #CBD5E1; border-radius: 12px; background: #fff; color: #64748B; font-family: Geist, Arial, sans-serif; font-size: 14px; font-weight: 700; transition: background 150ms ease-in-out; cursor: pointer; } .ds-btn-outline:hover { background: #F1F5F9; } .ds-btn-outline:focus-visible { outline: 2px solid #00A651; outline-offset: 2px; }"
+    },
+    {
+      "name": "Quick-Fill Callout",
+      "kind": "button",
+      "refersTo": "button-quickfill",
+      "description": "Full-width dashed import trigger that auto-fills the form from pasted detail text.",
+      "html": "<button class=\"ds-btn-quickfill\"><svg class=\"ds-ico\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"8\" y=\"2\" width=\"8\" height=\"4\" rx=\"1\"/><path d=\"M11 14h10\"/><path d=\"M16 4h2a2 2 0 0 1 2 2v1.344\"/><path d=\"m17 18 4-4-4-4\"/><path d=\"M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 1.793-1.113\"/></svg>Quick Fill dari Detail Koneksi</button>",
+      "css": ".ds-btn-quickfill { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 8px 16px; border-radius: 12px; border: 2px dashed #00A651; background: #fff; color: #00A651; font-family: Geist, Arial, sans-serif; font-size: 14px; font-weight: 700; transition: background 150ms ease-in-out; cursor: pointer; } .ds-ico { width: 16px; height: 16px; } .ds-btn-quickfill:hover { background: rgb(0 166 81 / 0.1); } .ds-btn-quickfill:focus-visible { outline: 2px solid #00A651; outline-offset: 2px; }"
+    },
+    {
+      "name": "Config Tabs",
+      "kind": "nav",
+      "refersTo": "tabs-config",
+      "description": "Config-type pill rail; the active tab is a floating Navy block.",
+      "html": "<div class=\"ds-tabs\" role=\"tablist\"><button class=\"ds-tab active\">UNR C600</button><button class=\"ds-tab\">unb</button><button class=\"ds-tab\">uho</button><button class=\"ds-tab\">ubl</button><button class=\"ds-tab\">ugr</button><button class=\"ds-tab\">ucd</button></div>",
+      "css": ".ds-tabs { display: flex; gap: 4px; padding: 4px; border-radius: 12px; background: #F1F5F9; } .ds-tab { flex: 1; padding: 8px 16px; border: none; border-radius: 8px; background: transparent; color: #64748B; font-family: Geist, Arial, sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; transition: all 150ms ease-in-out; cursor: pointer; } .ds-tab:hover { color: #003C71; background: #fff; } .ds-tab.active { background: #003C71; color: #fff; font-weight: 700; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); } .ds-tab:focus-visible { outline: 2px solid #00A651; outline-offset: 2px; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Desk field with a Field Slate fill, slate stroke, and green focus ring.",
+      "html": "<label class=\"ds-label\">ID Pelanggan</label><input class=\"ds-input\" type=\"text\" placeholder=\"1010112678\" />",
+      "css": ".ds-label { display: block; margin-bottom: 4px; font-family: Geist, Arial, sans-serif; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #64748B; } .ds-input { width: 100%; padding: 10px; border: 1px solid #CBD5E1; border-radius: 8px; background: #F8FAFC; color: #1E293B; font-family: Geist, Arial, sans-serif; font-size: 14px; transition: border-color 150ms ease-in-out, box-shadow 150ms ease-in-out; } .ds-input::placeholder { color: #94A3B8; } .ds-input:focus { outline: none; border-color: #00A651; box-shadow: 0 0 0 2px #00A651; } .ds-input:focus-visible { outline: none; }"
+    },
+    {
+      "name": "Select Field",
+      "kind": "input",
+      "refersTo": "input-select",
+      "description": "Structured dropdown (config type / service package) — same field styling, heavier weight.",
+      "html": "<label class=\"ds-label\">Paket Layanan</label><select class=\"ds-select\"><optgroup label=\"Paket Kusuma\"><option>KUSUMA 1</option><option>KUSUMA 2</option></optgroup></select>",
+      "css": ".ds-label { display: block; margin-bottom: 4px; font-family: Geist, Arial, sans-serif; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #64748B; } .ds-select { width: 100%; padding: 10px; border: 1px solid #CBD5E1; border-radius: 8px; background: #F8FAFC; color: #1E293B; font-family: Geist, Arial, sans-serif; font-size: 14px; font-weight: 600; transition: border-color 150ms ease-in-out, box-shadow 150ms ease-in-out; } .ds-select:focus { outline: none; border-color: #00A651; box-shadow: 0 0 0 2px #00A651; }"
+    },
+    {
+      "name": "Terminal Panel",
+      "kind": "card",
+      "refersTo": "terminal-panel",
+      "description": "The generated-script output panel: Navy deck, mono readout, green COPY.",
+      "html": "<div class=\"ds-terminal\"><div class=\"ds-terminal-head\"><span class=\"ds-terminal-title\"><svg class=\"ds-ico\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"m9 12 2 2 4-4\"/></svg>Script OLT (ZTE)</span><button class=\"ds-copy\">COPY</button></div><pre class=\"ds-terminal-body\">conf t\npon-onu-mng gpon-onu_1/1/5:2</pre></div>",
+      "css": ".ds-terminal { border-radius: 12px; background: #003C71; border: 1px solid rgb(30 58 138 / 0.5); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); padding: 20px; font-family: Geist, Arial, sans-serif; } .ds-terminal-head { display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; margin-bottom: 16px; border-bottom: 1px solid #1E40AF; } .ds-terminal-title { display: flex; align-items: center; gap: 8px; color: #fff; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; } .ds-ico { width: 14px; height: 14px; color: #00A651; } .ds-copy { border: none; background: transparent; color: #00A651; font-size: 12px; font-weight: 700; cursor: pointer; transition: color 150ms ease-in-out; } .ds-copy:hover { color: #fff; } .ds-terminal-body { margin: 0; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 13px; line-height: 1.625; color: #DBEAFE; white-space: pre; overflow-x: auto; }"
+    },
+    {
+      "name": "Command Hub Row",
+      "kind": "custom",
+      "refersTo": "command-row",
+      "description": "A hub command entry: micro-label over a mono command block that lifts and turns green on copy.",
+      "html": "<div class=\"ds-cmd\"><span class=\"ds-cmd-label\">Cek Redaman Pelanggan</span><code class=\"ds-cmd-block\">sho pon power attenuation gpon_onu-1/1/5:2</code></div>",
+      "css": ".ds-cmd { display: block; text-align: left; background: transparent; border: none; width: 100%; padding: 0; margin-bottom: 12px; cursor: pointer; font-family: Geist, Arial, sans-serif; } .ds-cmd-label { display: block; margin-bottom: 4px; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgb(255 255 255 / 0.6); transition: color 150ms ease-in-out; } .ds-cmd:hover .ds-cmd-label { color: #00A651; } .ds-cmd-block { display: block; padding: 8px; border-radius: 4px; background: rgb(255 255 255 / 0.05); border: 1px solid transparent; color: rgb(255 255 255 / 0.9); font-family: 'Geist Mono', ui-monospace, monospace; font-size: 10px; line-height: 1.25; white-space: pre-wrap; word-break: break-all; transition: border-color 150ms ease-in-out; } .ds-cmd:hover .ds-cmd-block { border-color: rgb(255 255 255 / 0.2); } .ds-cmd:focus-visible { outline: 2px solid #00A651; outline-offset: 2px; }"
+    },
+    {
+      "name": "Command Hub Switch",
+      "kind": "custom",
+      "refersTo": "mode-switch",
+      "description": "C600 / C300 segmented toggle in the hub header; the active mode is a Signal Green pill.",
+      "html": "<div class=\"ds-switch\"><button class=\"ds-switch-opt active\">C600</button><button class=\"ds-switch-opt\">C300/C320</button></div>",
+      "css": ".ds-switch { display: inline-flex; padding: 4px; border-radius: 8px; background: rgb(255 255 255 / 0.1); } .ds-switch-opt { padding: 4px 12px; border: none; border-radius: 4px; background: transparent; color: rgb(255 255 255 / 0.6); font-size: 10px; font-weight: 700; transition: all 150ms ease-in-out; cursor: pointer; } .ds-switch-opt:hover { color: #fff; } .ds-switch-opt.active { background: #00A651; color: #fff; } .ds-switch-opt:focus-visible { outline: 2px solid #00A651; outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Ops Console",
+    "overview": "This is an internal network-operations instrument, not a marketing site. The canvas reads like the traffic-desk at a carrier NOC: a calm, near-white operating field where the technician's job happens, with a dark navy command deck carrying every machine-facing surface — the generated OLT script, the MikroTik secret, and the troubleshooting command hub. Signal green is the only accent, reserved for the moments the desk acts: Generate, Copy, copied-confirmation, the active tab, the C600/C300 mode switch. The aesthetic is disciplined and terminal-like — small uppercase micro-labels, exact monospace readouts, precise rounded panels, nothing decorative.\n\nForm and output stay separated by more than layout: the two script panels share identical navy weight so a technician copying one never fat-fingers the other into the wrong terminal. Depth is expressed through shadowed panels floating off the flat desk, reinforcing \"this is where the machine lives.\" The voice is quiet, exact, and earned — every element either accepts a value, renders a command, or triggers an action. There is no ornament.",
+    "keyCharacteristics": [
+      "Light operating desk (near-white) + dark Terminal Navy command deck.",
+      "Single Signal Green accent for action/active/success moments only.",
+      "Monospace command readouts on navy; proportional type on the light desk.",
+      "Uppercase 12px micro-labels with wide tracking for all form and section labels.",
+      "Shadow carries the command panels and interactive controls; the desk stays flat.",
+      "Precise rounded geometry: 8px inputs, 12px panels/buttons, 16px large surfaces."
+    ],
+    "rules": [
+      { "name": "The Signal Green Rule", "body": "Signal green is reserved for action, active, and success moments — Generate and Copy actions, the selected config tab, the mode switch, focus rings, and copied feedback. It never floods a surface; on the light desk it appears only where the operator acts or a state goes live.", "section": "colors" },
+      { "name": "The Navy Deck Rule", "body": "Terminal Navy belongs to command surfaces — script output, command hub, modal header. It must never become an input background; every editable field stays on light Slate or White.", "section": "colors" },
+      { "name": "The Uppercase Micro-Label Rule", "body": "Field and section labels are set at 12px, 600 weight, all-caps with wide tracking. All-caps always means \"read-only meta\"; sentence case is preserved for operator-entered values and placeholders so the machine input stays visually distinct from the label.", "section": "typography" },
+      { "name": "The Mono-Command Rule", "body": "Anything the operator will paste into a terminal — generated scripts and hub commands — is set in monospace on Terminal Navy. If it leaves the tool, it is mono.", "section": "typography" },
+      { "name": "The Panel-Float Rule", "body": "The desk is flat at rest. Only command panels and interactive controls carry shadow, so a cast shadow reads as \"machine surface,\" never as decorative layering behind benign content.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do render every script and troubleshooting command in monospace on Terminal Navy — it leaves the operator's hands, so it must read exactly like the terminal.",
+      "Do spend Signal Green only on action, active, and success moments (Generate, Copy, copied feedback, selected tab, mode switch, focus).",
+      "Do keep the operating desk light: white / Slate-50 surfaces, slate borders, flat at rest.",
+      "Do use the uppercase 12px micro-label (tracking-wider) for all field and section labels.",
+      "Do keep the two output panels visually identical in weight and shape so dual-copy confusion is impossible.",
+      "Do use 8px fields, 12px panels/buttons, 16px large cards for a consistent rounded-technical feel."
+    ],
+    "donts": [
+      "Don't give editable inputs a Terminal Navy (or any dark) background; fields stay Slate-50/White.",
+      "Don't introduce a third accent hue; Signal Green is the only accent and it stays rare.",
+      "Don't set scripts or commands in a proportional font.",
+      "Don't uppercase operator-entered values or placeholders — uppercase is reserved for read-only labels.",
+      "Don't float flat desk surfaces with shadows; a cast shadow belongs to command panels and interactive controls only."
+    ]
+  }
+}
