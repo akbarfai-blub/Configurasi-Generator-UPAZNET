@@ -46,6 +46,16 @@ typography:
     fontSize: "13px"
     fontWeight: 400
     lineHeight: "1.625"
+  micro:
+    fontFamily: "Geist, Arial, sans-serif"
+    fontSize: "10px"
+    fontWeight: 700
+    lineHeight: "1.25"
+    letterSpacing: "0.1em"
+    textTransform: "uppercase"
+  scale:
+    micro: "10px"
+    micro-tight: "9px"
 rounded:
   sm: "8px"
   md: "12px"
@@ -138,7 +148,8 @@ A two-tone brand palette: Terminal Navy owns command surfaces, Signal Green owns
 - **Headline** (700, 16px / `text-base`, line-height 1.4): Modal titles, panel section labels.
 - **Body** (400, 14px, line-height 1.5): Form content, helper text, placeholders.
 - **Label** (600, 12px / `text-xs`, tracking 0.05em, uppercase): Every field label and section title on the desk. The signature voice of the light surface.
-- **Mono** (400, 13px, line-height 1.625): Scripts in the output panels and commands in the hub — always on Terminal Navy, rendered in Panel Text blue. Hub command labels step smaller (9–10px, `tracking-widest`).
+- **Mono** (400, 13px, line-height 1.625): Scripts in the output panels and commands in the hub — always on Terminal Navy, rendered in Panel Text blue.
+- **Micro** (700, 9–10px, line-height 1.25, tracking 0.1em, uppercase): Dense operational metadata only — Command Hub command labels, the C600/C300 mode switch, and status flags like COPIED!. It is the lowest step on the desk and never carries body copy, values, or anything a technician types.
 
 ### Named Rules
 **The Uppercase Micro-Label Rule.** Field and section labels are set at 12px, 600 weight, all-caps with wide tracking. All-caps always means "read-only meta"; sentence case is preserved for operator-entered values and placeholders so the machine input stays visually distinct from the label.

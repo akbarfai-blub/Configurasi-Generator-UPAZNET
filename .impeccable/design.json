@@ -46,7 +46,8 @@
       "headline": { "displayName": "Headline", "purpose": "Modal titles and panel section labels." },
       "body": { "displayName": "Body", "purpose": "Form content, helper text, placeholders." },
       "label": { "displayName": "Label", "purpose": "Every field and section label; uppercase micro-label signature." },
-      "mono": { "displayName": "Mono", "purpose": "Generated scripts and hub commands; always on Terminal Navy." }
+      "mono": { "displayName": "Mono", "purpose": "Generated scripts and hub commands; always on Terminal Navy." },
+      "micro": { "displayName": "Micro", "purpose": "Dense operational metadata only: Command Hub labels, mode switch, COPIED! flags." }
     },
     "shadows": [
       { "name": "panel-xl", "value": "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)", "purpose": "Terminal Navy command panels floating off the desk." },
