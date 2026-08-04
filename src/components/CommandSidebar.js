@@ -72,8 +72,12 @@ export default function CommandSidebar({ data, isAccordion = false }) {
                         </button>
                     )}
 
-                    <div className="flex bg-white/10 rounded-lg p-1 scale-90">
+                    <div role="tablist" aria-label="Mode OLT" className="flex bg-white/10 rounded-lg p-1 scale-90">
                         <button
+                            role="tab"
+                            id="olt-tab-c600"
+                            aria-selected={oltType === "c600"}
+                            aria-controls="command-list"
                             onClick={() => setOltType("c600")}
                             className={`px-3 py-1 text-[10px] font-bold rounded transition-colors ${
                                 oltType === "c600"
@@ -84,6 +88,10 @@ export default function CommandSidebar({ data, isAccordion = false }) {
                             C600
                         </button>
                         <button
+                            role="tab"
+                            id="olt-tab-c300"
+                            aria-selected={oltType === "c300"}
+                            aria-controls="command-list"
                             onClick={() => setOltType("c300")}
                             className={`px-3 py-1 text-[10px] font-bold rounded transition-colors ${
                                 oltType === "c300"
@@ -98,7 +106,12 @@ export default function CommandSidebar({ data, isAccordion = false }) {
             </div>
 
             {(isAccordion ? isOpen : true) && (
-                <div className="px-5 pb-5 space-y-3 max-h-[600px] overflow-y-auto no-scrollbar">
+                <div
+                    id="command-list"
+                    role="tabpanel"
+                    aria-labelledby={oltType === "c600" ? "olt-tab-c600" : "olt-tab-c300"}
+                    className="px-5 pb-5 space-y-3 max-h-[600px] overflow-y-auto no-scrollbar"
+                >
                     {commands.map((item, idx) => (
                         <button
                             key={idx}

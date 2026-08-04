@@ -5,10 +5,11 @@ export default function ServiceFormSection({ formData, onChange, configType }) {
     <>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="space-y-1">
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <label htmlFor="paketLayanan" className="text-xs font-semibold uppercase tracking-wider text-slate-500">
             Paket Layanan
           </label>
           <select
+            id="paketLayanan"
             name="paketLayanan"
             value={formData.paketLayanan}
             onChange={onChange}
@@ -32,10 +33,11 @@ export default function ServiceFormSection({ formData, onChange, configType }) {
         </div>
         {configType === "unb" && formData.selectedVlanType === "602" && (
           <div className="space-y-1">
-            <label className="text-xs font-bold uppercase tracking-wider text-slate-800">
+            <label htmlFor="metroProfile" className="text-xs font-bold uppercase tracking-wider text-slate-800">
               Metro Profile
             </label>
             <select
+              id="metroProfile"
               name="metroProfile"
               value={formData.metroProfile}
               onChange={onChange}
@@ -48,11 +50,12 @@ export default function ServiceFormSection({ formData, onChange, configType }) {
           </div>
         )}
         <div className="space-y-1">
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <label htmlFor="pppoeUser" className="text-xs font-semibold uppercase tracking-wider text-slate-500">
             PPPoE User
           </label>
           <input
             required
+            id="pppoeUser"
             name="pppoeUser"
             value={formData.pppoeUser}
             onChange={onChange}
@@ -60,11 +63,12 @@ export default function ServiceFormSection({ formData, onChange, configType }) {
           />
         </div>
         <div className="space-y-1">
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <label htmlFor="pppoePass" className="text-xs font-semibold uppercase tracking-wider text-slate-500">
             PPPoE Pass
           </label>
           <input
             required
+            id="pppoePass"
             name="pppoePass"
             value={formData.pppoePass}
             onChange={onChange}

@@ -10,11 +10,12 @@ export default function CustomerFormSection({ formData, onChange, onIdPelangganC
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-1">
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <label htmlFor="idPelanggan" className="text-xs font-semibold uppercase tracking-wider text-slate-500">
             ID Pelanggan
           </label>
           <input
             required
+            id="idPelanggan"
             name="idPelanggan"
             value={formData.idPelanggan}
             onChange={onIdPelangganChange}
@@ -24,10 +25,11 @@ export default function CustomerFormSection({ formData, onChange, onIdPelangganC
           />
         </div>
         <div className="space-y-1">
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <label htmlFor="namaPelanggan" className="text-xs font-semibold uppercase tracking-wider text-slate-500">
             Nama Pelanggan
           </label>
           <input
+            id="namaPelanggan"
             name="namaPelanggan"
             value={formData.namaPelanggan}
             onChange={onChange}

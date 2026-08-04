@@ -68,7 +68,11 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-upaz-bg p-4 md:p-8 font-sans text-slate-800">
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className="min-h-screen bg-upaz-bg p-4 md:p-8 font-sans text-slate-800"
+    >
       <div className="max-w-[1400px] mx-auto">
         <header className="mb-8">
           <h1 className="text-2xl font-bold text-upaz-blue">
@@ -92,6 +96,7 @@ export default function Home() {
               {/* Form Section - appears first in both mobile & desktop */}
               <form
                 onSubmit={handleGenerate}
+                id="config-form-panel"
                 className="bg-white p-6 rounded-2xl shadow-lg border border-slate-200 space-y-5 h-fit xl:sticky xl:top-8"
               >
                 <button
@@ -175,6 +180,6 @@ export default function Home() {
           onClose={() => setShowQuickFill(false)}
         />
       )}
-    </div>
+    </main>
   );
 }

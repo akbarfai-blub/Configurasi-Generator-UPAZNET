@@ -18,10 +18,16 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="id">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-upaz-blue focus:shadow-lg"
+        >
+          Lewati ke konten utama
+        </a>
         {children}
       </body>
     </html>

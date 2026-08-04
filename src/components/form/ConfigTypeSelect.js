@@ -23,10 +23,11 @@ export default function ConfigTypeSelect({ configType, formData, onChange }) {
 
   return (
     <div className="space-y-1 mb-4 pb-4 border-b border-slate-200">
-      <label className="text-xs font-bold uppercase tracking-wider text-slate-800">
+      <label htmlFor="tipeKonfigurasi" className="text-xs font-bold uppercase tracking-wider text-slate-800">
         Tipe Konfigurasi
       </label>
       <select
+        id="tipeKonfigurasi"
         name={selectName}
         value={selectValue}
         onChange={onChange}

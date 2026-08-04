@@ -81,6 +81,10 @@ export default function QuickFillModal({ onFill, onClose }) {
           </div>
           <div className="flex px-6 pb-0">
             <button
+              role="tab"
+              id="quickfill-tab-detailKoneksi"
+              aria-selected={mode === "detailKoneksi"}
+              aria-controls="quickfill-body"
               className={`px-4 py-2 text-sm font-bold border-b-2 transition-colors ${
                 mode === "detailKoneksi"
                   ? "border-white text-white"
@@ -91,6 +95,10 @@ export default function QuickFillModal({ onFill, onClose }) {
               Detail Koneksi
             </button>
             <button
+              role="tab"
+              id="quickfill-tab-detailOnu"
+              aria-selected={mode === "detailOnu"}
+              aria-controls="quickfill-body"
               className={`px-4 py-2 text-sm font-bold border-b-2 transition-colors ${
                 mode === "detailOnu"
                   ? "border-white text-white"
@@ -104,7 +112,7 @@ export default function QuickFillModal({ onFill, onClose }) {
         </div>
 
         {/* Body */}
-        <div className="px-6 py-5 space-y-4">
+        <div id="quickfill-body" role="tabpanel" className="px-6 py-5 space-y-4">
           <p className="text-sm text-slate-600 leading-relaxed">
             Paste seluruh teks dari{" "}
             {mode === "detailKoneksi" ? (
@@ -119,13 +127,18 @@ export default function QuickFillModal({ onFill, onClose }) {
             di sistem internal ke textarea di bawah.
           </p>
 
+          <label htmlFor="quickfill-text" className="sr-only">
+            Teks detail untuk diisi ke form
+          </label>
           <textarea
             ref={textareaRef}
+            id="quickfill-text"
             value={rawText}
             onChange={(e) => {
               setRawText(e.target.value);
               setError("");
             }}
+            aria-describedby={error ? "quickfill-error" : undefined}
             placeholder={
               mode === "detailKoneksi"
                 ? "Paste teks dari Detail Koneksi Gpon di sini...\n\nContoh:\nNama/ID Pelanggan: 0010100011 | LAILA ZULFATUN NABILAH\nPassword: 220425\nVLAN: 110\nSN: XPON1DDDF652\nIndex Onu: 2\nODP: ODP PDG-01 UC/03 D02(2)"
@@ -136,7 +149,7 @@ export default function QuickFillModal({ onFill, onClose }) {
           />
 
           {error && (
-            <p className="text-xs text-red-600 font-semibold bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+            <p id="quickfill-error" role="alert" className="text-xs text-red-600 font-semibold bg-red-50 border border-red-200 rounded-lg px-3 py-2">
               {error}
             </p>
           )}

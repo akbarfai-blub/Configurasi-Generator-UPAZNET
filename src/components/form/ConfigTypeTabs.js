@@ -13,10 +13,18 @@ const TAB_LABELS = {
 
 export default function ConfigTypeTabs({ currentType, onChange }) {
   return (
-    <div className="flex bg-slate-100 p-1 rounded-xl w-full overflow-x-auto no-scrollbar gap-1">
+    <div
+      role="tablist"
+      aria-label="Tipe Konfigurasi"
+      className="flex bg-slate-100 p-1 rounded-xl w-full overflow-x-auto no-scrollbar gap-1"
+    >
       {CONFIG_TYPES.map((type) => (
         <button
           key={type}
+          role="tab"
+          id={`tab-${type}`}
+          aria-selected={currentType === type}
+          aria-controls="config-form-panel"
           onClick={() => onChange(type)}
           className={`flex-1 py-2 px-4 text-xs uppercase tracking-wider transition-all ${
             currentType === type

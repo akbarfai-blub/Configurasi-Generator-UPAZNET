@@ -5,11 +5,12 @@ export default function OltFormSection({ formData, onChange, onOltInterfaceChang
     <>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1">
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <label htmlFor="interfaceOlt" className="text-xs font-semibold uppercase tracking-wider text-slate-500">
             Interface OLT
           </label>
           <input
             required
+            id="interfaceOlt"
             name="interfaceOlt"
             value={formData.interfaceOlt}
             onChange={onOltInterfaceChange}
@@ -19,11 +20,12 @@ export default function OltFormSection({ formData, onChange, onOltInterfaceChang
           />
         </div>
         <div className="space-y-1">
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <label htmlFor="onuId" className="text-xs font-semibold uppercase tracking-wider text-slate-500">
             ONU ID
           </label>
           <input
             required
+            id="onuId"
             name="onuId"
             value={formData.onuId}
             onChange={onChange}
@@ -33,13 +35,14 @@ export default function OltFormSection({ formData, onChange, onOltInterfaceChang
         </div>
       </div>
 
-      <div className="space-y-1">
-        <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-          Serial Number (SN)
-        </label>
-        <input
-          required
-          name="sn"
+        <div className="space-y-1">
+          <label htmlFor="sn" className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+            Serial Number (SN)
+          </label>
+          <input
+            required
+            id="sn"
+            name="sn"
           value={formData.sn}
           onChange={onChange}
           placeholder="ZTEGD2327302"
