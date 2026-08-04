@@ -62,18 +62,18 @@ export default function QuickFillModal({ onFill, onClose }) {
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
       onClick={handleBackdropClick}
     >
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg border border-slate-200 overflow-hidden animate-in">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg border border-neutral-divider overflow-hidden animate-in">
         {/* Header */}
-        <div className="flex flex-col border-b border-slate-200 bg-upaz-blue">
+        <div className="flex flex-col border-b border-neutral-divider bg-upaz-blue">
           <div className="flex items-center justify-between px-6 py-4">
-            <div className="flex items-center gap-2 text-white">
+            <div className="flex items-center gap-2 text-panel-on-navy">
               <ClipboardPaste size={20} />
               <h2 className="text-base font-bold">Quick Fill</h2>
             </div>
             <button
               type="button"
               onClick={onClose}
-              className="text-white/70 hover:text-white transition-colors rounded-lg p-1 hover:bg-white/10"
+              className="text-panel-on-navy/70 hover:text-panel-on-navy transition-colors rounded-lg p-1 hover:bg-panel-on-navy/10"
               aria-label="Tutup modal"
             >
               <X size={18} />
@@ -87,8 +87,8 @@ export default function QuickFillModal({ onFill, onClose }) {
               aria-controls="quickfill-body"
               className={`px-4 py-2 text-sm font-bold border-b-2 transition-colors ${
                 mode === "detailKoneksi"
-                  ? "border-white text-white"
-                  : "border-transparent text-white/70 hover:text-white"
+                  ? "border-panel-on-navy text-panel-on-navy"
+                  : "border-transparent text-panel-on-navy/70 hover:text-panel-on-navy"
               }`}
               onClick={() => { setMode("detailKoneksi"); setError(""); setRawText(""); }}
             >
@@ -101,8 +101,8 @@ export default function QuickFillModal({ onFill, onClose }) {
               aria-controls="quickfill-body"
               className={`px-4 py-2 text-sm font-bold border-b-2 transition-colors ${
                 mode === "detailOnu"
-                  ? "border-white text-white"
-                  : "border-transparent text-white/70 hover:text-white"
+                  ? "border-panel-on-navy text-panel-on-navy"
+                  : "border-transparent text-panel-on-navy/70 hover:text-panel-on-navy"
               }`}
               onClick={() => { setMode("detailOnu"); setError(""); setRawText(""); }}
             >
@@ -113,7 +113,7 @@ export default function QuickFillModal({ onFill, onClose }) {
 
         {/* Body */}
         <div id="quickfill-body" role="tabpanel" className="px-6 py-5 space-y-4">
-          <p className="text-sm text-slate-600 leading-relaxed">
+          <p className="text-sm text-neutral-muted-strong leading-relaxed">
             Paste seluruh teks dari{" "}
             {mode === "detailKoneksi" ? (
               <>
@@ -144,7 +144,7 @@ export default function QuickFillModal({ onFill, onClose }) {
                 ? "Paste teks dari Detail Koneksi Gpon di sini...\n\nContoh:\nNama/ID Pelanggan: 0010100011 | LAILA ZULFATUN NABILAH\nPassword: 220425\nVLAN: 110\nSN: XPON1DDDF652\nIndex Onu: 2\nODP: ODP PDG-01 UC/03 D02(2)"
                 : "Paste teks dari halaman Detail ONU di sini...\n\nContoh:\nONU interface: gpon-onu_1/1/5:2\nName: 0010100011\nSerial number: CDTCAF5F047E\nType: ALL\nConfig state: fail"
             }
-            className="w-full p-3 border border-slate-300 bg-slate-50 rounded-xl text-sm text-slate-800 font-mono resize-none focus:ring-2 focus:ring-upaz-green focus:border-upaz-green outline-none transition placeholder:text-slate-400"
+            className="w-full p-3 border border-neutral-stroke bg-neutral-field rounded-xl text-sm text-neutral-ink font-mono resize-none focus:ring-2 focus:ring-upaz-green focus:border-upaz-green outline-none transition placeholder:text-slate-400"
             rows={8}
           />
 
@@ -156,11 +156,11 @@ export default function QuickFillModal({ onFill, onClose }) {
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-200 bg-slate-50">
+        <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-neutral-divider bg-neutral-field">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-xl border border-slate-300 text-sm font-bold text-slate-600 hover:bg-slate-100 transition-colors"
+            className="px-4 py-2 rounded-xl border border-neutral-stroke text-sm font-bold text-neutral-muted-strong hover:bg-neutral-rail transition-colors"
           >
             Batal
           </button>

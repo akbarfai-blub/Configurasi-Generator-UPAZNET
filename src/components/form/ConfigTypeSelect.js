@@ -22,8 +22,8 @@ export default function ConfigTypeSelect({ configType, formData, onChange }) {
           : formData.selectedVlanType;
 
   return (
-    <div className="space-y-1 mb-4 pb-4 border-b border-slate-200">
-      <label htmlFor="tipeKonfigurasi" className="text-xs font-bold uppercase tracking-wider text-slate-800">
+    <div className="space-y-1 mb-4 pb-4 border-b border-neutral-divider">
+      <label htmlFor="tipeKonfigurasi" className="text-xs font-bold uppercase tracking-wider text-neutral-ink">
         Tipe Konfigurasi
       </label>
       <select
@@ -31,7 +31,7 @@ export default function ConfigTypeSelect({ configType, formData, onChange }) {
         name={selectName}
         value={selectValue}
         onChange={onChange}
-        className="w-full p-2.5 border border-slate-300 bg-slate-50 rounded-lg focus:ring-2 focus:ring-upaz-green focus:border-upaz-green outline-none transition font-bold text-sm text-slate-800"
+        className="w-full p-2.5 border border-neutral-stroke bg-neutral-field rounded-lg focus:ring-2 focus:ring-upaz-green focus:border-upaz-green outline-none transition font-bold text-sm text-neutral-ink"
       >
         {configType === "standard" ? (
           <>

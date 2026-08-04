@@ -71,14 +71,14 @@ export default function Home() {
     <main
       id="main-content"
       tabIndex={-1}
-      className="min-h-screen bg-upaz-bg p-4 md:p-8 font-sans text-slate-800"
+      className="min-h-screen bg-upaz-bg p-4 md:p-8 font-sans text-neutral-ink"
     >
       <div className="max-w-[1400px] mx-auto">
         <header className="mb-8">
           <h1 className="text-2xl font-bold text-upaz-blue">
             CONFIGURASI GPON UPAZNET
           </h1>
-          <p className="text-slate-500 text-sm">
+          <p className="text-neutral-muted text-sm">
             Helpdesk Tool - Script Generator
           </p>
         </header>
@@ -97,7 +97,7 @@ export default function Home() {
               <form
                 onSubmit={handleGenerate}
                 id="config-form-panel"
-                className="bg-white p-6 rounded-2xl shadow-lg border border-slate-200 space-y-5 h-fit xl:sticky xl:top-8"
+                className="bg-white p-6 rounded-2xl shadow-lg border border-neutral-divider space-y-5 h-fit xl:sticky xl:top-8"
               >
                 <button
                   type="button"

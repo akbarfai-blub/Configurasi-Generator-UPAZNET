@@ -49,9 +49,9 @@ export default function CommandSidebar({ data, isAccordion = false }) {
     const toggleOpen = () => setIsOpen(!isOpen);
 
     return (
-        <div className="w-full bg-upaz-blue text-white rounded-xl shadow-xl h-fit">
-            <div className="flex items-center justify-between mb-4 border-b border-white/10 pb-3 p-5">
-                <div className="flex items-center gap-2 text-white">
+        <div className="w-full bg-upaz-blue text-panel-on-navy rounded-xl shadow-xl h-fit">
+            <div className="flex items-center justify-between mb-4 border-b border-panel-on-navy/10 pb-3 p-5">
+                <div className="flex items-center gap-2 text-panel-on-navy">
                     <Terminal size={18} className="text-upaz-green" />
                     <span className="font-bold text-xs uppercase tracking-tight">
                         {isAccordion ? ">_ Command Hub" : "Command Hub"}
@@ -72,7 +72,7 @@ export default function CommandSidebar({ data, isAccordion = false }) {
                         </button>
                     )}
 
-                    <div role="tablist" aria-label="Mode OLT" className="flex bg-white/10 rounded-lg p-1 scale-90">
+                    <div role="tablist" aria-label="Mode OLT" className="flex bg-panel-on-navy/10 rounded-lg p-1 scale-90">
                         <button
                             role="tab"
                             id="olt-tab-c600"
@@ -82,7 +82,7 @@ export default function CommandSidebar({ data, isAccordion = false }) {
                             className={`px-3 py-1 text-[10px] font-bold rounded transition-colors ${
                                 oltType === "c600"
                                     ? "bg-upaz-green text-white"
-                                    : "text-white/60 hover:text-white"
+                                    : "text-panel-on-navy/60 hover:text-panel-on-navy"
                             }`}
                         >
                             C600
@@ -96,7 +96,7 @@ export default function CommandSidebar({ data, isAccordion = false }) {
                             className={`px-3 py-1 text-[10px] font-bold rounded transition-colors ${
                                 oltType === "c300"
                                     ? "bg-upaz-green text-white"
-                                    : "text-white/60 hover:text-white"
+                                    : "text-panel-on-navy/60 hover:text-panel-on-navy"
                             }`}
                         >
                             C300/C320
@@ -119,7 +119,7 @@ export default function CommandSidebar({ data, isAccordion = false }) {
                             className="w-full text-left group transition-all relative"
                         >
                             <div className="flex justify-between items-center mb-1">
-                                <span className="text-[9px] uppercase tracking-widest text-white/60 font-bold group-hover:text-upaz-green transition-colors">
+                                <span className="text-[9px] uppercase tracking-widest text-panel-on-navy/60 font-bold group-hover:text-upaz-green transition-colors">
                                     {item.label}
                                 </span>
                                 {copiedIdx === idx && (
@@ -129,13 +129,13 @@ export default function CommandSidebar({ data, isAccordion = false }) {
                                 )}
                             </div>
                             <div
-                                className={`p-2 rounded bg-white/5 border ${
+                                className={`p-2 rounded bg-panel-on-navy/5 border ${
                                     copiedIdx === idx
                                         ? "border-upaz-green/50"
-                                        : "border-transparent group-hover:border-white/20"
+                                        : "border-transparent group-hover:border-panel-on-navy/20"
                                 } transition-all`}
                             >
-                                <code className="text-[10px] font-mono block break-all leading-tight text-white/90 whitespace-pre-wrap">
+                                <code className="text-[10px] font-mono block break-all leading-tight text-panel-on-navy/90 whitespace-pre-wrap">
                                     {item.cmd}
                                 </code>
                             </div>

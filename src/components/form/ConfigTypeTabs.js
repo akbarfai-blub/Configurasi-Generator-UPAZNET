@@ -16,7 +16,7 @@ export default function ConfigTypeTabs({ currentType, onChange }) {
     <div
       role="tablist"
       aria-label="Tipe Konfigurasi"
-      className="flex bg-slate-100 p-1 rounded-xl w-full overflow-x-auto no-scrollbar gap-1"
+      className="flex bg-neutral-rail p-1 rounded-xl w-full overflow-x-auto no-scrollbar gap-1"
     >
       {CONFIG_TYPES.map((type) => (
         <button
@@ -28,8 +28,8 @@ export default function ConfigTypeTabs({ currentType, onChange }) {
           onClick={() => onChange(type)}
           className={`flex-1 py-2 px-4 text-xs uppercase tracking-wider transition-all ${
             currentType === type
-              ? "bg-upaz-blue text-white shadow-md font-bold rounded-lg"
-              : "text-slate-500 hover:text-upaz-blue hover:bg-white font-medium rounded-lg"
+              ? "bg-upaz-blue text-panel-on-navy shadow-md font-bold rounded-lg"
+              : "text-neutral-muted-strong hover:text-upaz-blue hover:bg-white font-medium rounded-lg"
           }`}
         >
           {TAB_LABELS[type]}

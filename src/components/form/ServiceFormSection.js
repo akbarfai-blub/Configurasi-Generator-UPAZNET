@@ -5,7 +5,7 @@ export default function ServiceFormSection({ formData, onChange, configType }) {
     <>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="space-y-1">
-          <label htmlFor="paketLayanan" className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <label htmlFor="paketLayanan" className="text-xs font-semibold uppercase tracking-wider text-neutral-muted">
             Paket Layanan
           </label>
           <select
@@ -13,7 +13,7 @@ export default function ServiceFormSection({ formData, onChange, configType }) {
             name="paketLayanan"
             value={formData.paketLayanan}
             onChange={onChange}
-            className="w-full p-2.5 border border-slate-300 bg-slate-50 rounded-lg focus:ring-2 focus:ring-upaz-green focus:border-upaz-green outline-none transition font-semibold text-sm text-slate-800"
+            className="w-full p-2.5 border border-neutral-stroke bg-neutral-field rounded-lg focus:ring-2 focus:ring-upaz-green focus:border-upaz-green outline-none transition font-semibold text-sm text-neutral-ink"
           >
             <optgroup label="Paket Kusuma">
               <option value="KUSUMA 0">KUSUMA 0</option>
@@ -33,7 +33,7 @@ export default function ServiceFormSection({ formData, onChange, configType }) {
         </div>
         {configType === "unb" && formData.selectedVlanType === "602" && (
           <div className="space-y-1">
-            <label htmlFor="metroProfile" className="text-xs font-bold uppercase tracking-wider text-slate-800">
+            <label htmlFor="metroProfile" className="text-xs font-bold uppercase tracking-wider text-neutral-ink">
               Metro Profile
             </label>
             <select
@@ -41,7 +41,7 @@ export default function ServiceFormSection({ formData, onChange, configType }) {
               name="metroProfile"
               value={formData.metroProfile}
               onChange={onChange}
-              className="w-full p-2.5 border border-slate-300 bg-slate-50 rounded-lg focus:ring-2 focus:ring-upaz-green focus:border-upaz-green outline-none transition font-bold text-sm text-slate-800"
+              className="w-full p-2.5 border border-neutral-stroke bg-neutral-field rounded-lg focus:ring-2 focus:ring-upaz-green focus:border-upaz-green outline-none transition font-bold text-sm text-neutral-ink"
             >
               <option value="metro10">Metro 10</option>
               <option value="metro30">Metro 30</option>
@@ -50,7 +50,7 @@ export default function ServiceFormSection({ formData, onChange, configType }) {
           </div>
         )}
         <div className="space-y-1">
-          <label htmlFor="pppoeUser" className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <label htmlFor="pppoeUser" className="text-xs font-semibold uppercase tracking-wider text-neutral-muted">
             PPPoE User
           </label>
           <input
@@ -59,11 +59,11 @@ export default function ServiceFormSection({ formData, onChange, configType }) {
             name="pppoeUser"
             value={formData.pppoeUser}
             onChange={onChange}
-            className="w-full p-2.5 border border-slate-300 bg-slate-50 rounded-lg focus:ring-2 focus:ring-upaz-green focus:border-upaz-green outline-none transition"
+            className="w-full p-2.5 border border-neutral-stroke bg-neutral-field rounded-lg focus:ring-2 focus:ring-upaz-green focus:border-upaz-green outline-none transition"
           />
         </div>
         <div className="space-y-1">
-          <label htmlFor="pppoePass" className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <label htmlFor="pppoePass" className="text-xs font-semibold uppercase tracking-wider text-neutral-muted">
             PPPoE Pass
           </label>
           <input
@@ -72,7 +72,7 @@ export default function ServiceFormSection({ formData, onChange, configType }) {
             name="pppoePass"
             value={formData.pppoePass}
             onChange={onChange}
-            className="w-full p-2.5 border border-slate-300 bg-slate-50 rounded-lg focus:ring-2 focus:ring-upaz-green focus:border-upaz-green outline-none transition"
+            className="w-full p-2.5 border border-neutral-stroke bg-neutral-field rounded-lg focus:ring-2 focus:ring-upaz-green focus:border-upaz-green outline-none transition"
           />
         </div>
       </div>
