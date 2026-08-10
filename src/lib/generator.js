@@ -601,21 +601,19 @@ export const generateUNB = (data) => {
 
     return `conf t
 interface gpon-olt_${interfaceOlt}
-onu ${onuId} type ALL sn ${sn}
+  onu ${onuId} type ALL sn ${sn}
 exit
 interface gpon-onu_${interfaceOlt}:${onuId}
-name ${v100CleanId}
-description ${v100DescText}
-sn-bind enable sn
-tcont 1 name PPPOE profile kusuma
-gemport 1 name PPPOE tcont 1
-service-port 1 vport 1 user-vlan 100 vlan 100
+  name ${v100CleanId}
+  description ${v100DescText}
+  tcont 1 profile kusuma
+  gemport 1 tcont 1
+  service-port 1 vport 1 user-vlan 100 vlan 100
 exit
 pon-onu-mng gpon-onu_${interfaceOlt}:${onuId}
-service ServiceName gemport 1 vlan 100
-wan-ip 1 mode pppoe username ${v100CleanId} password ${pppoePass} vlan-profile pppoe host 1
-wan-ip 1 ping-response enable traceroute-response enable
-security-mgmt 212 state enable mode forward protocol web
+  service 1 gemport 1 vlan 100
+  wan-ip 1 mode pppoe username ${v100CleanId} password ${pppoePass} vlan-profile v100 host 1
+  security-mgmt 1 state enable mode forward protocol web
 exit
 exit
 write`.trim();
