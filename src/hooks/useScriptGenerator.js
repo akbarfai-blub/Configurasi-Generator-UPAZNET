@@ -21,6 +21,7 @@ export function useScriptGenerator() {
     switch (configType) {
       case "standard":
       case "unr_v130":
+      case "unr_v131":
         resultOlt = generateC600(formData);
         break;
       case "uho":
