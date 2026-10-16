@@ -104,7 +104,8 @@ exit
 write`.trim();
   }
 
-  if (selectedC600Type === "unr_v130") {
+  if (selectedC600Type === "unr_v130" || selectedC600Type === "unr_pjk_c600") {
+    const targetVlan = selectedC600Type === "unr_pjk_c600" ? "1000" : "130";
     return `conf t
 interface gpon_olt-${interfaceOlt}
 onu ${onuId} type ALL sn ${sn}
@@ -116,12 +117,12 @@ tcont 1 profile kusuma
 gemport 1 tcont 1
 exit
 interface vport-${interfaceOlt}.${onuId}:1
-service-port 1 user-vlan 130 vlan 130
+service-port 1 user-vlan ${targetVlan} vlan ${targetVlan}
 exit
 pon-onu-mng gpon_onu-${interfaceOlt}:${onuId}
-service 1 gemport 1 vlan 130
+service 1 gemport 1 vlan ${targetVlan}
 security-mgmt 1 state enable mode forward protocol web
-wan-ip 1 ipv4 mode pppoe username ${pppoeUser} password ${pppoePass} vlan-profile v130 host 1
+wan-ip 1 ipv4 mode pppoe username ${pppoeUser} password ${pppoePass} vlan-profile v${targetVlan} host 1
 wan 1 service tr069 internet
 tr069-mgmt 1 state unlock
 tr069-mgmt 1 acs http://acs.upaz.net.id:9999/ validate basic username ${process.env.NEXT_PUBLIC_ACS_USER} password ${process.env.NEXT_PUBLIC_ACS_PASS}

@@ -41,6 +41,7 @@ export default function ConfigTypeSelect({ configType, formData, onChange }) {
             <option value="unr_v1001">V1001 (RJW)</option>
             <option value="unr_v131">V131 (RJW)</option>
             <option value="unr_ddr">V2104 (DDR Prisma)</option>
+            <option value="unr_pjk_c600">PJK C600</option>
           </>
         ) : configType === "ucd" ? (
           <>

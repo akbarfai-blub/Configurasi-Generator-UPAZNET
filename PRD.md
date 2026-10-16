@@ -55,6 +55,7 @@ Setiap tab memiliki dropdown "Tipe Konfigurasi" yang menentukan template script 
 | V131                  | C300/C320        | 131     | RJW PPPoE                                      |
 | Standard (PPPoE) V130 | C600             | 130     | + TR-069, ACS                                  |
 | DDR Prisma V2104      | C600             | 2104    | + QoS traffic-policy DDR, format name: ID_Nama |
+| PJK C600              | C600             | 1000    | + TR-069, ACS                                  |
 
 #### UNB
 

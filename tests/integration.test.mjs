@@ -59,3 +59,32 @@ test("End-to-end generator flow for UNR tab with selectedC600Type=unr_v131", () 
   assert.ok(script.includes("wan-ip 1 mode pppoe username 1010112678 password 150326 vlan-profile v131 host 1"));
   assert.ok(script.endsWith("write"));
 });
+
+test("End-to-end generator flow for UNR tab with selectedC600Type=unr_pjk_c600", () => {
+  process.env.NEXT_PUBLIC_ACS_USER = "dummy_user";
+  process.env.NEXT_PUBLIC_ACS_PASS = "dummy_pass";
+
+  const formData = {
+    interfaceOlt: "1/4/2",
+    onuId: "9",
+    sn: "ZTEG11112222",
+    idPelanggan: "1010112678",
+    pppoeUser: "pjk_operator",
+    pppoePass: "150326",
+    namaPelanggan: "PJK Customer",
+    selectedC600Type: "unr_pjk_c600",
+  };
+
+  const script = generateC600(formData);
+  assert.ok(script.startsWith("conf t"));
+  assert.ok(script.includes("interface gpon_olt-1/4/2"));
+  assert.ok(script.includes("interface gpon_onu-1/4/2:9"));
+  assert.ok(script.includes("name 1010112678"));
+  assert.ok(script.includes("description 1010112678 - PJK CUSTOMER"));
+  assert.ok(script.includes("interface vport-1/4/2.9:1"));
+  assert.ok(script.includes("service-port 1 user-vlan 1000 vlan 1000"));
+  assert.ok(script.includes("service 1 gemport 1 vlan 1000"));
+  assert.ok(script.includes("wan-ip 1 ipv4 mode pppoe username pjk_operator password 150326 vlan-profile v1000 host 1"));
+  assert.ok(script.includes("tr069-mgmt 1 acs http://acs.upaz.net.id:9999/ validate basic username dummy_user password dummy_pass"));
+  assert.ok(script.endsWith("write"));
+});
