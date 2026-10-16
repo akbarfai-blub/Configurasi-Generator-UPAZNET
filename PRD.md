@@ -55,7 +55,6 @@ Setiap tab memiliki dropdown "Tipe Konfigurasi" yang menentukan template script 
 | V131                  | C300/C320        | 131     | RJW PPPoE                                      |
 | Standard (PPPoE) V130 | C600             | 130     | + TR-069, ACS                                  |
 | DDR Prisma V2104      | C600             | 2104    | + QoS traffic-policy DDR, format name: ID_Nama |
-| PJK C600              | C600             | 1000    | + TR-069, ACS                                  |
 
 #### UNB
 
@@ -98,6 +97,7 @@ Dropdown menggunakan optgroup:
 | -------- | ---------------- | --------- | ---------------- |
 | Standard | Standard (PPPoE) | 1000      | -                |
 | Standard | Bridge Mode      | 1000/200  | -                |
+| Standard | PJK C600         | 1000      | C600, + TR-069, ACS |
 | Babadan  | Babadan PPPoE    | 207       | -                |
 | Babadan  | Babadan Bridge   | 207/206   | -                |
 | KWD      | KWD PPPoE        | 1006      | -                |

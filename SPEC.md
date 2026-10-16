@@ -1,80 +1,73 @@
-# Specification: Penambahan Opsi PJK C600 pada Tab UNR
+# Specification: Pemindahan Opsi PJK C600 ke Tab UGR
 
 ## Status: FINALIZED
 
 ## 1. Working Tree Baseline
 - **Branch**: `main`
-- **Baseline**: Bersih dari perubahan tak ter-commit.
-- **Scope Task**: Penambahan opsi `PJK C600` (`unr_pjk_c600`) pada dropdown tab UNR, template generator C600 dengan VLAN 1000 dan TR-069 ACS, pengujian terarah, dan pembaruan dokumentasi. Penambahan UGR C600 tetap ditunda.
+- **Baseline**: Bersih dari perubahan tak ter-commit (semua commit sebelumnya telah di-push).
+- **Scope Task**:
+  1. Menghapus opsi `PJK C600` dari dropdown tab UNR (`configType === "standard"`).
+  2. Menambahkan opsi `PJK C600` pada optgroup **Standard** di dropdown tab UGR (`configType === "ugr"`).
+  3. Menggunakan identifier `ugr_pjk_c600` pada `selectedUgrType`.
+  4. Routing generator: Ketika `configType === "ugr"` dan `selectedUgrType === "ugr_pjk_c600"`, memanggil template PJK C600 secara eksplisit tanpa terpengaruh nilai `selectedC600Type` terakhir dari tab UNR.
+  5. Menjaga konfigurasi CLI PJK C600 tetap identik: C600, VLAN 1000, profile `v1000`, PPPoE username dari `pppoeUser`, TR-069 ACS.
+  6. Memperbarui dokumentasi di `PRD.md`.
+  7. Menyesuaikan pengujian unit test dan integrasi.
 
 ---
 
-## 2. Pilihan Konfigurasi UI
-- **Tab**: UNR (`configType="standard"`).
-- **Label Opsi**: `PJK C600` (persis).
-- **Identifier**: `unr_pjk_c600` pada `selectedC600Type`.
-- **Posisi Dropdown**: Pada `ConfigTypeSelect.js` di dalam grup `configType === "standard"`. Opsi existing (`standard`, `unr_v130`, `bridge`, `unr_v1001`, `unr_v131`, `unr_ddr`) dipertahankan sepenuhnya.
-- Alur `configType` tetap `"standard"`; tidak menambahkan case `configType` baru yang tidak digunakan UI.
+## 2. Rencana Perubahan UI
+- **File**: `src/components/form/ConfigTypeSelect.js`
+- **Tab UNR (`configType === "standard"`)**:
+  - Hapus `<option value="unr_pjk_c600">PJK C600</option>`.
+- **Tab UGR (`configType === "ugr"`)**:
+  - Di dalam `<optgroup label="Standard">`:
+    ```jsx
+    <optgroup label="Standard">
+      <option value="ugr_standard">Standard (PPPoE)</option>
+      <option value="ugr_bridge">Bridge Mode</option>
+      <option value="ugr_pjk_c600">PJK C600</option>
+    </optgroup>
+    ```
+  - Label: persis `PJK C600`.
+  - Identifier: `ugr_pjk_c600`.
 
 ---
 
-## 3. Acuan CLI & Logika Generator
-- **Target Perangkat & Sintaks**: ZTE C600 (`gpon_olt-`, `gpon_onu-`, `vport-${interfaceOlt}.${onuId}:1`).
-- **Mode Layanan**: PPPoE (VLAN 1000, profile `v1000`) + TR-069 ACS.
-- **Template CLI Acuan**:
-  ```text
-  conf t
-  interface gpon_olt-${interfaceOlt}
-  onu ${onuId} type ALL sn ${sn}
-  exit
-  interface gpon_onu-${interfaceOlt}:${onuId}
-  name ${cleanId}
-  description ${descText}
-  tcont 1 profile kusuma
-  gemport 1 tcont 1
-  exit
-  interface vport-${interfaceOlt}.${onuId}:1
-  service-port 1 user-vlan 1000 vlan 1000
-  exit
-  pon-onu-mng gpon_onu-${interfaceOlt}:${onuId}
-  service 1 gemport 1 vlan 1000
-  security-mgmt 1 state enable mode forward protocol web
-  wan-ip 1 ipv4 mode pppoe username ${pppoeUser} password ${pppoePass} vlan-profile v1000 host 1
-  wan 1 service tr069 internet
-  tr069-mgmt 1 state unlock
-  tr069-mgmt 1 acs http://acs.upaz.net.id:9999/ validate basic username ${acsUser} password ${acsPass}
-  exit
-  exit
-  write
-  ```
-- **Aturan Parameter**:
-  - `cleanId` = `idPelanggan.toString().slice(0, 10)`
-  - `descText` = `namaPelanggan ? `${cleanId} - ${namaPelanggan.toUpperCase()}` : cleanId`
-  - PPPoE username = `pppoeUser` (sesuai field form, bukan `cleanId`)
-  - PPPoE password = `pppoePass`
-  - Kredensial ACS = `process.env.NEXT_PUBLIC_ACS_USER` dan `process.env.NEXT_PUBLIC_ACS_PASS`
-  - Tidak melakukan penggantian global string ("replace all") pada output.
+## 3. Rencana Routing Generator
+- **File**: `src/lib/generator.js`
+  - Di dalam `generateUGR`:
+    ```javascript
+    if (selectedUgrType === "ugr_pjk_c600") {
+      return generateC600({ ...data, selectedC600Type: "unr_pjk_c600" });
+    }
+    ```
+  - Di dalam `generateC600`:
+    Mendukung `selectedC600Type === "unr_pjk_c600"` maupun `selectedC600Type === "ugr_pjk_c600"` atau `selectedUgrType === "ugr_pjk_c600"`.
+- **Independensi State**:
+  - Karena `generateUGR` meneruskan `{ ...data, selectedC600Type: "unr_pjk_c600" }` secara eksplisit, nilai `selectedC600Type` lama dari tab UNR (misal `unr_v130`, `unr_v1001`, dll.) tidak akan memengaruhi output PJK C600 saat user berada di tab UGR.
 
 ---
 
 ## 4. Acceptance Criteria
-- **AC1**: Pilihan PJK C600 tersedia di tab UNR dan menghasilkan template yang benar saat Generate ditekan.
-- **AC2**: Output sesuai acuan: sintaks C600, VLAN 1000, profile v1000, konfigurasi WAN/TR-069, serta urutan perintah.
-- **AC3**: Seluruh parameter mengambil sumber yang benar; tidak ada identitas pelanggan atau kredensial contoh yang di-hardcode.
-- **AC4**: Output konfigurasi existing, default pilihan, dan generator MikroTik tetap mempertahankan perilakunya.
-- **AC5**: Dokumentasi sesuai implementasi dan output untuk input valid tidak mengandung undefined/null atau placeholder yang tertinggal.
+- **AC1**: PJK C600 hanya tersedia pada optgroup Standard tab UGR dan tidak lagi tersedia pada dropdown UNR.
+- **AC2**: Memilih PJK C600 di UGR lalu Generate menghasilkan output yang sama dengan template PJK sebelum pemindahan.
+- **AC3**: Pilihan terakhir pada tab UNR tidak memengaruhi output PJK. Contohnya, UNR V130 lalu UGR PJK tetap menghasilkan C600 VLAN 1000.
+- **AC4**: Setelah memilih PJK, berpindah ke UGR Standard/Babadan/KWD atau kembali ke UNR menghasilkan template sesuai pilihan masing-masing.
+- **AC5**: Default, konfigurasi existing, dan output MikroTik tidak berubah.
+- **AC6**: Dokumentasi menempatkan PJK C600 di UGR dan menjelaskan perubahan lokasi tanpa mengklaim perubahan CLI.
 
 ---
 
 ## 5. Rencana Pengujian
-1. **Unit Test Terarah**:
-   - Pengujian `generateC600` dengan `selectedC600Type: "unr_pjk_c600"` terhadap expected CLI string yang dibuat dari acuan.
-   - Pembuktian bahwa data pelanggan yang memuat angka VLAN `1000` (misal ID `1000123456`) tidak termodifikasi.
-   - Pengujian aturan identitas pelanggan (`cleanId` 10 karakter, uppercase description, fallback nama kosong).
-   - Pengujian pemakaian `pppoeUser` dari form (bukan `cleanId`).
-   - Pengujian regresi terhadap varian UNR lain (`standard`, `unr_v130`, `bridge`, `unr_v1001`, `unr_v131`, `unr_ddr`) dan MikroTik secret.
-2. **Pengujian Integrasi UI**:
-   - Memeriksa keberadaan `<option value="unr_pjk_c600">PJK C600</option>` di `ConfigTypeSelect.js`.
-   - Memastikan aliran dropdown -> form state -> generator menghasilkan skrip PJK C600.
-3. **Lint & Build**:
-   - `npm run lint` & `npm run build` berjalan bebas error.
+1. **Pemeriksaan UI**:
+   - Memastikan `unr_pjk_c600` tidak ada lagi di blok UNR.
+   - Memastikan `ugr_pjk_c600` ada di optgroup Standard pada blok UGR.
+2. **Pengujian Independensi State Tab (Cross-tab isolation)**:
+   - Form data dengan `selectedC600Type: "unr_v130"` dan `selectedUgrType: "ugr_pjk_c600"` saat di-generate dengan `generateUGR` tetap menghasilkan VLAN 1000 (bukan VLAN 130).
+3. **Pengujian Output PJK C600**:
+   - Identik dengan expected string acuan CLI.
+4. **Pengujian Regresi**:
+   - Varian UGR lain (`ugr_standard`, `ugr_bridge`, `ugr_babadan_pppoe`, `ugr_babadan_bridge`, `ugr_kwd_pppoe`, `ugr_kwd_bridge`).
+   - Varian UNR (`standard`, `unr_v130`, `bridge`, `unr_v1001`, `unr_v131`, `unr_ddr`).
+   - Generator MikroTik.

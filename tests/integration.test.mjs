@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { generateC600 } from "../src/lib/generator.js";
+import { generateC600, generateUGR } from "../src/lib/generator.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -60,7 +60,7 @@ test("End-to-end generator flow for UNR tab with selectedC600Type=unr_v131", () 
   assert.ok(script.endsWith("write"));
 });
 
-test("End-to-end generator flow for UNR tab with selectedC600Type=unr_pjk_c600", () => {
+test("End-to-end generator flow for UGR tab with selectedUgrType=ugr_pjk_c600", () => {
   process.env.NEXT_PUBLIC_ACS_USER = "dummy_user";
   process.env.NEXT_PUBLIC_ACS_PASS = "dummy_pass";
 
@@ -72,10 +72,11 @@ test("End-to-end generator flow for UNR tab with selectedC600Type=unr_pjk_c600",
     pppoeUser: "pjk_operator",
     pppoePass: "150326",
     namaPelanggan: "PJK Customer",
-    selectedC600Type: "unr_pjk_c600",
+    selectedC600Type: "unr_v130", // simulate residual UNR value
+    selectedUgrType: "ugr_pjk_c600",
   };
 
-  const script = generateC600(formData);
+  const script = generateUGR(formData);
   assert.ok(script.startsWith("conf t"));
   assert.ok(script.includes("interface gpon_olt-1/4/2"));
   assert.ok(script.includes("interface gpon_onu-1/4/2:9"));

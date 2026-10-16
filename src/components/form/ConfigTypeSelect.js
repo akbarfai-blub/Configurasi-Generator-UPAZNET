@@ -41,7 +41,6 @@ export default function ConfigTypeSelect({ configType, formData, onChange }) {
             <option value="unr_v1001">V1001 (RJW)</option>
             <option value="unr_v131">V131 (RJW)</option>
             <option value="unr_ddr">V2104 (DDR Prisma)</option>
-            <option value="unr_pjk_c600">PJK C600</option>
           </>
         ) : configType === "ucd" ? (
           <>
@@ -53,6 +52,7 @@ export default function ConfigTypeSelect({ configType, formData, onChange }) {
             <optgroup label="Standard">
               <option value="ugr_standard">Standard (PPPoE)</option>
               <option value="ugr_bridge">Bridge Mode</option>
+              <option value="ugr_pjk_c600">PJK C600</option>
             </optgroup>
             <optgroup label="Babadan">
               <option value="ugr_babadan_pppoe">Babadan PPPoE</option>

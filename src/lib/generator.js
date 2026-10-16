@@ -104,8 +104,8 @@ exit
 write`.trim();
   }
 
-  if (selectedC600Type === "unr_v130" || selectedC600Type === "unr_pjk_c600") {
-    const targetVlan = selectedC600Type === "unr_pjk_c600" ? "1000" : "130";
+  if (selectedC600Type === "unr_v130" || selectedC600Type === "unr_pjk_c600" || selectedC600Type === "ugr_pjk_c600") {
+    const targetVlan = (selectedC600Type === "unr_pjk_c600" || selectedC600Type === "ugr_pjk_c600") ? "1000" : "130";
     return `conf t
 interface gpon_olt-${interfaceOlt}
 onu ${onuId} type ALL sn ${sn}
@@ -282,6 +282,10 @@ export const generateUGR = (data) => {
   const descText = namaPelanggan
     ? `${cleanId} - ${namaPelanggan.toUpperCase()}`
     : cleanId;
+
+  if (selectedUgrType === "ugr_pjk_c600") {
+    return generateC600({ ...data, selectedC600Type: "unr_pjk_c600" });
+  }
 
   if (selectedUgrType === "ugr_bridge") {
     return `conf t

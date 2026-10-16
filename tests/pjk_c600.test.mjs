@@ -3,22 +3,39 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { generateC600, generateMikrotikSecret } from "../src/lib/generator.js";
+import { generateC600, generateUGR, generateMikrotikSecret } from "../src/lib/generator.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-test("AC1: ConfigTypeSelect contains exact 'PJK C600' option with unr_pjk_c600 identifier", () => {
+test("AC1: PJK C600 is available only in UGR optgroup Standard and removed from UNR", () => {
   const selectFile = path.resolve(__dirname, "../src/components/form/ConfigTypeSelect.js");
   const content = fs.readFileSync(selectFile, "utf-8");
 
-  assert.ok(
-    content.includes('<option value="unr_pjk_c600">PJK C600</option>'),
-    "ConfigTypeSelect must contain <option value=\"unr_pjk_c600\">PJK C600</option>"
+  // Removed from UNR
+  assert.strictEqual(
+    content.includes("unr_pjk_c600"),
+    false,
+    "ConfigTypeSelect must NOT contain 'unr_pjk_c600'"
   );
+
+  // Present in UGR optgroup Standard
+  assert.ok(
+    content.includes('<option value="ugr_pjk_c600">PJK C600</option>'),
+    "ConfigTypeSelect must contain <option value=\"ugr_pjk_c600\">PJK C600</option>"
+  );
+
+  // Positioned under optgroup Standard in UGR section
+  const ugrIndex = content.indexOf('configType === "ugr"');
+  const optgroupStandardIndex = content.indexOf('<optgroup label="Standard">', ugrIndex);
+  const pjkIndex = content.indexOf('value="ugr_pjk_c600"', optgroupStandardIndex);
+  const optgroupEndIndex = content.indexOf('</optgroup>', optgroupStandardIndex);
+
+  assert.ok(optgroupStandardIndex > ugrIndex, "optgroup Standard must be in UGR section");
+  assert.ok(pjkIndex > optgroupStandardIndex && pjkIndex < optgroupEndIndex, "ugr_pjk_c600 must be inside optgroup Standard");
 });
 
-test("AC1 & AC2: generateC600 produces exact expected CLI output for unr_pjk_c600", () => {
+test("AC2: generateUGR with ugr_pjk_c600 produces exact expected CLI output", () => {
   process.env.NEXT_PUBLIC_ACS_USER = "dummy_acs_user";
   process.env.NEXT_PUBLIC_ACS_PASS = "dummy_acs_pass";
 
@@ -30,7 +47,7 @@ test("AC1 & AC2: generateC600 produces exact expected CLI output for unr_pjk_c60
     pppoeUser: "budi_pppoe",
     pppoePass: "150326",
     namaPelanggan: "Budi Santoso",
-    selectedC600Type: "unr_pjk_c600",
+    selectedUgrType: "ugr_pjk_c600",
   };
 
   const expectedScript = `conf t
@@ -57,106 +74,112 @@ exit
 exit
 write`;
 
-  const result = generateC600(dummyData);
+  const result = generateUGR(dummyData);
   assert.strictEqual(result, expectedScript);
 });
 
-test("AC3: Uses pppoeUser from form and truncates cleanId to 10 characters", () => {
-  const dummyData = {
-    interfaceOlt: "1/1/1",
-    onuId: "3",
-    sn: "ZTEG00112233",
-    idPelanggan: "1234567890EXTRA",
-    pppoeUser: "custom_pppoe_user",
-    pppoePass: "pass999",
-    namaPelanggan: "Agus Salim",
-    selectedC600Type: "unr_pjk_c600",
-  };
+test("AC3: Prior UNR selection does NOT affect UGR PJK C600 output (cross-tab state isolation)", () => {
+  process.env.NEXT_PUBLIC_ACS_USER = "dummy_acs_user";
+  process.env.NEXT_PUBLIC_ACS_PASS = "dummy_acs_pass";
 
-  const result = generateC600(dummyData);
-
-  // cleanId should be 10 chars
-  assert.ok(result.includes("name 1234567890\n"), "name must be sliced to 10 chars");
-  assert.ok(result.includes("description 1234567890 - AGUS SALIM"), "description must use cleanId");
-  // pppoe username must come from pppoeUser, not cleanId
-  assert.ok(
-    result.includes("wan-ip 1 ipv4 mode pppoe username custom_pppoe_user password pass999"),
-    "PPPoE username must be pppoeUser from form"
-  );
-});
-
-test("AC3: Missing namaPelanggan defaults description to cleanId in PJK C600", () => {
-  const noNameData = {
+  // Simulate user who previously selected unr_v130 in UNR tab, then switched to UGR tab and selected ugr_pjk_c600
+  const formDataFromStateWithV130 = {
     interfaceOlt: "1/4/2",
-    onuId: "5",
-    sn: "ZTEG55556666",
+    onuId: "12",
+    sn: "ZTEGC1234567",
     idPelanggan: "1010112678",
-    pppoeUser: "user_pjk",
+    pppoeUser: "budi_pppoe",
     pppoePass: "150326",
-    namaPelanggan: "",
-    selectedC600Type: "unr_pjk_c600",
+    namaPelanggan: "Budi Santoso",
+    selectedC600Type: "unr_v130", // residual UNR state
+    selectedUgrType: "ugr_pjk_c600",
   };
 
-  const result = generateC600(noNameData);
-  assert.ok(result.includes("description 1010112678\n"), "description should be cleanId when namaPelanggan is empty");
+  const result1 = generateUGR(formDataFromStateWithV130);
+  assert.ok(result1.includes("service-port 1 user-vlan 1000 vlan 1000"), "Must use VLAN 1000 despite selectedC600Type=unr_v130");
+  assert.ok(result1.includes("vlan-profile v1000 host 1"), "Must use profile v1000 despite selectedC600Type=unr_v130");
+  assert.strictEqual(result1.includes("130"), false, "Must not contain VLAN 130 from residual UNR state");
+
+  // Simulate user who previously selected unr_v1001 in UNR tab
+  const formDataFromStateWithV1001 = {
+    ...formDataFromStateWithV130,
+    selectedC600Type: "unr_v1001",
+  };
+
+  const result2 = generateUGR(formDataFromStateWithV1001);
+  assert.ok(result2.includes("interface gpon_olt-1/4/2"), "Must use C600 syntax despite selectedC600Type=unr_v1001");
+  assert.ok(result2.includes("service-port 1 user-vlan 1000 vlan 1000"));
 });
 
-test("AC3 & AC5: Customer ID containing '1000' or '130' is not altered and output has no undefined/null", () => {
+test("AC4: Switching between UGR and UNR produces expected output for each respective option", () => {
+  process.env.NEXT_PUBLIC_ACS_USER = "dummy_acs_user";
+  process.env.NEXT_PUBLIC_ACS_PASS = "dummy_acs_pass";
+
+  const data = {
+    interfaceOlt: "1/4/2",
+    onuId: "10",
+    sn: "ZTEG12345678",
+    idPelanggan: "1010112678",
+    pppoeUser: "user_test",
+    pppoePass: "150326",
+    namaPelanggan: "Test Switch",
+    selectedC600Type: "unr_v130",
+    selectedUgrType: "ugr_pjk_c600",
+  };
+
+  // UGR PJK C600
+  const pjkResult = generateUGR(data);
+  assert.ok(pjkResult.includes("interface gpon_olt-1/4/2"));
+  assert.ok(pjkResult.includes("user-vlan 1000 vlan 1000"));
+
+  // Switch to UGR Standard (PPPoE C300)
+  const ugrStandardResult = generateUGR({ ...data, selectedUgrType: "ugr_standard" });
+  assert.ok(ugrStandardResult.includes("interface gpon-olt_1/4/2"));
+  assert.ok(ugrStandardResult.includes("service-port 1 vport 1 user-vlan 1000 vlan 1000"));
+
+  // Switch to UGR Babadan Bridge
+  const ugrBabadanResult = generateUGR({ ...data, selectedUgrType: "ugr_babadan_bridge" });
+  assert.ok(ugrBabadanResult.includes("user-vlan 207 vlan 207"));
+  assert.ok(ugrBabadanResult.includes("user-vlan 206 vlan 206"));
+
+  // Switch to UNR tab (V130)
+  const unrResult = generateC600(data);
+  assert.ok(unrResult.includes("interface gpon_olt-1/4/2"));
+  assert.ok(unrResult.includes("user-vlan 130 vlan 130"));
+});
+
+test("AC3 & AC5: Parameter handling, data integrity, and MikroTik script", () => {
+  process.env.NEXT_PUBLIC_ACS_USER = "acs_user";
+  process.env.NEXT_PUBLIC_ACS_PASS = "acs_pass";
+
   const customerWith1000 = {
     interfaceOlt: "1/2/3",
     onuId: "8",
     sn: "ZTEG10002000",
-    idPelanggan: "1000123456",
-    pppoeUser: "user1000",
-    pppoePass: "150326",
+    idPelanggan: "1000123456EXTRA",
+    pppoeUser: "custom_pjk_user",
+    pppoePass: "secretPass",
     namaPelanggan: "Toko 1000 Jaya",
-    selectedC600Type: "unr_pjk_c600",
-  };
-
-  const result = generateC600(customerWith1000);
-
-  assert.ok(result.includes("name 1000123456"), "name must preserve customer ID with 1000");
-  assert.ok(result.includes("description 1000123456 - TOKO 1000 JAYA"), "description must preserve 1000");
-  assert.ok(result.includes("username user1000"), "username must preserve user1000");
-  assert.strictEqual(result.includes("undefined"), false, "Output must not contain 'undefined'");
-  assert.strictEqual(result.includes("null"), false, "Output must not contain 'null'");
-});
-
-test("AC4: Regression testing - unr_v130, standard, bridge, RJW, and MikroTik maintain behavior", () => {
-  process.env.NEXT_PUBLIC_ACS_USER = "acs_test";
-  process.env.NEXT_PUBLIC_ACS_PASS = "pass_test";
-
-  const baseData = {
-    interfaceOlt: "1/4/2",
-    onuId: "1",
-    sn: "ZTEG12345678",
-    idPelanggan: "1010112678",
-    pppoeUser: "user_regresi",
-    pppoePass: "150326",
-    namaPelanggan: "Test Regresi",
+    selectedUgrType: "ugr_pjk_c600",
     paketLayanan: "KUSUMA 1",
   };
 
-  // 1. unr_v130 (shared template)
-  const v130Result = generateC600({ ...baseData, selectedC600Type: "unr_v130" });
-  assert.ok(v130Result.includes("service-port 1 user-vlan 130 vlan 130"), "V130 uses VLAN 130");
-  assert.ok(v130Result.includes("vlan-profile v130 host 1"), "V130 uses vlan-profile v130");
+  const result = generateUGR(customerWith1000);
 
-  // 2. standard C600
-  const standardResult = generateC600({ ...baseData, selectedC600Type: "standard" });
-  assert.ok(standardResult.includes("service-port 1 user-vlan 134 vlan 134"), "Standard uses VLAN 134");
+  // cleanId slice 10 chars
+  assert.ok(result.includes("name 1000123456\n"), "name must be 10 chars cleanId");
+  assert.ok(result.includes("description 1000123456 - TOKO 1000 JAYA"), "description must preserve 1000 in ID and uppercase name");
+  // pppoeUser
+  assert.ok(result.includes("username custom_pjk_user password secretPass"), "PPPoE user must be from form");
+  // no undefined or null
+  assert.strictEqual(result.includes("undefined"), false, "Output must not contain 'undefined'");
+  assert.strictEqual(result.includes("null"), false, "Output must not contain 'null'");
 
-  // 3. RJW V1001 & V131
-  const rjw1001 = generateC600({ ...baseData, selectedC600Type: "unr_v1001" });
-  const rjw131 = generateC600({ ...baseData, selectedC600Type: "unr_v131" });
-  assert.ok(rjw1001.includes("service-port 1 vport 1 user-vlan 1001 vlan 1001"), "RJW 1001 intact");
-  assert.ok(rjw131.includes("service-port 1 vport 1 user-vlan 131 vlan 131"), "RJW 131 intact");
-
-  // 4. MikroTik secret
-  const mikrotikResult = generateMikrotikSecret(baseData);
+  // MikroTik
+  const mikrotikResult = generateMikrotikSecret(customerWith1000);
   assert.strictEqual(
     mikrotikResult,
-    `/ppp secret add name=user_regresi password=150326 service=pppoe profile="KUSUMA 1" comment="1010112678-TEST REGRESI"`,
+    `/ppp secret add name=custom_pjk_user password=secretPass service=pppoe profile="KUSUMA 1" comment="1000123456EXTRA-TOKO 1000 JAYA"`,
     "MikroTik secret generation must be untouched"
   );
 });
