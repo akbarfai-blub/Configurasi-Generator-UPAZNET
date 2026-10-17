@@ -50,3 +50,6 @@ logs/
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# test & verification artifacts
+.artifacts/

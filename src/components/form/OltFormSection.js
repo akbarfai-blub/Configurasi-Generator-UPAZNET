@@ -7,9 +7,15 @@ export default function OltFormSection({
   errors = {},
 }) {
   return (
-    <>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-1">
+    <div className="space-y-4">
+      <div className="flex items-center gap-2 mb-2 pb-1.5 border-b border-neutral-divider">
+        <span className="text-xs font-bold uppercase tracking-wider text-neutral-ink">
+          Parameter OLT
+        </span>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 sm:gap-4">
+        <div className="space-y-1 min-w-0">
           <label
             htmlFor="interfaceOlt"
             className="text-xs font-semibold uppercase tracking-wider text-neutral-muted"
@@ -24,19 +30,19 @@ export default function OltFormSection({
             onChange={onOltInterfaceChange}
             placeholder="1/4/2"
             inputMode="numeric"
-            className={`w-full p-2.5 border rounded-lg outline-none transition bg-neutral-field ${
+            className={`w-full min-w-0 p-2.5 border rounded-lg outline-none transition bg-neutral-field text-sm text-neutral-ink ${
               errors.interfaceOlt
                 ? "border-red-500 focus:ring-2 focus:ring-red-400 focus:border-red-500"
                 : "border-neutral-stroke focus:ring-2 focus:ring-upaz-green focus:border-upaz-green"
             }`}
           />
           {errors.interfaceOlt && (
-            <p role="alert" className="text-[11px] text-red-500 font-semibold leading-tight">
+            <p role="alert" className="text-xs text-red-600 font-semibold leading-tight mt-1">
               {errors.interfaceOlt}
             </p>
           )}
         </div>
-        <div className="space-y-1">
+        <div className="space-y-1 min-w-0">
           <label
             htmlFor="onuId"
             className="text-xs font-semibold uppercase tracking-wider text-neutral-muted"
@@ -50,14 +56,14 @@ export default function OltFormSection({
             value={formData.onuId}
             onChange={onChange}
             placeholder="88"
-            className={`w-full p-2.5 border rounded-lg outline-none transition bg-neutral-field ${
+            className={`w-full min-w-0 p-2.5 border rounded-lg outline-none transition bg-neutral-field text-sm text-neutral-ink ${
               errors.onuId
                 ? "border-red-500 focus:ring-2 focus:ring-red-400 focus:border-red-500"
                 : "border-neutral-stroke focus:ring-2 focus:ring-upaz-green focus:border-upaz-green"
             }`}
           />
           {errors.onuId && (
-            <p role="alert" className="text-[11px] text-red-500 font-semibold leading-tight">
+            <p role="alert" className="text-xs text-red-600 font-semibold leading-tight mt-1">
               {errors.onuId}
             </p>
           )}
@@ -78,18 +84,18 @@ export default function OltFormSection({
           value={formData.sn}
           onChange={onChange}
           placeholder="ZTEGD2327302"
-          className={`w-full p-2.5 border rounded-lg font-mono outline-none transition bg-neutral-field ${
+          className={`w-full min-w-0 p-2.5 border rounded-lg font-mono outline-none transition bg-neutral-field text-sm text-neutral-ink ${
             errors.sn
               ? "border-red-500 focus:ring-2 focus:ring-red-400 focus:border-red-500"
               : "border-neutral-stroke focus:ring-2 focus:ring-upaz-green focus:border-upaz-green"
           }`}
         />
         {errors.sn && (
-          <p role="alert" className="text-[11px] text-red-500 font-semibold leading-tight">
+          <p role="alert" className="text-xs text-red-600 font-semibold leading-tight mt-1">
             {errors.sn}
           </p>
         )}
       </div>
-    </>
+    </div>
   );
 }

@@ -492,3 +492,38 @@ test("Clipboard (Production copyToClipboard): repeated rapid clicks cancel previ
     if (timers["c600_delete_onu"]) originalClearTimeout(timers["c600_delete_onu"]);
   }
 });
+
+test("Command Hub (Production getCommandList): selects distinct commands for C600 vs C300/C320 models", () => {
+  const sampleData = {
+    interfaceOlt: "1/4/2",
+    onuId: "88",
+    sn: "ZTEGD2327302",
+  };
+
+  // 1. Model C600 menghasilkan perintah dengan format gpon_olt-<iface>
+  const c600Commands = getCommandList(sampleData, "c600");
+  assert.equal(c600Commands[0].id, "c600_rx_power");
+  assert.equal(c600Commands[0].cmd, "sho pon power onu-rx gpon_olt-1/4/2");
+  assert.equal(
+    c600Commands.some((c) => c.id === "c300_restore_factory"),
+    false,
+    "Perintah khusus C300 tidak boleh ada di daftar C600"
+  );
+
+  // 2. Model C300/C320 menghasilkan perintah dengan format gpon-olt_<iface> dan opsi restore factory
+  const c300Commands = getCommandList(sampleData, "c300");
+  assert.equal(c300Commands[0].id, "c300_rx_power");
+  assert.equal(c300Commands[0].cmd, "show pon power onu-rx gpon-olt_1/4/2");
+
+  const restoreFactoryCmd = c300Commands.find((c) => c.id === "c300_restore_factory");
+  assert.ok(restoreFactoryCmd, "Daftar perintah C300 harus mencakup c300_restore_factory");
+  assert.equal(
+    restoreFactoryCmd.cmd,
+    "conf t\npon-onu-mng gpon-onu_1/4/2:88\nrestore factory"
+  );
+
+  // 3. Sintaks dan identifier berbeda secara terukur antara kedua model
+  assert.notEqual(c600Commands[0].id, c300Commands[0].id);
+  assert.notEqual(c600Commands[0].cmd, c300Commands[0].cmd);
+});
+
