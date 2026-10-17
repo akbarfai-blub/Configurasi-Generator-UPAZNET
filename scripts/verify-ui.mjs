@@ -1,18 +1,78 @@
 import fs from 'fs';
 import path from 'path';
 import assert from 'node:assert/strict';
+import { fileURLToPath } from 'node:url';
 
 const ARTIFACT_DIR = process.env.ARTIFACT_DIR || path.join(process.cwd(), '.artifacts', 'ui-verification');
 const CDP_PORT = process.env.CDP_PORT || 9222;
 const APP_URL = process.env.APP_URL || 'http://localhost:3000';
 
+/**
+ * Normalizes URL pathnames by removing trailing slashes while preserving root '/'
+ * @param {string} pathname
+ * @returns {string}
+ */
+export function normalizePath(pathname) {
+  if (!pathname || pathname === '/') return '/';
+  return pathname.replace(/\/+$/, '') || '/';
+}
+
+/**
+ * Selects a matching Chrome DevTools target tab strictly based on target APP_URL origin and pathname.
+ * Requires page target type and an active webSocketDebuggerUrl.
+ * Throws immediately without fallback to prevent unintended tab manipulation.
+ *
+ * @param {Array} tabs - List of tab objects from Chrome DevTools /json/list
+ * @param {string} appUrl - Target application URL (e.g. process.env.APP_URL or default)
+ * @returns {Object} Matched target tab object
+ */
+export function selectTargetTab(tabs, appUrl) {
+  if (!Array.isArray(tabs)) {
+    throw new Error('Daftar tabs Chrome DevTools tidak valid atau bukan array.');
+  }
+
+  let targetUrlObj;
+  try {
+    targetUrlObj = new URL(appUrl);
+  } catch (err) {
+    throw new Error(`APP_URL tidak valid: "${appUrl}". Error: ${err.message}`);
+  }
+
+  const targetOrigin = targetUrlObj.origin.toLowerCase();
+  const targetPath = normalizePath(targetUrlObj.pathname);
+
+  const matchedTab = tabs.find((t) => {
+    if (!t || typeof t.url !== 'string' || !t.webSocketDebuggerUrl) {
+      return false;
+    }
+    // Only inspect page targets, strictly require type === 'page'
+    if (t.type !== 'page') {
+      return false;
+    }
+
+    try {
+      const tabUrlObj = new URL(t.url);
+      const tabOrigin = tabUrlObj.origin.toLowerCase();
+      const tabPath = normalizePath(tabUrlObj.pathname);
+      return tabOrigin === targetOrigin && tabPath === targetPath;
+    } catch {
+      return false;
+    }
+  });
+
+  if (!matchedTab) {
+    throw new Error(
+      `Target tab browser untuk APP_URL "${appUrl}" (origin: ${targetOrigin}, path: ${targetPath}) tidak ditemukan atau tidak memiliki webSocketDebuggerUrl aktif di Chrome DevTools.`
+    );
+  }
+
+  return matchedTab;
+}
+
 async function run() {
   const tabsRes = await fetch(`http://localhost:${CDP_PORT}/json/list`);
   const tabs = await tabsRes.json();
-  const upazTab = tabs.find(t => t.url.includes('3000')) || tabs[0];
-  if (!upazTab || !upazTab.webSocketDebuggerUrl) {
-    throw new Error(`Target tab Chrome DevTools tidak ditemukan pada http://localhost:${CDP_PORT}`);
-  }
+  const upazTab = selectTargetTab(tabs, APP_URL);
   const ws = new WebSocket(upazTab.webSocketDebuggerUrl);
 
   let msgId = 1;
@@ -535,9 +595,14 @@ async function run() {
   console.log('=============================================================================');
 }
 
-run().catch(err => {
-  console.error('\n❌ VERIFICATION SCRIPT FAILED WITH ASSERTION ERROR:');
-  console.error(err.message);
-  if (err.stack) console.error(err.stack);
-  process.exit(1);
-});
+const isMain = process.argv[1] &&
+  path.resolve(process.argv[1]).toLowerCase() === fileURLToPath(import.meta.url).toLowerCase();
+
+if (isMain) {
+  run().catch(err => {
+    console.error('\n❌ VERIFICATION SCRIPT FAILED WITH ASSERTION ERROR:');
+    console.error(err.message);
+    if (err.stack) console.error(err.stack);
+    process.exit(1);
+  });
+}
