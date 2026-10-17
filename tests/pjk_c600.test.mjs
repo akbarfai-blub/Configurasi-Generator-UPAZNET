@@ -183,3 +183,129 @@ test("AC3 & AC5: Parameter handling, data integrity, and MikroTik script", () =>
     "MikroTik secret generation must be untouched"
   );
 });
+
+test("AC1 (Bridge): PJK C600 Bridge option is in UGR optgroup Standard adjacent to PJK C600", () => {
+  const selectFile = path.resolve(__dirname, "../src/components/form/ConfigTypeSelect.js");
+  const content = fs.readFileSync(selectFile, "utf-8");
+
+  assert.ok(
+    content.includes('<option value="ugr_pjk_c600_bridge">PJK C600 Bridge</option>'),
+    "ConfigTypeSelect must contain <option value=\"ugr_pjk_c600_bridge\">PJK C600 Bridge</option>"
+  );
+
+  const pjkIndex = content.indexOf('value="ugr_pjk_c600"');
+  const pjkBridgeIndex = content.indexOf('value="ugr_pjk_c600_bridge"');
+  assert.ok(pjkBridgeIndex > pjkIndex, "ugr_pjk_c600_bridge must be placed adjacent and after ugr_pjk_c600");
+});
+
+test("AC2 (Bridge): generateUGR with ugr_pjk_c600_bridge produces exact expected CLI output", () => {
+  process.env.NEXT_PUBLIC_ACS_USER = "dummy_acs_user";
+  process.env.NEXT_PUBLIC_ACS_PASS = "dummy_acs_pass";
+
+  const dummyData = {
+    interfaceOlt: "1/4/2",
+    onuId: "12",
+    sn: "ZTEGC1234567",
+    idPelanggan: "1010112678",
+    pppoeUser: "budi_pppoe",
+    pppoePass: "150326",
+    namaPelanggan: "Budi Santoso",
+    selectedUgrType: "ugr_pjk_c600_bridge",
+  };
+
+  const expectedScript = `config terminal
+interface gpon_olt-1/4/2
+onu 12 type ALL sn ZTEGC1234567
+!
+interface gpon_onu-1/4/2:12
+name 1010112678
+description 1010112678 - BUDI SANTOSO
+tcont 1 profile kusuma
+gemport 1 tcont 1
+gemport 2 tcont 1
+!
+interface vport-1/4/2.12:1
+service-port 1 user-vlan 1000 vlan 1000
+!
+interface vport-1/4/2.12:2
+service-port 2 user-vlan 1001 vlan 1001
+!
+pon-onu-mng gpon_onu-1/4/2:12
+service 1 gemport 1 vlan 1000
+service 2 gemport 2 vlan 1001
+security-mgmt 1 state enable mode forward protocol web
+wan-ip 1 ipv4 mode pppoe username budi_pppoe password 150326 vlan-profile v1000 host 1
+wan 1 service tr069 internet
+tr069-mgmt 1 state unlock
+tr069-mgmt 1 acs http://acs.upaz.net.id:9999/ validate basic username dummy_acs_user password dummy_acs_pass
+!
+!
+write`;
+
+  const result = generateUGR(dummyData);
+  assert.strictEqual(result, expectedScript);
+});
+
+test("AC3 (Bridge): Data containing 1000 and 1001 is preserved and parameters sourced properly", () => {
+  process.env.NEXT_PUBLIC_ACS_USER = "acs_bridge";
+  process.env.NEXT_PUBLIC_ACS_PASS = "pass_bridge";
+
+  const customerData = {
+    interfaceOlt: "1/4/2",
+    onuId: "15",
+    sn: "ZTEG10001001",
+    idPelanggan: "1000100123EXTRA",
+    pppoeUser: "bridge_user_1000",
+    pppoePass: "pass1001",
+    namaPelanggan: "Toko 1000 1001",
+    selectedUgrType: "ugr_pjk_c600_bridge",
+  };
+
+  const result = generateUGR(customerData);
+
+  assert.ok(result.includes("name 1000100123\n"), "name must preserve customer ID digits and slice to 10");
+  assert.ok(result.includes("description 1000100123 - TOKO 1000 1001"), "description preserves 1000 and 1001");
+  assert.ok(result.includes("username bridge_user_1000 password pass1001"), "PPPoE username and pass from form");
+  assert.ok(result.includes("service-port 1 user-vlan 1000 vlan 1000"));
+  assert.ok(result.includes("service-port 2 user-vlan 1001 vlan 1001"));
+  assert.ok(result.includes("vlan-profile v1000 host 1"));
+
+  // Check no Ethernet tagging commands exist (which don't exist in UNR bridge)
+  assert.strictEqual(result.includes("vlan port eth"), false, "No Ethernet port tagging command should exist");
+  assert.strictEqual(result.includes("undefined"), false);
+  assert.strictEqual(result.includes("null"), false);
+});
+
+test("AC4 (Bridge): Cross-tab isolation and UNR Bridge return check", () => {
+  process.env.NEXT_PUBLIC_ACS_USER = "acs_user";
+  process.env.NEXT_PUBLIC_ACS_PASS = "acs_pass";
+
+  const crossTabData = {
+    interfaceOlt: "1/4/2",
+    onuId: "12",
+    sn: "ZTEGC1234567",
+    idPelanggan: "1010112678",
+    pppoeUser: "user_cross",
+    pppoePass: "150326",
+    namaPelanggan: "Cross Tab",
+    selectedC600Type: "unr_v130", // previously on UNR V130
+    selectedUgrType: "ugr_pjk_c600_bridge",
+  };
+
+  // UGR PJK C600 Bridge must produce VLAN 1000/1001
+  const ugrBridgeResult = generateUGR(crossTabData);
+  assert.ok(ugrBridgeResult.includes("service-port 1 user-vlan 1000 vlan 1000"));
+  assert.ok(ugrBridgeResult.includes("service-port 2 user-vlan 1001 vlan 1001"));
+  assert.ok(ugrBridgeResult.includes("vlan-profile v1000 host 1"));
+
+  // Switch back to UNR tab on "bridge"
+  const unrBridgeResult = generateC600({ ...crossTabData, selectedC600Type: "bridge" });
+  assert.ok(unrBridgeResult.includes("service-port 1 user-vlan 134 vlan 134"), "UNR Bridge must use VLAN 134");
+  assert.ok(unrBridgeResult.includes("service-port 2 user-vlan 129 vlan 129"), "UNR Bridge must use VLAN 129");
+  assert.ok(unrBridgeResult.includes("vlan-profile v134 host 1"), "UNR Bridge must use profile v134");
+
+  // Verify PJK C600 non-bridge still produces VLAN 1000
+  const pjkNonBridgeResult = generateUGR({ ...crossTabData, selectedUgrType: "ugr_pjk_c600" });
+  assert.ok(pjkNonBridgeResult.includes("service-port 1 user-vlan 1000 vlan 1000"));
+  assert.strictEqual(pjkNonBridgeResult.includes("service-port 2"), false, "PJK non-bridge must have only 1 service-port");
+});

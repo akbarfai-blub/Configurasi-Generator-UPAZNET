@@ -21,7 +21,12 @@ export const generateC600 = (data) => {
     ? `${cleanId} - ${namaPelanggan.toUpperCase()}`
     : cleanId;
 
-  if (selectedC600Type === "bridge") {
+  const isPjkBridge = selectedC600Type === "ugr_pjk_c600_bridge";
+
+  if (selectedC600Type === "bridge" || isPjkBridge) {
+    const activePppoeVlan = isPjkBridge ? "1000" : vlan;
+    const activeBridgeVlan = isPjkBridge ? "1001" : vlanBridge;
+
     return `config terminal
 interface gpon_olt-${interfaceOlt}
 onu ${onuId} type ALL sn ${sn}
@@ -34,16 +39,16 @@ gemport 1 tcont 1
 gemport 2 tcont 1
 !
 interface vport-${interfaceOlt}.${onuId}:1
-service-port 1 user-vlan ${vlan} vlan ${vlan}
+service-port 1 user-vlan ${activePppoeVlan} vlan ${activePppoeVlan}
 !
 interface vport-${interfaceOlt}.${onuId}:2
-service-port 2 user-vlan ${vlanBridge} vlan ${vlanBridge}
+service-port 2 user-vlan ${activeBridgeVlan} vlan ${activeBridgeVlan}
 !
 pon-onu-mng gpon_onu-${interfaceOlt}:${onuId}
-service 1 gemport 1 vlan ${vlan}
-service 2 gemport 2 vlan ${vlanBridge}
+service 1 gemport 1 vlan ${activePppoeVlan}
+service 2 gemport 2 vlan ${activeBridgeVlan}
 security-mgmt 1 state enable mode forward protocol web
-wan-ip 1 ipv4 mode pppoe username ${pppoeUser} password ${pppoePass} vlan-profile v${vlan} host 1
+wan-ip 1 ipv4 mode pppoe username ${pppoeUser} password ${pppoePass} vlan-profile v${activePppoeVlan} host 1
 wan 1 service tr069 internet
 tr069-mgmt 1 state unlock
 tr069-mgmt 1 acs http://acs.upaz.net.id:9999/ validate basic username ${process.env.NEXT_PUBLIC_ACS_USER} password ${process.env.NEXT_PUBLIC_ACS_PASS}
@@ -285,6 +290,10 @@ export const generateUGR = (data) => {
 
   if (selectedUgrType === "ugr_pjk_c600") {
     return generateC600({ ...data, selectedC600Type: "unr_pjk_c600" });
+  }
+
+  if (selectedUgrType === "ugr_pjk_c600_bridge") {
+    return generateC600({ ...data, selectedC600Type: "ugr_pjk_c600_bridge" });
   }
 
   if (selectedUgrType === "ugr_bridge") {

@@ -98,6 +98,7 @@ Dropdown menggunakan optgroup:
 | Standard | Standard (PPPoE) | 1000      | -                |
 | Standard | Bridge Mode      | 1000/200  | -                |
 | Standard | PJK C600         | 1000      | C600, + TR-069, ACS |
+| Standard | PJK C600 Bridge  | 1000/1001 | C600, + TR-069, ACS |
 | Babadan  | Babadan PPPoE    | 207       | -                |
 | Babadan  | Babadan Bridge   | 207/206   | -                |
 | KWD      | KWD PPPoE        | 1006      | -                |

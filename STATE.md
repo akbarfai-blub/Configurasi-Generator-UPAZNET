@@ -1,30 +1,29 @@
 # Task State
 
-## Current Phase: Completed (Pindahkan PJK C600 ke Tab UGR)
-- **Scope Aktif**: Memindahkan opsi `PJK C600` dari tab UNR ke optgroup Standard pada tab UGR dengan identifier `ugr_pjk_c600`.
+## Current Phase: Completed (PJK C600 Bridge pada Tab UGR)
+- **Scope Aktif**: Penambahan opsi `PJK C600 Bridge` (`ugr_pjk_c600_bridge`) pada optgroup Standard di tab UGR dengan template C600 Bridge (PPPoE VLAN 1000, Bridge VLAN 1001, profile v1000).
 - **Scope Ditunda**: Penambahan 6 varian UGR C600 lainnya tetap ditunda.
 - **Status SPEC.md**: FINALIZED.
 
 ## Perubahan yang Dilakukan
 1. `src/components/form/ConfigTypeSelect.js`:
-   - Dihapus: `<option value="unr_pjk_c600">PJK C600</option>` dari dropdown UNR (`configType === "standard"`).
-   - Ditambahkan: `<option value="ugr_pjk_c600">PJK C600</option>` pada optgroup Standard di dropdown UGR (`configType === "ugr"`).
+   - Menambahkan `<option value="ugr_pjk_c600_bridge">PJK C600 Bridge</option>` di dalam optgroup Standard pada tab UGR, berdekatan dengan `PJK C600`.
 2. `src/lib/generator.js`:
-   - Di dalam `generateUGR`: ditambahkan penanganan `selectedUgrType === "ugr_pjk_c600"` yang memanggil `generateC600` dengan meneruskan `{ ...data, selectedC600Type: "unr_pjk_c600" }` secara eksplisit sehingga state `selectedC600Type` lama dari tab UNR tidak memengaruhi output.
-   - Di dalam `generateC600`: ditambahkan pengenalan identifier `ugr_pjk_c600`.
-3. `PRD.md`: Baris `PJK C600` dipindahkan dari tabel UNR ke tabel UGR di bawah optgroup Standard.
-4. `tests/pjk_c600.test.mjs`: Diperbarui untuk menguji ketersediaan opsi di UGR Standard, ketiadaan di UNR, isolasi state cross-tab, kesetaraan output CLI C600 VLAN 1000, serta regresi.
-5. `tests/integration.test.mjs`: Diperbarui untuk menguji end-to-end flow tab UGR dengan `selectedUgrType: "ugr_pjk_c600"`.
+   - Parameterisasi template bridge di `generateC600` untuk menangani `selectedC600Type === "ugr_pjk_c600_bridge"` dengan PPPoE VLAN 1000, Bridge VLAN 1001, dan WAN profile `v1000`. Template UNR Bridge tetap menghasilkan VLAN 134/129.
+   - Penambahan routing di `generateUGR`: `selectedUgrType === "ugr_pjk_c600_bridge"` memanggil `generateC600` dengan meneruskan `{ ...data, selectedC600Type: "ugr_pjk_c600_bridge" }` secara eksplisit, menjamin isolasi state cross-tab.
+3. `PRD.md`: Menambahkan baris dokumentasi `PJK C600 Bridge` (1000/1001, C600, + TR-069, ACS) pada tabel UGR.
+4. `tests/pjk_c600.test.mjs`: Menambahkan pengujian terarah untuk PJK C600 Bridge: ketersediaan opsi di UI, kecocokan output CLI dengan acuan, integritas angka 1000/1001 dalam data pelanggan, ketiadaan perintah tagging port Ethernet yang tidak ada pada acuan, isolasi state antartab, dan regresi UNR Bridge serta PJK C600 non-bridge.
+5. `tests/integration.test.mjs`: Menambahkan pengujian end-to-end flow generator untuk `ugr_pjk_c600_bridge`.
 
 ## Status Acceptance Criteria
-- **AC1** (PJK C600 hanya di UGR Standard, tidak ada di UNR): **PASS** (Terbukti di `tests/pjk_c600.test.mjs`).
-- **AC2** (Output PJK C600 di UGR identik dengan template acuan): **PASS** (Terbukti di `tests/pjk_c600.test.mjs`).
-- **AC3** (Pilihan UNR sebelumnya tidak memengaruhi output PJK C600): **PASS** (Terbukti di `tests/pjk_c600.test.mjs` test #3).
-- **AC4** (Beralih antar opsi UGR / UNR tetap menghasilkan template masing-masing): **PASS** (Terbukti di `tests/pjk_c600.test.mjs` test #4).
-- **AC5** (Default, konfigurasi existing, dan MikroTik tidak berubah): **PASS** (Terbukti di `tests/pjk_c600.test.mjs` test #5).
-- **AC6** (Dokumentasi PRD mencatat PJK C600 di UGR tanpa klaim perubahan CLI): **PASS** (Terbukti di `PRD.md`).
+- **AC1** (PJK C600 Bridge tersedia di UGR Standard & terhubung ke generator): **PASS** (Terbukti di `tests/pjk_c600.test.mjs` test #6 & `tests/integration.test.mjs` test #5).
+- **AC2** (Output sesuai acuan UNR Bridge dengan PPPoE 1000, Bridge 1001, profile v1000): **PASS** (Terbukti di `tests/pjk_c600.test.mjs` test #7).
+- **AC3** (Parameter pelanggan dari form, angka 1000/1001 di ID/nama tidak terkorupsi, tidak ada perintah tagging eth): **PASS** (Terbukti di `tests/pjk_c600.test.mjs` test #8).
+- **AC4** (Pilihan di tab lain tidak memengaruhi hasil; UNR Bridge tetap 134/129): **PASS** (Terbukti di `tests/pjk_c600.test.mjs` test #9).
+- **AC5** (PJK non-bridge, konfigurasi existing, dan MikroTik tidak berubah): **PASS** (Terbukti di `tests/pjk_c600.test.mjs` test #9).
+- **AC6** (Dokumentasi PRD mencatat PJK C600 Bridge di UGR dengan VLAN 1000/1001): **PASS** (Terbukti di `PRD.md`).
 
 ## Hasil Verifikasi
-- Unit test runner: `node --test tests/rjw_v131.test.mjs tests/pjk_c600.test.mjs tests/integration.test.mjs` -> 15 passed, 0 failed.
+- Unit test runner: `node --test tests/rjw_v131.test.mjs tests/pjk_c600.test.mjs tests/integration.test.mjs` -> 20 passed, 0 failed.
 - Linter: `npm run lint` -> exit code 0 (0 error, 1 warning pre-existing di tailwind config).
 - Build: `npm run build` -> exit code 0.

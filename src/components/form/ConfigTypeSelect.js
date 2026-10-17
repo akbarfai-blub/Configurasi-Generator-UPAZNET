@@ -53,6 +53,7 @@ export default function ConfigTypeSelect({ configType, formData, onChange }) {
               <option value="ugr_standard">Standard (PPPoE)</option>
               <option value="ugr_bridge">Bridge Mode</option>
               <option value="ugr_pjk_c600">PJK C600</option>
+              <option value="ugr_pjk_c600_bridge">PJK C600 Bridge</option>
             </optgroup>
             <optgroup label="Babadan">
               <option value="ugr_babadan_pppoe">Babadan PPPoE</option>
