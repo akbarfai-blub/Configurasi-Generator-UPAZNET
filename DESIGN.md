@@ -179,7 +179,6 @@ Form language is precise and gently round — a full-radius-feeling family that 
 - **Shape:** 12px radius (`rounded-xl`).
 - **Primary (Action):** Signal Green fill, white text, 600-bold, vertical auto-flush padding (`py-3`), centered with a leading icon, `shadow-md`. Hover deepens to Pine Green (`#008C44`) and lifts to `shadow-lg`. This is the Generate and copy-confirmation face.
 - **Outline:** White fill, Muted text, 1px slate-300 stroke (`rounded-xl`), used for cancel/dismiss (Batal).
-- **Quick-Fill Callout:** A full-width, 2px dashed Signal-Green stroke at 50% on white, green text (Quick Fill dari Detail Koneksi). Signals "import," distinct from block actions.
 
 ### Config Tabs
 - **Style:** A full-width Rail Slate (`slate-100`) pill rail (`rounded-xl`, `p-1`) with evenly divided buttons.
@@ -188,7 +187,7 @@ Form language is precise and gently round — a full-radius-feeling family that 
 ### Inputs / Fields
 - **Style:** Field Slate fill (`slate-50`), 1px Field Border stroke (`slate-300`), 8px radius (`rounded-lg`), Ink text, 2px padding block (`p-2.5`). Monospace face for the SN field to echo its terminal origin.
 - **Focus:** 2px Signal Green ring (`focus:ring-2 focus:ring-upaz-green`) and border shift to green.
-- **Error (modal only):** Red-600 text on a red-50 fill with a 1px red-200 stroke — confined to the quick-fill validation message.
+- **Error:** Red-600 text on a red-50 fill or red-500 border for invalid/incomplete field validation.
 
 ### Selects
 - Same field styling as inputs (Field Slate fill, slate-300 stroke, 8px radius, green focus ring) but with a semibold–bold weight because selects carry service-package and config-choice values in this tool.
@@ -196,18 +195,11 @@ Form language is precise and gently round — a full-radius-feeling family that 
 ### Terminal Panels (Script Output)
 - **Corner Style:** 12px (`rounded-xl`), `border` by a Linearized navy (`blue-900/50`), `shadow-xl`.
 - **Background:** Terminal Navy with a header divider line (`blue-800`) beneath title and COPY control.
-- **Body:** Monospace, 13px, Panel Text blue, `whitespace-pre`, horizontally scrollable. Placeholder state reads "Script [label] akan muncul di sini..." in the same mono voice.
+- **Body:** Monospace, 13px, Panel Text blue, `whitespace-pre`, horizontally scrollable. Placeholder state reads "Script [label] akan muncul di sini..." in the same mono voice. Stale state shows "Input berubah. Generate ulang." and disables copying.
 
 ### Command Hub (Sidebar)
 - **Background:** Terminal Navy panel (`shadow-xl`), header separated by a `white/10` divider. **Terminal icon** glows Signal Green.
-- **Rows:** Each command is a button; a 9px all-caps `tracking-widest` white/60 label (green on hover) over a 10px mono code block on `white/5` (`rounded`, `whitespace-pre-wrap`). Hover raises the block border to `white/20`; on copy the block border turns `upaz-green/50` and a pulsing **COPIED!** confirms. A `C600 / C300/C320` segmented switch in the header uses green for the active mode.
-
-### Quick-Fill Modal
-- **Backdrop:** 50% black with `backdrop-blur-sm`, centered.
-- **Card:** Surface White, 16px (`rounded-2xl`), `shadow-2xl`, slate-200 border.
-- **Header:** Terminal Navy band with white title, muted-white labels, and two underline tabs (2px white underline for active, transparent for inactive).
-- **Body:** A monospace textarea on Field Slate (green focus), with validation error states noted under Inputs.
-- **Footer:** Field Slate (`slate-50`) bar, right-aligned Outline (Batal) + Primary (Isi Form Otomatis) buttons.
+- **Rows:** Each command is a button; a 9px all-caps `tracking-widest` white/60 label (green on hover) over a 10px mono code block on `white/5` (`rounded`, `whitespace-pre-wrap`). Hover raises the block border to `white/20`; on copy the block border turns `upaz-green/50` and a pulsing **COPIED!** confirms. A `C600 / C300/C320` segmented switch in the header uses green for the active mode. Missing targets disable copying and display missing parameter hints.
 
 ## Do's and Don'ts
 

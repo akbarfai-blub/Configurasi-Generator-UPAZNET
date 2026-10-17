@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { RefreshCw, ClipboardPaste } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import CommandSidebar from "@/components/CommandSidebar";
 import { useClipboard } from "@/hooks/useClipboard";
 import { useOltInterfaceMask } from "@/hooks/useOltInterfaceMask";
@@ -13,18 +13,28 @@ import ConfigTypeSelect from "@/components/form/ConfigTypeSelect";
 import OltFormSection from "@/components/form/OltFormSection";
 import CustomerFormSection from "@/components/form/CustomerFormSection";
 import ServiceFormSection from "@/components/form/ServiceFormSection";
-import QuickFillModal from "@/components/form/QuickFillModal";
 
 export default function Home() {
   const [configType, setConfigType] = useState("standard");
-
   const [formData, setFormData] = useState(INITIAL_FORM_DATA);
-  const [showQuickFill, setShowQuickFill] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
 
-  const { copied, copiedMikrotik, copyOlt, copyMikrotik } = useClipboard();
+  const { copied, copiedMikrotik, copyOlt, copyMikrotik, copyError } = useClipboard();
   const { handleOltInterfaceChange, handleIdPelangganChange } =
     useOltInterfaceMask(setFormData);
-  const { oltScript, mikrotikScript, generate } = useScriptGenerator();
+  const { oltScript, mikrotikScript, generate, checkStale } =
+    useScriptGenerator();
+
+  const isStale = checkStale(formData, configType);
+
+  const clearFieldError = useCallback((fieldName) => {
+    setFormErrors((prev) => {
+      if (!prev[fieldName]) return prev;
+      const next = { ...prev };
+      delete next[fieldName];
+      return next;
+    });
+  }, []);
 
   const handleTabChange = (type) => {
     setConfigType(type);
@@ -33,6 +43,7 @@ export default function Home() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    clearFieldError(name);
 
     if (name === "interfaceOlt") {
       handleOltInterfaceChange(e);
@@ -40,6 +51,7 @@ export default function Home() {
     }
 
     if (name === "idPelanggan") {
+      clearFieldError("pppoeUser");
       handleIdPelangganChange(e);
       return;
     }
@@ -49,7 +61,12 @@ export default function Home() {
 
   const handleGenerate = (e) => {
     e.preventDefault();
-    generate(formData, configType);
+    const result = generate(formData, configType);
+    if (!result.success) {
+      setFormErrors(result.errors);
+    } else {
+      setFormErrors({});
+    }
   };
 
   const handleCopyOlt = useCallback(
@@ -61,11 +78,6 @@ export default function Home() {
     () => copyMikrotik(mikrotikScript),
     [mikrotikScript, copyMikrotik],
   );
-
-  const handleQuickFill = (parsedData) => {
-    setFormData((prev) => ({ ...prev, ...parsedData }));
-    setShowQuickFill(false);
-  };
 
   return (
     <main
@@ -99,16 +111,11 @@ export default function Home() {
                 id="config-form-panel"
                 className="bg-white p-6 rounded-2xl shadow-lg border border-neutral-divider space-y-5 h-fit xl:sticky xl:top-8"
               >
-                <button
-                  type="button"
-                  onClick={() => setShowQuickFill(true)}
-                  className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl border-2 border-dashed border-upaz-green/50 text-upaz-green text-sm font-bold hover:bg-upaz-green/10 transition-colors mb-4"
-                >
-                  <ClipboardPaste size={16} />
-                  Quick Fill dari Detail Koneksi
-                </button>
-
-                {(configType === "standard" || configType === "unb" || configType === "ugr" || configType === "ucd" || configType === "uho") && (
+                {(configType === "standard" ||
+                  configType === "unb" ||
+                  configType === "ugr" ||
+                  configType === "ucd" ||
+                  configType === "uho") && (
                   <ConfigTypeSelect
                     configType={configType}
                     formData={formData}
@@ -120,23 +127,26 @@ export default function Home() {
                   formData={formData}
                   onChange={handleChange}
                   onOltInterfaceChange={handleOltInterfaceChange}
+                  errors={formErrors}
                 />
 
                 <CustomerFormSection
                   formData={formData}
                   onChange={handleChange}
                   onIdPelangganChange={handleIdPelangganChange}
+                  errors={formErrors}
                 />
 
                 <ServiceFormSection
                   formData={formData}
                   onChange={handleChange}
                   configType={configType}
+                  errors={formErrors}
                 />
 
                 <button
                   type="submit"
-                  className="w-full bg-upaz-green text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#008c44] transition-colors shadow-md hover:shadow-lg"
+                  className="w-full bg-upaz-green text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#008c44] transition-colors shadow-md hover:shadow-lg cursor-pointer"
                 >
                   <RefreshCw size={18} /> Generate Script
                 </button>
@@ -149,6 +159,8 @@ export default function Home() {
                   output={oltScript}
                   onCopy={handleCopyOlt}
                   copied={copied}
+                  isStale={isStale}
+                  errorMessage={copyError?.key === "olt" ? copyError.message : null}
                   minHeight="320px"
                 />
 
@@ -157,6 +169,8 @@ export default function Home() {
                   output={mikrotikScript}
                   onCopy={handleCopyMikrotik}
                   copied={copiedMikrotik}
+                  isStale={isStale}
+                  errorMessage={copyError?.key === "mikrotik" ? copyError.message : null}
                 />
               </div>
             </div>
@@ -173,13 +187,6 @@ export default function Home() {
           </aside>
         </div>
       </div>
-
-      {showQuickFill && (
-        <QuickFillModal
-          onFill={handleQuickFill}
-          onClose={() => setShowQuickFill(false)}
-        />
-      )}
     </main>
   );
 }

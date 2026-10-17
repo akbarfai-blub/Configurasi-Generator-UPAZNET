@@ -29,7 +29,6 @@ Unlike keeping a personal scratch-pad of OLT commands, the tool generates vendor
 
 - **Config types (complete and current):** UNR C600 (with variants), UHO, UBL, UGR, UCD, and UNB (Standard PPPoE and Bridge modes, with VLAN mapping templates for V100, V1600, V1501, V130, DDR).
 - **Smart input form:** auto-masking of the OLT interface (space / `.` / `,` converted to `/`, alphabetic input blocked), customer ID auto-synced to the PPPoE username, structured dropdowns for config type and service package.
-- **Quick Fill:** a modal that pastes "Detail Koneksi Gpon" or "Detail ONU" text from a managing tool and parses it into the form (customer ID/name, SN, ONU index, OLT interface) so technicians don't retype customer data.
 - **Dual-output generator:** separate ZTE OLT script and MikroTik `/ppp secret add` script (with auto comment `ID-NAMA`), one-click copy with visual "COPIED!" feedback.
 - **Tech stack constraint (existing implementation):** Next.js/React, Tailwind CSS, Lucide icons; must be a runnable, deployable web app.
 - **Security constraint:** ACS username and password must come from env vars (`.env.local` locally / platform env vars in production); must never be hardcoded.

@@ -12,7 +12,7 @@
 
 Upaznet Config & Command Generator adalah internal web tool yang dirancang khusus untuk mengoptimalkan dan mempercepat alur kerja tim Helpdesk dan Network Engineer UPAZNET. Aplikasi ini mengotomatiskan pembuatan skrip konfigurasi untuk perangkat OLT ZTE (C600, C300, C320) dan MikroTik (PPPoE Secret).
 
-Sejak versi 1.0.0, aplikasi telah berkembang signifikan dengan penambahan tab konfigurasi baru, sub-opsi konfigurasi yang lebih lengkap, optimasi UI/UX untuk mobile, dan fitur Quick Fill untuk mempercepat input data. Antarmuka 3-kolom yang intuitif meminimalisir kesalahan input manual dan menyediakan akses cepat ke perintah troubleshooting jaringan secara real-time.
+Sejak versi 1.0.0, aplikasi telah berkembang signifikan dengan penambahan tab konfigurasi baru, sub-opsi konfigurasi yang lebih lengkap, optimasi UI/UX untuk mobile, dan validasi operasional yang presisi. Antarmuka 3-kolom yang intuitif meminimalisir kesalahan input manual dan menyediakan akses cepat ke perintah troubleshooting jaringan secara real-time.
 
 ---
 
@@ -140,34 +140,16 @@ description 1010112678_Budi
 - **Dynamic Dropdown:** Tipe Konfigurasi berubah sesuai tab aktif, menggunakan optgroup untuk tab dengan banyak opsi (UNB, UGR).
 - **Metro Profile Dropdown:** Muncul khusus saat tab UNB opsi ALNET (V602) dipilih. Opsi: Metro 10, Metro 30, Metro 100. Default: Metro 10.
 
-### 3.5. Quick Fill Modal
-
-Tombol "Quick Fill dari Detail Koneksi" di bagian atas form membuka modal dengan dua mode:
-
-**Mode Detail ONU** (default — untuk kasus ganti alat):
-
-- User paste teks dari halaman Detail ONU sistem internal
-- Auto-parse: Interface OLT, ONU ID, Serial Number
-- Field yang tetap manual: Password, Tab, Tipe Konfigurasi, Paket Layanan
-
-**Mode Detail Koneksi Gpon** (untuk pasang baru):
-
-- User paste teks dari modal Detail Koneksi Gpon
-- Auto-parse: ID Pelanggan, Nama Pelanggan, PPPoE User, Serial Number, ONU ID
-- Field yang tetap manual: Password, Interface OLT, Tab, Tipe Konfigurasi
-
-Jika teks tidak valid → tampil pesan error di dalam modal.
-
-### 3.6. Generator Skrip Terpisah (Dual-Output Generator)
+### 3.5. Generator Skrip Terpisah (Dual-Output Generator)
 
 Hasil generate dibagi menjadi dua kotak terminal terpisah untuk mencegah kesalahan copy-paste:
 
 - **ZTE OLT Script:** Skrip registrasi ONU sesuai tipe konfigurasi yang dipilih. Mendukung format C600 dan C300/C320.
 - **MikroTik Script:** Skrip `/ppp secret add` dengan comment format `ID-NAMA`.
 
-Setiap box memiliki tombol copy dengan feedback visual "COPIED!".
+Setiap box memiliki tombol copy dengan feedback visual "COPIED!". Jika data input berubah setelah generate, box menampilkan pesan peringatan dan menonaktifkan tombol copy hingga digenerate ulang.
 
-### 3.7. Command Hub
+### 3.6. Command Hub
 
 Sidebar interaktif berisi perintah troubleshooting siap pakai.
 
@@ -277,8 +259,7 @@ src/
 │   │   ├── ConfigTypeSelect.js
 │   │   ├── OltFormSection.js
 │   │   ├── CustomerFormSection.js
-│   │   ├── ServiceFormSection.js
-│   │   └── QuickFillModal.js
+│   │   └── ServiceFormSection.js
 │   ├── output/
 │   │   └── ScriptOutput.js
 │   └── ui/
@@ -286,10 +267,10 @@ src/
 ├── hooks/
 │   ├── useClipboard.js
 │   ├── useOltInterfaceMask.js
-│   ├── useScriptGenerator.js
-│   └── useQuickFill.js
+│   └── useScriptGenerator.js
 └── lib/
     ├── generator.js
+    ├── validation.js
     ├── commands.js
     └── constants.js
 ```

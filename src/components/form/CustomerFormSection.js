@@ -1,6 +1,11 @@
 "use client";
 
-export default function CustomerFormSection({ formData, onChange, onIdPelangganChange }) {
+export default function CustomerFormSection({
+  formData,
+  onChange,
+  onIdPelangganChange,
+  errors = {},
+}) {
   return (
     <div className="space-y-4 border-t pt-5 mt-2">
       <div className="flex items-center gap-2 mb-2">
@@ -10,7 +15,10 @@ export default function CustomerFormSection({ formData, onChange, onIdPelangganC
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-1">
-          <label htmlFor="idPelanggan" className="text-xs font-semibold uppercase tracking-wider text-neutral-muted">
+          <label
+            htmlFor="idPelanggan"
+            className="text-xs font-semibold uppercase tracking-wider text-neutral-muted"
+          >
             ID Pelanggan
           </label>
           <input
@@ -21,11 +29,23 @@ export default function CustomerFormSection({ formData, onChange, onIdPelangganC
             onChange={onIdPelangganChange}
             maxLength={10}
             placeholder="1010112678"
-            className="w-full p-2.5 border border-neutral-stroke bg-neutral-field rounded-lg focus:ring-2 focus:ring-upaz-green focus:border-upaz-green outline-none transition"
+            className={`w-full p-2.5 border rounded-lg outline-none transition bg-neutral-field ${
+              errors.idPelanggan
+                ? "border-red-500 focus:ring-2 focus:ring-red-400 focus:border-red-500"
+                : "border-neutral-stroke focus:ring-2 focus:ring-upaz-green focus:border-upaz-green"
+            }`}
           />
+          {errors.idPelanggan && (
+            <p role="alert" className="text-[11px] text-red-500 font-semibold leading-tight">
+              {errors.idPelanggan}
+            </p>
+          )}
         </div>
         <div className="space-y-1">
-          <label htmlFor="namaPelanggan" className="text-xs font-semibold uppercase tracking-wider text-neutral-muted">
+          <label
+            htmlFor="namaPelanggan"
+            className="text-xs font-semibold uppercase tracking-wider text-neutral-muted"
+          >
             Nama Pelanggan
           </label>
           <input

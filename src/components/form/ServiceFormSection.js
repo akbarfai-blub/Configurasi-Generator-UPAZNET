@@ -1,11 +1,19 @@
 "use client";
 
-export default function ServiceFormSection({ formData, onChange, configType }) {
+export default function ServiceFormSection({
+  formData,
+  onChange,
+  configType,
+  errors = {},
+}) {
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="space-y-1">
-          <label htmlFor="paketLayanan" className="text-xs font-semibold uppercase tracking-wider text-neutral-muted">
+          <label
+            htmlFor="paketLayanan"
+            className="text-xs font-semibold uppercase tracking-wider text-neutral-muted"
+          >
             Paket Layanan
           </label>
           <select
@@ -33,7 +41,10 @@ export default function ServiceFormSection({ formData, onChange, configType }) {
         </div>
         {configType === "unb" && formData.selectedVlanType === "602" && (
           <div className="space-y-1">
-            <label htmlFor="metroProfile" className="text-xs font-bold uppercase tracking-wider text-neutral-ink">
+            <label
+              htmlFor="metroProfile"
+              className="text-xs font-bold uppercase tracking-wider text-neutral-ink"
+            >
               Metro Profile
             </label>
             <select
@@ -50,7 +61,10 @@ export default function ServiceFormSection({ formData, onChange, configType }) {
           </div>
         )}
         <div className="space-y-1">
-          <label htmlFor="pppoeUser" className="text-xs font-semibold uppercase tracking-wider text-neutral-muted">
+          <label
+            htmlFor="pppoeUser"
+            className="text-xs font-semibold uppercase tracking-wider text-neutral-muted"
+          >
             PPPoE User
           </label>
           <input
@@ -59,11 +73,23 @@ export default function ServiceFormSection({ formData, onChange, configType }) {
             name="pppoeUser"
             value={formData.pppoeUser}
             onChange={onChange}
-            className="w-full p-2.5 border border-neutral-stroke bg-neutral-field rounded-lg focus:ring-2 focus:ring-upaz-green focus:border-upaz-green outline-none transition"
+            className={`w-full p-2.5 border rounded-lg outline-none transition bg-neutral-field ${
+              errors.pppoeUser
+                ? "border-red-500 focus:ring-2 focus:ring-red-400 focus:border-red-500"
+                : "border-neutral-stroke focus:ring-2 focus:ring-upaz-green focus:border-upaz-green"
+            }`}
           />
+          {errors.pppoeUser && (
+            <p role="alert" className="text-[11px] text-red-500 font-semibold leading-tight">
+              {errors.pppoeUser}
+            </p>
+          )}
         </div>
         <div className="space-y-1">
-          <label htmlFor="pppoePass" className="text-xs font-semibold uppercase tracking-wider text-neutral-muted">
+          <label
+            htmlFor="pppoePass"
+            className="text-xs font-semibold uppercase tracking-wider text-neutral-muted"
+          >
             PPPoE Pass
           </label>
           <input
@@ -72,8 +98,17 @@ export default function ServiceFormSection({ formData, onChange, configType }) {
             name="pppoePass"
             value={formData.pppoePass}
             onChange={onChange}
-            className="w-full p-2.5 border border-neutral-stroke bg-neutral-field rounded-lg focus:ring-2 focus:ring-upaz-green focus:border-upaz-green outline-none transition"
+            className={`w-full p-2.5 border rounded-lg outline-none transition bg-neutral-field ${
+              errors.pppoePass
+                ? "border-red-500 focus:ring-2 focus:ring-red-400 focus:border-red-500"
+                : "border-neutral-stroke focus:ring-2 focus:ring-upaz-green focus:border-upaz-green"
+            }`}
           />
+          {errors.pppoePass && (
+            <p role="alert" className="text-[11px] text-red-500 font-semibold leading-tight">
+              {errors.pppoePass}
+            </p>
+          )}
         </div>
       </div>
     </>
