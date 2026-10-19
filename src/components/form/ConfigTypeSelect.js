@@ -35,12 +35,17 @@ export default function ConfigTypeSelect({ configType, formData, onChange }) {
       >
         {configType === "standard" ? (
           <>
+          <optgroup label="Standard (PPPoE)">
             <option value="standard">Standard (PPPoE)</option>
             <option value="unr_v130">Standard (PPPoE) V130</option>
-            <option value="bridge">Bridge Mode</option>
             <option value="unr_v1001">V1001 (RJW)</option>
             <option value="unr_v131">V131 (RJW)</option>
             <option value="unr_ddr">V2104 (DDR Prisma)</option>
+            </optgroup>
+            <optgroup label="Bridge Mode">
+              <option value="bridge">Bridge Mode</option>
+            <option value="unr_jbg_bridge">JBG Bridge</option>
+            </optgroup>
           </>
         ) : configType === "ucd" ? (
           <>

@@ -57,6 +57,37 @@ tr069-mgmt 1 acs http://acs.upaz.net.id:9999/ validate basic username ${process.
 write`.trim();
   }
 
+  if (selectedC600Type === "unr_jbg_bridge") {
+    return `conf t
+interface gpon_olt-${interfaceOlt}
+onu ${onuId} type ALL sn ${sn}
+exit
+interface gpon_onu-${interfaceOlt}:${onuId}
+name ${cleanId}
+description ${descText}
+tcont 1 profile kusuma
+gemport 1 tcont 1
+gemport 2 tcont 1
+exit
+interface vport-${interfaceOlt}.${onuId}:1
+service-port 1 user-vlan 1001 vlan 1001
+exit
+interface vport-${interfaceOlt}.${onuId}:2
+service-port 2 user-vlan 131 vlan 131
+exit
+pon-onu-mng gpon_onu-${interfaceOlt}:${onuId}
+service 1 gemport 1 vlan 1001
+service 2 gemport 2 vlan 131
+security-mgmt 1 state enable mode forward protocol web
+wan-ip 1 ipv4 mode pppoe username ${pppoeUser} password ${pppoePass} vlan-profile v1001 host 1
+wan 1 service tr069 internet
+tr069-mgmt 1 state unlock
+tr069-mgmt 1 acs http://acs.upaz.net.id:9999/ validate basic username ${process.env.NEXT_PUBLIC_ACS_USER} password ${process.env.NEXT_PUBLIC_ACS_PASS}
+exit
+exit
+write`.trim();
+  }
+
   if (selectedC600Type === "unr_v1001" || selectedC600Type === "unr_v131") {
     const rjwVlan = selectedC600Type === "unr_v131" ? "131" : "1001";
     return `conf t

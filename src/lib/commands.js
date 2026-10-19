@@ -94,7 +94,7 @@ export function getCommandList(data = {}, oltType = "c600") {
       {
         id: "c600_config_wan",
         label: "Cek Config WAN",
-        cmd: `show running-config interface gpon_onu-${iface}:${onu}`,
+        cmd: `show running-config-interface gpon_onu-${iface}:${onu}`,
         isReady: isOnuValid,
         missingHint: !isIfaceValid ? "Butuh Interface valid" : "Butuh ONU ID",
       },
