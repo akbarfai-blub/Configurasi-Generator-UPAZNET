@@ -25,14 +25,14 @@ test("AC1: ConfigTypeSelect includes JBG Bridge option right below Bridge Mode",
   // Check placement right below bridge option
   const bridgeIdx = content.indexOf('<option value="bridge">Bridge Mode</option>');
   const jbgIdx = content.indexOf('<option value="unr_jbg_bridge">JBG Bridge</option>');
-  const v1001Idx = content.indexOf('<option value="unr_v1001">V1001 (RJW)</option>');
+  const bridgeOptgroupEnd = content.indexOf("</optgroup>", bridgeIdx);
 
   assert.ok(bridgeIdx !== -1, "bridge option must exist");
   assert.ok(jbgIdx !== -1, "unr_jbg_bridge option must exist");
-  assert.ok(v1001Idx !== -1, "unr_v1001 option must exist");
+  assert.ok(bridgeOptgroupEnd !== -1, "Bridge Mode optgroup closing tag must exist");
 
   assert.ok(jbgIdx > bridgeIdx, "unr_jbg_bridge must appear after bridge");
-  assert.ok(jbgIdx < v1001Idx, "unr_jbg_bridge must appear before unr_v1001");
+  assert.ok(jbgIdx < bridgeOptgroupEnd, "unr_jbg_bridge must appear inside Bridge Mode optgroup right after bridge");
 });
 
 test("AC2: generateC600 with unr_jbg_bridge produces exact expected CLI output", () => {
@@ -158,7 +158,7 @@ test("AC4: Regression tests for other UNR C600 options, UGR bridge, and MikroTik
   // 7. ugr_pjk_c600_bridge
   const pjkBridgeScript = generateC600({ ...baseData, selectedC600Type: "ugr_pjk_c600_bridge" });
   assert.ok(pjkBridgeScript.includes("service-port 1 user-vlan 1000 vlan 1000"));
-  assert.ok(pjkBridgeScript.includes("service-port 2 user-vlan 1001 vlan 1001"));
+  assert.ok(pjkBridgeScript.includes("service-port 2 user-vlan 200 vlan 200"));
 
   // 8. MikroTik secret
   const mikrotikSecret = generateMikrotikSecret(baseData);

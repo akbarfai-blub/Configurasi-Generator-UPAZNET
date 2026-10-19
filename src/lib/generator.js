@@ -25,7 +25,7 @@ export const generateC600 = (data) => {
 
   if (selectedC600Type === "bridge" || isPjkBridge) {
     const activePppoeVlan = isPjkBridge ? "1000" : vlan;
-    const activeBridgeVlan = isPjkBridge ? "1001" : vlanBridge;
+    const activeBridgeVlan = isPjkBridge ? "200" : vlanBridge;
 
     return `config terminal
 interface gpon_olt-${interfaceOlt}

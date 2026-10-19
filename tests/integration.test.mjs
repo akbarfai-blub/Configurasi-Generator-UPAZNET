@@ -117,9 +117,9 @@ test("End-to-end generator flow for UGR tab with selectedUgrType=ugr_pjk_c600_br
   assert.ok(script.includes("interface vport-1/4/2.14:1"));
   assert.ok(script.includes("service-port 1 user-vlan 1000 vlan 1000"));
   assert.ok(script.includes("interface vport-1/4/2.14:2"));
-  assert.ok(script.includes("service-port 2 user-vlan 1001 vlan 1001"));
+  assert.ok(script.includes("service-port 2 user-vlan 200 vlan 200"));
   assert.ok(script.includes("service 1 gemport 1 vlan 1000"));
-  assert.ok(script.includes("service 2 gemport 2 vlan 1001"));
+  assert.ok(script.includes("service 2 gemport 2 vlan 200"));
   assert.ok(script.includes("wan-ip 1 ipv4 mode pppoe username pjk_bridge_op password 150326 vlan-profile v1000 host 1"));
   assert.ok(script.includes("tr069-mgmt 1 acs http://acs.upaz.net.id:9999/ validate basic username dummy_user password dummy_pass"));
   assert.ok(script.endsWith("write"));

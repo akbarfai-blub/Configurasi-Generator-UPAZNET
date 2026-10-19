@@ -228,11 +228,11 @@ interface vport-1/4/2.12:1
 service-port 1 user-vlan 1000 vlan 1000
 !
 interface vport-1/4/2.12:2
-service-port 2 user-vlan 1001 vlan 1001
+service-port 2 user-vlan 200 vlan 200
 !
 pon-onu-mng gpon_onu-1/4/2:12
 service 1 gemport 1 vlan 1000
-service 2 gemport 2 vlan 1001
+service 2 gemport 2 vlan 200
 security-mgmt 1 state enable mode forward protocol web
 wan-ip 1 ipv4 mode pppoe username budi_pppoe password 150326 vlan-profile v1000 host 1
 wan 1 service tr069 internet
@@ -246,28 +246,28 @@ write`;
   assert.strictEqual(result, expectedScript);
 });
 
-test("AC3 (Bridge): Data containing 1000 and 1001 is preserved and parameters sourced properly", () => {
+test("AC3 (Bridge): Data containing 1000 and 200 is preserved and parameters sourced properly", () => {
   process.env.NEXT_PUBLIC_ACS_USER = "acs_bridge";
   process.env.NEXT_PUBLIC_ACS_PASS = "pass_bridge";
 
   const customerData = {
     interfaceOlt: "1/4/2",
     onuId: "15",
-    sn: "ZTEG10001001",
-    idPelanggan: "1000100123EXTRA",
+    sn: "ZTEG10000200",
+    idPelanggan: "1000020023EXTRA",
     pppoeUser: "bridge_user_1000",
-    pppoePass: "pass1001",
-    namaPelanggan: "Toko 1000 1001",
+    pppoePass: "pass200",
+    namaPelanggan: "Toko 1000 200",
     selectedUgrType: "ugr_pjk_c600_bridge",
   };
 
   const result = generateUGR(customerData);
 
-  assert.ok(result.includes("name 1000100123\n"), "name must preserve customer ID digits and slice to 10");
-  assert.ok(result.includes("description 1000100123 - TOKO 1000 1001"), "description preserves 1000 and 1001");
-  assert.ok(result.includes("username bridge_user_1000 password pass1001"), "PPPoE username and pass from form");
+  assert.ok(result.includes("name 1000020023\n"), "name must preserve customer ID digits and slice to 10");
+  assert.ok(result.includes("description 1000020023 - TOKO 1000 200"), "description preserves 1000 and 200");
+  assert.ok(result.includes("username bridge_user_1000 password pass200"), "PPPoE username and pass from form");
   assert.ok(result.includes("service-port 1 user-vlan 1000 vlan 1000"));
-  assert.ok(result.includes("service-port 2 user-vlan 1001 vlan 1001"));
+  assert.ok(result.includes("service-port 2 user-vlan 200 vlan 200"));
   assert.ok(result.includes("vlan-profile v1000 host 1"));
 
   // Check no Ethernet tagging commands exist (which don't exist in UNR bridge)
@@ -292,10 +292,10 @@ test("AC4 (Bridge): Cross-tab isolation and UNR Bridge return check", () => {
     selectedUgrType: "ugr_pjk_c600_bridge",
   };
 
-  // UGR PJK C600 Bridge must produce VLAN 1000/1001
+  // UGR PJK C600 Bridge must produce VLAN 1000/200
   const ugrBridgeResult = generateUGR(crossTabData);
   assert.ok(ugrBridgeResult.includes("service-port 1 user-vlan 1000 vlan 1000"));
-  assert.ok(ugrBridgeResult.includes("service-port 2 user-vlan 1001 vlan 1001"));
+  assert.ok(ugrBridgeResult.includes("service-port 2 user-vlan 200 vlan 200"));
   assert.ok(ugrBridgeResult.includes("vlan-profile v1000 host 1"));
 
   // Switch back to UNR tab on "bridge"
